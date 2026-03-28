@@ -301,7 +301,7 @@
 
         .cart-item {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            grid-template-columns: 2fr 0.8fr 0.8fr 1fr auto;
             gap: 10px;
             align-items: center;
             padding: 12px;
@@ -525,6 +525,7 @@
                     <div class="cart-container">
                         <div class="cart-item cart-item-header">
                             <div>Product</div>
+                            <div>Code</div>
                             <div>Price</div>
                             <div>Qty</div>
                             <div>Total</div>
@@ -534,6 +535,12 @@
                     </div>
                     <div class="cart-total">
                         Total: ₹<span id="cartTotal">0.00</span>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="form-group">
+                            <label>Customer Name (Optional)</label>
+                            <input type="text" id="customerName" placeholder="Enter customer name">
+                        </div>
                     </div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <select id="paymentMode" style="padding: 12px; border-radius: 8px; background: #0f1119; border: 1px solid #2d3348; color: white; flex: 1;">
@@ -556,7 +563,7 @@
                 <div class="table-container">
                     <table id="inventoryTable">
                         <thead>
-                            <tr><th>Product Name</th><th>Category</th><th>Price (₹)</th><th>Stock</th><th>Status</th></tr>
+                            <tr><th>Product Code</th><th>Product Name</th><th>Category</th><th>Colour</th><th>Price (₹)</th><th>Stock</th><th>Status</th></tr>
                         </thead>
                         <tbody id="inventoryBody"></tbody>
                     </table>
@@ -571,9 +578,15 @@
                 <form id="goodsInForm">
                     <div class="form-row">
                         <div class="form-group">
+                            <label>Product Code *</label>
+                            <input type="text" id="productCode" required placeholder="e.g., FB001">
+                        </div>
+                        <div class="form-group">
                             <label>Product Name *</label>
                             <input type="text" id="productName" required>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group">
                             <label>Category *</label>
                             <select id="category" required>
@@ -585,6 +598,10 @@
                                 <option value="Cricket">Cricket</option>
                                 <option value="Accessories">Accessories</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Colour</label>
+                            <input type="text" id="colour" placeholder="e.g., White/Black">
                         </div>
                     </div>
                     <div class="form-row">
@@ -615,7 +632,7 @@
                 <h2>Recent Stock Entries</h2>
                 <div class="table-container">
                     <table id="goodsInTable">
-                        <thead><tr><th>Date</th><th>Product</th><th>Category</th><th>Qty</th><th>Price (₹)</th></tr></thead>
+                        <thead><tr><th>Date</th><th>Code</th><th>Product</th><th>Category</th><th>Qty</th><th>Price (₹)</th></thead>
                         <tbody id="goodsInBody"></tbody>
                     </table>
                 </div>
@@ -629,7 +646,19 @@
                 <h2>📊 Sales Transactions</h2>
                 <div class="table-container">
                     <table id="salesTable">
-                        <thead><tr><th>Date</th><th>Product</th><th>Category</th><th>Qty</th><th>Price (₹)</th><th>Total (₹)</th><th>Payment</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Colour</th>
+                                <th>Qty</th>
+                                <th>Price (₹)</th>
+                                <th>Total (₹)</th>
+                                <th>Payment</th>
+                                <th>Customer</th>
+                            </tr>
+                        </thead>
                         <tbody id="salesBody"></tbody>
                     </table>
                 </div>
@@ -639,8 +668,8 @@
 
     <script>
         const SHEET_ID = '1aPUrG2AiPiXT2e0s5HHEzSHleIGmYwBlUZxcd4aOF40';
-        // IMPORTANT: Replace this with your Google Apps Script Web App URL
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIQEy7qnsJSfjYhmG6SS7q2NDh3pjg7nWcUnNLt93QETYdRFjc5SN6kIzMQAQRd0_ODw/exec';
+        // IMPORTANT: Replace this with your Google Apps Script Web App URL after deployment
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/library/d/1rukb4d6QItIOrvQnjvHfIr2anvJrDbhCqtPuGqzdBAprnM-Ps21rNZjk/1';
         
         let products = [];
         let sales = [];
@@ -697,10 +726,12 @@
                         const row = json.table.rows[i];
                         if (row.c[0] && row.c[0].v) {
                             products.push({
-                                name: row.c[0]?.v || '',
-                                category: row.c[1]?.v || '',
-                                price: parseFloat(row.c[2]?.v) || 0,
-                                stock: parseFloat(row.c[3]?.v) || 0
+                                code: row.c[0]?.v || '',
+                                name: row.c[1]?.v || '',
+                                category: row.c[2]?.v || '',
+                                colour: row.c[3]?.v || '',
+                                price: parseFloat(row.c[4]?.v) || 0,
+                                stock: parseFloat(row.c[5]?.v) || 0
                             });
                         }
                     }
@@ -708,13 +739,9 @@
             } catch (error) {
                 console.error('Error loading products:', error);
                 products = [
-                    { name: 'Football', category: 'Sports', price: 2199, stock: 50 },
-                    { name: 'Basketball', category: 'Sports', price: 2499, stock: 35 },
-                    { name: 'Running Shoes', category: 'Footwear', price: 3999, stock: 40 },
-                    { name: 'Tennis Racket', category: 'Sports', price: 4599, stock: 20 },
-                    { name: 'Swim Goggles', category: 'Swimming', price: 899, stock: 100 },
-                    { name: 'Cricket Bat', category: 'Cricket', price: 3599, stock: 25 },
-                    { name: 'Yoga Mat', category: 'Fitness', price: 1299, stock: 30 }
+                    { code: 'FB001', name: 'Football', category: 'Sports', colour: 'White/Black', price: 2199, stock: 50 },
+                    { code: 'BB001', name: 'Basketball', category: 'Sports', colour: 'Orange', price: 2499, stock: 35 },
+                    { code: 'RS001', name: 'Running Shoes', category: 'Footwear', colour: 'Blue', price: 3999, stock: 40 }
                 ];
             }
             updateCategoryFilter();
@@ -734,12 +761,14 @@
                         if (row.c[0] && row.c[0].v) {
                             sales.push({
                                 date: row.c[0]?.v || '',
-                                name: row.c[1]?.v || '',
-                                category: row.c[2]?.v || '',
-                                quantity: parseFloat(row.c[3]?.v) || 0,
-                                price: parseFloat(row.c[4]?.v) || 0,
-                                total: parseFloat(row.c[5]?.v) || 0,
-                                paymentMode: row.c[6]?.v || ''
+                                productCode: row.c[1]?.v || '',
+                                productName: row.c[2]?.v || '',
+                                colour: row.c[3]?.v || '',
+                                quantity: parseFloat(row.c[4]?.v) || 0,
+                                price: parseFloat(row.c[5]?.v) || 0,
+                                total: parseFloat(row.c[6]?.v) || 0,
+                                paymentMode: row.c[7]?.v || '',
+                                customerName: row.c[8]?.v || ''
                             });
                         }
                     }
@@ -764,10 +793,11 @@
                         if (row.c[0] && row.c[0].v) {
                             goodsIn.push({
                                 date: row.c[0]?.v || '',
-                                name: row.c[1]?.v || '',
-                                category: row.c[2]?.v || '',
-                                quantity: parseFloat(row.c[3]?.v) || 0,
-                                price: parseFloat(row.c[4]?.v) || 0
+                                code: row.c[1]?.v || '',
+                                name: row.c[2]?.v || '',
+                                category: row.c[3]?.v || '',
+                                quantity: parseFloat(row.c[4]?.v) || 0,
+                                price: parseFloat(row.c[5]?.v) || 0
                             });
                         }
                     }
@@ -809,7 +839,8 @@
             if (searchTerm) {
                 filtered = filtered.filter(p => 
                     p.name.toLowerCase().includes(searchTerm) || 
-                    p.category.toLowerCase().includes(searchTerm)
+                    p.category.toLowerCase().includes(searchTerm) ||
+                    p.code.toLowerCase().includes(searchTerm)
                 );
             }
             
@@ -819,10 +850,10 @@
             }
             
             grid.innerHTML = filtered.map(product => `
-                <div class="product-card" onclick="addToCart('${product.name.replace(/'/g, "\\'")}')">
+                <div class="product-card" onclick="addToCart('${product.code.replace(/'/g, "\\'")}')">
                     <div class="product-icon">${getIcon(product.category)}</div>
                     <h3>${product.name}</h3>
-                    <div class="category">${product.category}</div>
+                    <div class="category">${product.code} | ${product.category}</div>
                     <div class="price">₹${product.price.toFixed(2)}</div>
                     <div class="stock ${product.stock < 10 ? 'low' : ''}">Stock: ${product.stock}</div>
                 </div>
@@ -841,8 +872,8 @@
             return icons[category] || '🏃';
         }
 
-        function addToCart(productName) {
-            const product = products.find(p => p.name === productName);
+        function addToCart(productCode) {
+            const product = products.find(p => p.code === productCode);
             if (!product) return;
             
             if (product.stock <= 0) {
@@ -850,7 +881,7 @@
                 return;
             }
             
-            const existingItem = cart.find(item => item.name === productName);
+            const existingItem = cart.find(item => item.code === productCode);
             if (existingItem) {
                 if (existingItem.quantity + 1 > product.stock) {
                     showAlert(`Only ${product.stock} units available`, 'error');
@@ -859,8 +890,10 @@
                 existingItem.quantity++;
             } else {
                 cart.push({
+                    code: product.code,
                     name: product.name,
                     category: product.category,
+                    colour: product.colour,
                     price: product.price,
                     quantity: 1,
                     maxStock: product.stock
@@ -887,6 +920,7 @@
                 return `
                     <div class="cart-item">
                         <div><strong>${item.name}</strong><br><small>${item.category}</small></div>
+                        <div>${item.code}</div>
                         <div>₹${item.price.toFixed(2)}</div>
                         <div><input type="number" value="${item.quantity}" min="1" max="${item.maxStock}" onchange="updateQuantity(${index}, this.value)"></div>
                         <div>₹${itemTotal.toFixed(2)}</div>
@@ -901,7 +935,7 @@
         function updateQuantity(index, newQuantity) {
             const quantity = parseInt(newQuantity);
             const item = cart[index];
-            const product = products.find(p => p.name === item.name);
+            const product = products.find(p => p.code === item.code);
             
             if (quantity > product.stock) {
                 showAlert(`Only ${product.stock} units available`, 'error');
@@ -938,30 +972,33 @@
             }
             
             const paymentMode = document.getElementById('paymentMode').value;
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const customerName = document.getElementById('customerName').value;
             const today = new Date().toISOString().split('T')[0];
             
-            // Disable button to prevent double submission
             const processBtn = document.getElementById('processSaleBtn');
             processBtn.disabled = true;
             processBtn.textContent = 'Processing...';
             
             try {
-                // Save each item to Google Sheets
+                // Process each item in cart
                 for (const item of cart) {
+                    const totalAmount = item.price * item.quantity;
+                    
                     const saleData = {
                         date: today,
+                        productCode: item.code,
                         productName: item.name,
-                        category: item.category,
+                        colour: item.colour || '',
                         quantity: item.quantity,
-                        price: item.price,
-                        total: item.price * item.quantity,
-                        paymentMode: paymentMode
+                        mrp: item.price,
+                        totalAmount: totalAmount,
+                        paymentMode: paymentMode,
+                        customerName: customerName
                     };
                     
                     // Send to Google Apps Script
                     if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                        const response = await fetch(APPS_SCRIPT_URL, {
+                        await fetch(APPS_SCRIPT_URL, {
                             method: 'POST',
                             mode: 'no-cors',
                             headers: {
@@ -972,21 +1009,33 @@
                     }
                     
                     // Update local sales array
-                    sales.unshift(saleData);
+                    sales.unshift({
+                        date: today,
+                        productCode: item.code,
+                        productName: item.name,
+                        colour: item.colour || '',
+                        quantity: item.quantity,
+                        price: item.price,
+                        total: totalAmount,
+                        paymentMode: paymentMode,
+                        customerName: customerName
+                    });
                     
                     // Update local product stock
-                    const product = products.find(p => p.name === item.name);
+                    const product = products.find(p => p.code === item.code);
                     if (product) product.stock -= item.quantity;
                 }
                 
-                // Clear cart
+                // Clear cart and reset
                 cart = [];
+                document.getElementById('customerName').value = '';
                 updateCartDisplay();
                 updateProductsGrid();
                 updateInventoryTable();
                 updateSalesTable();
                 updateStats();
                 
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 showAlert(`✅ Sale completed! Total: ₹${total.toFixed(2)} | Payment: ${paymentMode}`, 'success');
                 
             } catch (error) {
@@ -1003,8 +1052,10 @@
             
             const newGoodsIn = {
                 date: new Date().toISOString().split('T')[0],
+                code: document.getElementById('productCode').value,
                 name: document.getElementById('productName').value,
                 category: document.getElementById('category').value,
+                colour: document.getElementById('colour').value,
                 price: parseFloat(document.getElementById('price').value),
                 quantity: parseFloat(document.getElementById('quantity').value),
                 dealerPrice: parseFloat(document.getElementById('dealerPrice').value) || 0,
@@ -1014,15 +1065,19 @@
             goodsIn.unshift(newGoodsIn);
             
             // Update product stock
-            const existingProduct = products.find(p => p.name === newGoodsIn.name);
+            const existingProduct = products.find(p => p.code === newGoodsIn.code);
             if (existingProduct) {
                 existingProduct.stock += newGoodsIn.quantity;
                 existingProduct.price = newGoodsIn.price;
+                existingProduct.name = newGoodsIn.name;
                 existingProduct.category = newGoodsIn.category;
+                existingProduct.colour = newGoodsIn.colour;
             } else {
                 products.push({
+                    code: newGoodsIn.code,
                     name: newGoodsIn.name,
                     category: newGoodsIn.category,
+                    colour: newGoodsIn.colour,
                     price: newGoodsIn.price,
                     stock: newGoodsIn.quantity
                 });
@@ -1042,19 +1097,28 @@
             const tbody = document.getElementById('inventoryBody');
             tbody.innerHTML = products.map(product => `
                 <tr>
+                    <td>${product.code}</td>
                     <td>${product.name}</td>
                     <td>${product.category}</td>
+                    <td>${product.colour || '-'}</td>
                     <td>₹${product.price.toFixed(2)}</td>
                     <td style="color: ${product.stock < 10 ? '#ff7675' : '#00b894'}; font-weight: bold;">${product.stock}</td>
                     <td>${product.stock < 10 ? '⚠️ Low Stock' : '✅ In Stock'}</td>
-                 </tr>
+                </tr>
             `).join('');
         }
 
         function updateGoodsInTable() {
             const tbody = document.getElementById('goodsInBody');
             tbody.innerHTML = goodsIn.slice(0, 10).map(item => `
-                <tr><td>${item.date}</td><td>${item.name}</td><td>${item.category}</td><td>${item.quantity}</td><td>₹${item.price.toFixed(2)}</td></tr>
+                <tr>
+                    <td>${item.date}</td>
+                    <td>${item.code}</td>
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td>${item.quantity}</td>
+                    <td>₹${item.price.toFixed(2)}</td>
+                </tr>
             `).join('');
         }
 
@@ -1063,13 +1127,15 @@
             tbody.innerHTML = sales.slice(0, 20).map(sale => `
                 <tr>
                     <td>${sale.date}</td>
-                    <td>${sale.name}</td>
-                    <td>${sale.category}</td>
+                    <td>${sale.productCode}</td>
+                    <td>${sale.productName}</td>
+                    <td>${sale.colour || '-'}</td>
                     <td>${sale.quantity}</td>
                     <td>₹${sale.price.toFixed(2)}</td>
                     <td>₹${sale.total.toFixed(2)}</td>
                     <td>${sale.paymentMode}</td>
-                 </tr>
+                    <td>${sale.customerName || '-'}</td>
+                </tr>
             `).join('');
         }
 
