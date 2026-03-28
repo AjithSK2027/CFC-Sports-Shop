@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Shop Manager - POS System (₹ INR)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e1a;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1f2e 0%, #0f1119 100%);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-section img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header h1 {
+            color: #6c5ce7;
+            font-size: 24px;
+        }
+
+        .header h1 span {
+            font-size: 14px;
+            color: #00b894;
+            margin-left: 10px;
+        }
+
+        .date {
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: #1a1f2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #a0a0a0;
+        }
+
+        .nav-btn:hover {
+            background: #2d3348;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Stats Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #1a1f2e;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #a0a0a0;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #6c5ce7;
+        }
+
+        /* Main Layout */
+        .pos-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: #1a1f2e;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            border-bottom: 2px solid rgba(108,92,231,0.3);
+            padding-bottom: 10px;
+        }
+
+        /* Search & Filter */
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            background: #0f1119;
+            border: 1px solid #2d3348;
+            border-radius: 8px;
+            font-size: 16px;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #6c5ce7;
+        }
+
+        .search-box input::placeholder {
+            color: #5a5f73;
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            background: #0f1119;
+            border: 1px solid #2d3348;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            color: #a0a0a0;
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: #6c5ce7;
+            color: white;
+            border-color: #6c5ce7;
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .products-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .products-grid::-webkit-scrollbar-track {
+            background: #0f1119;
+            border-radius: 10px;
+        }
+
+        .products-grid::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 10px;
+        }
+
+        .product-card {
+            background: #0f1119;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(108,92,231,0.2);
+            border-color: #6c5ce7;
+            background: #1a1f2e;
+        }
+
+        .product-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+            background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .product-card h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .product-card .category {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .product-card .price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #6c5ce7;
+        }
+
+        .product-card .stock {
+            font-size: 11px;
+            color: #00b894;
+            margin-top: 5px;
+        }
+
+        .product-card .stock.low {
+            color: #ff7675;
+        }
+
+        /* Cart */
+        .cart-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .cart-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .cart-container::-webkit-scrollbar-track {
+            background: #0f1119;
+            border-radius: 10px;
+        }
+
+        .cart-container::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 10px;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .cart-item-header {
+            background: #0f1119;
+            font-weight: 600;
+            color: #a0a0a0;
+            border-bottom: 2px solid #6c5ce7;
+            position: sticky;
+            top: 0;
+        }
+
+        .cart-item input {
+            width: 60px;
+            padding: 5px;
+            background: #0f1119;
+            border: 1px solid #2d3348;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+        }
+
+        .remove-btn {
+            background: #ff7675;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #ff5252;
+        }
+
+        .cart-total {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(108,92,231,0.3);
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            color: #6c5ce7;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108,92,231,0.4);
+        }
+
+        .btn-success {
+            background: #00b894;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #00a884;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #fdcb6e;
+            color: #1a1f2e;
+        }
+
+        .btn-warning:hover {
+            background: #fdcb6e;
+            transform: translateY(-2px);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #0f1119;
+            border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #e0e0e0;
+        }
+
+        th {
+            background: #0f1119;
+            font-weight: 600;
+            color: #6c5ce7;
+            position: sticky;
+            top: 0;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #a0a0a0;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: #0f1119;
+            border: 1px solid #2d3348;
+            border-radius: 8px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #6c5ce7;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Alert */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .alert-success { background: #00b894; color: white; }
+        .alert-error { background: #ff7675; color: white; }
+
+        /* Pages */
+        .page { display: none; animation: fadeIn 0.3s; }
+        .page.active-page { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading { text-align: center; padding: 50px; color: #a0a0a0; }
+
+        @media (max-width: 768px) {
+            .pos-container { grid-template-columns: 1fr; }
+            .cart-item { grid-template-columns: 1fr; gap: 5px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <img src="https://i.ibb.co/KjC62kc0/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" alt="Sports Shop Logo">
+                <h1>🏃‍♂️ Sports Shop Manager <span>⚡ POS System</span></h1>
+            </div>
+            <div class="date" id="currentDate"></div>
+        </div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="showPage('pos')">💰 POS / SALES</button>
+            <button class="nav-btn" onclick="showPage('inventory')">📦 Inventory</button>
+            <button class="nav-btn" onclick="showPage('goodsIn')">📥 Goods IN</button>
+            <button class="nav-btn" onclick="showPage('salesHistory')">📊 Sales History</button>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <!-- POS / SALES PAGE -->
+        <div id="pos" class="page active-page">
+            <div class="stats" id="posStats"></div>
+            
+            <div class="pos-container">
+                <!-- Products Section -->
+                <div class="card">
+                    <h2>🛍️ Select Products</h2>
+                    <div class="search-box">
+                        <input type="text" id="searchProduct" placeholder="🔍 Search product by name or category..." onkeyup="filterProducts()">
+                    </div>
+                    <div class="category-filter" id="categoryFilter"></div>
+                    <div class="products-grid" id="productsGrid"></div>
+                </div>
+
+                <!-- Cart Section -->
+                <div class="card">
+                    <h2>🛒 Shopping Cart</h2>
+                    <div class="cart-container">
+                        <div class="cart-item cart-item-header">
+                            <div>Product</div>
+                            <div>Price</div>
+                            <div>Qty</div>
+                            <div>Total</div>
+                            <div></div>
+                        </div>
+                        <div id="cartItems"></div>
+                    </div>
+                    <div class="cart-total">
+                        Total: ₹<span id="cartTotal">0.00</span>
+                    </div>
+                    <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <select id="paymentMode" style="padding: 12px; border-radius: 8px; background: #0f1119; border: 1px solid #2d3348; color: white; flex: 1;">
+                            <option value="Cash">💵 Cash</option>
+                            <option value="Card">💳 Card</option>
+                            <option value="UPI">📱 UPI</option>
+                        </select>
+                        <button class="btn btn-success" onclick="processSale()">✅ Complete Sale</button>
+                        <button class="btn btn-warning" onclick="clearCart()">🗑️ Clear Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Page -->
+        <div id="inventory" class="page">
+            <div class="stats" id="inventoryStats"></div>
+            <div class="card">
+                <h2>📦 Current Inventory</h2>
+                <div class="table-container">
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Price (₹)</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goods IN Page -->
+        <div id="goodsIn" class="page">
+            <div class="card">
+                <h2>📥 Add New Stock</h2>
+                <form id="goodsInForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Product Name *</label>
+                            <input type="text" id="productName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <select id="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Footwear">Footwear</option>
+                                <option value="Fitness">Fitness</option>
+                                <option value="Swimming">Swimming</option>
+                                <option value="Cricket">Cricket</option>
+                                <option value="Accessories">Accessories</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price (₹) *</label>
+                            <input type="number" id="price" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity *</label>
+                            <input type="number" id="quantity" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Dealer Price (₹)</label>
+                            <input type="number" id="dealerPrice" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Transport Charges (%)</label>
+                            <input type="number" id="transport" step="0.01" value="0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">➕ Add Stock</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>Recent Stock Entries</h2>
+                <div class="table-container">
+                    <table id="goodsInTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Qty</th>
+                                <th>Price (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="goodsInBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales History Page -->
+        <div id="salesHistory" class="page">
+            <div class="stats" id="salesStats"></div>
+            <div class="card">
+                <h2>📊 Sales Transactions</h2>
+                <div class="table-container">
+                    <table id="salesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Qty</th>
+                                <th>Price (₹)</th>
+                                <th>Total (₹)</th>
+                                <th>Payment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SHEET_ID = '1aPUrG2AiPiXT2e0s5HHEzSHleIGmYwBlUZxcd4aOF40';
+        
+        let products = [];
+        let sales = [];
+        let goodsIn = [];
+        let cart = [];
+        let currentCategory = 'all';
+        let searchTerm = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+            document.getElementById('goodsInForm').addEventListener('submit', addGoodsIn);
+            loadAllData();
+        });
+
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+            document.getElementById(pageName).classList.add('active-page');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if (pageName === 'pos') updateProductsGrid();
+        }
+
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
+
+        async function loadAllData() {
+            await loadProducts();
+            await loadSales();
+            await loadGoodsIn();
+            updateProductsGrid();
+            updateInventoryTable();
+            updateGoodsInTable();
+            updateSalesTable();
+            updateStats();
+        }
+
+        async function loadProducts() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Products`;
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                
+                products = [];
+                if (json.table.rows) {
+                    for (let i = 1; i < json.table.rows.length; i++) {
+                        const row = json.table.rows[i];
+                        if (row.c[0] && row.c[0].v) {
+                            products.push({
+                                name: row.c[0]?.v || '',
+                                category: row.c[1]?.v || '',
+                                price: parseFloat(row.c[2]?.v) || 0,
+                                stock: parseFloat(row.c[3]?.v) || 0
+                            });
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                products = [
+                    { name: 'Football', category: 'Sports', price: 2199, stock: 50 },
+                    { name: 'Basketball', category: 'Sports', price: 2499, stock: 35 },
+                    { name: 'Running Shoes', category: 'Footwear', price: 3999, stock: 40 },
+                    { name: 'Tennis Racket', category: 'Sports', price: 4599, stock: 20 },
+                    { name: 'Swim Goggles', category: 'Swimming', price: 899, stock: 100 },
+                    { name: 'Cricket Bat', category: 'Cricket', price: 3599, stock: 25 },
+                    { name: 'Yoga Mat', category: 'Fitness', price: 1299, stock: 30 }
+                ];
+            }
+            updateCategoryFilter();
+        }
+
+        function updateCategoryFilter() {
+            const categories = ['all', ...new Set(products.map(p => p.category))];
+            const filterDiv = document.getElementById('categoryFilter');
+            filterDiv.innerHTML = categories.map(cat => `
+                <button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">
+                    ${cat === 'all' ? 'All' : cat}
+                </button>
+            `).join('');
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            updateCategoryFilter();
+            filterProducts();
+        }
+
+        function filterProducts() {
+            searchTerm = document.getElementById('searchProduct').value.toLowerCase();
+            updateProductsGrid();
+        }
+
+        function updateProductsGrid() {
+            const grid = document.getElementById('productsGrid');
+            let filtered = products.filter(p => p.stock > 0);
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+            if (searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.name.toLowerCase().includes(searchTerm) || 
+                    p.category.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="loading">No products found. Add stock in Goods IN.</div>';
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(product => `
+                <div class="product-card" onclick="addToCart('${product.name.replace(/'/g, "\\'")}')">
+                    <div class="product-icon">${getIcon(product.category)}</div>
+                    <h3>${product.name}</h3>
+                    <div class="category">${product.category}</div>
+                    <div class="price">₹${product.price.toFixed(2)}</div>
+                    <div class="stock ${product.stock < 10 ? 'low' : ''}">Stock: ${product.stock}</div>
+                </div>
+            `).join('');
+        }
+
+        function getIcon(category) {
+            const icons = {
+                'Sports': '⚽',
+                'Footwear': '👟',
+                'Fitness': '💪',
+                'Swimming': '🏊',
+                'Cricket': '🏏',
+                'Accessories': '🧤'
+            };
+            return icons[category] || '🏃';
+        }
+
+        function addToCart(productName) {
+            const product = products.find(p => p.name === productName);
+            if (!product) return;
+            
+            if (product.stock <= 0) {
+                showAlert(`${product.name} is out of stock!`, 'error');
+                return;
+            }
+            
+            const existingItem = cart.find(item => item.name === productName);
+            if (existingItem) {
+                if (existingItem.quantity + 1 > product.stock) {
+                    showAlert(`Only ${product.stock} units available`, 'error');
+                    return;
+                }
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    name: product.name,
+                    category: product.category,
+                    price: product.price,
+                    quantity: 1,
+                    maxStock: product.stock
+                });
+            }
+            
+            updateCartDisplay();
+            showAlert(`${product.name} added to cart`, 'success');
+        }
+
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('cartItems');
+            let total = 0;
+            
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: #a0a0a0;">Cart is empty</div>';
+                document.getElementById('cartTotal').innerText = '0.00';
+                return;
+            }
+            
+            cartContainer.innerHTML = cart.map((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                return `
+                    <div class="cart-item">
+                        <div><strong>${item.name}</strong><br><small>${item.category}</small></div>
+                        <div>₹${item.price.toFixed(2)}</div>
+                        <div><input type="number" value="${item.quantity}" min="1" max="${item.maxStock}" onchange="updateQuantity(${index}, this.value)"></div>
+                        <div>₹${itemTotal.toFixed(2)}</div>
+                        <div><button class="remove-btn" onclick="removeFromCart(${index})">Remove</button></div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('cartTotal').innerText = total.toFixed(2);
+        }
+
+        function updateQuantity(index, newQuantity) {
+            const quantity = parseInt(newQuantity);
+            const item = cart[index];
+            const product = products.find(p => p.name === item.name);
+            
+            if (quantity > product.stock) {
+                showAlert(`Only ${product.stock} units available`, 'error');
+                updateCartDisplay();
+                return;
+            }
+            
+            if (quantity < 1) {
+                cart.splice(index, 1);
+            } else {
+                item.quantity = quantity;
+            }
+            updateCartDisplay();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+            showAlert('Item removed', 'success');
+        }
+
+        function clearCart() {
+            if (cart.length > 0 && confirm('Clear entire cart?')) {
+                cart = [];
+                updateCartDisplay();
+                showAlert('Cart cleared', 'success');
+            }
+        }
+
+        function processSale() {
+            if (cart.length === 0) {
+                showAlert('Cart is empty!', 'error');
+                return;
+            }
+            
+            const paymentMode = document.getElementById('paymentMode').value;
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Update stock
+            for (const item of cart) {
+                const product = products.find(p => p.name === item.name);
+                if (product) product.stock -= item.quantity;
+            }
+            
+            // Record sales
+            const today = new Date().toISOString().split('T')[0];
+            for (const item of cart) {
+                sales.unshift({
+                    date: today,
+                    name: item.name,
+                    category: item.category,
+                    quantity: item.quantity,
+                    price: item.price,
+                    total: item.price * item.quantity,
+                    paymentMode: paymentMode
+                });
+            }
+            
+            cart = [];
+            updateCartDisplay();
+            updateProductsGrid();
+            updateInventoryTable();
+            updateSalesTable();
+            updateStats();
+            
+            showAlert(`✅ Sale completed! Total: ₹${total.toFixed(2)} | Payment: ${paymentMode}`, 'success');
+        }
+
+        async function addGoodsIn(e) {
+            e.preventDefault();
+            
+            const newGoodsIn = {
+                date: new Date().toISOString().split('T')[0],
+                name: document.getElementById('productName').value,
+                category: document.getElementById('category').value,
+                price: parseFloat(document.getElementById('price').value),
+                quantity: parseFloat(document.getElementById('quantity').value),
+                dealerPrice: parseFloat(document.getElementById('dealerPrice').value) || 0,
+                transport: parseFloat(document.getElementById('transport').value) || 0
+            };
+            
+            goodsIn.unshift(newGoodsIn);
+            
+            // Update product stock
+            const existingProduct = products.find(p => p.name === newGoodsIn.name);
+            if (existingProduct) {
+                existingProduct.stock += newGoodsIn.quantity;
+                existingProduct.price = newGoodsIn.price;
+                existingProduct.category = newGoodsIn.category;
+            } else {
+                products.push({
+                    name: newGoodsIn.name,
+                    category: newGoodsIn.category,
+                    price: newGoodsIn.price,
+                    stock: newGoodsIn.quantity
+                });
+            }
+            
+            updateProductsGrid();
+            updateInventoryTable();
+            updateGoodsInTable();
+            updateStats();
+            updateCategoryFilter();
+            
+            document.getElementById('goodsInForm').reset();
+            showAlert(`✅ Stock added: ${newGoodsIn.quantity} x ${newGoodsIn.name}`, 'success');
+        }
+
+        function updateInventoryTable() {
+            const tbody = document.getElementById('inventoryBody');
+            tbody.innerHTML = products.map(product => `
+                <tr>
+                    <td>${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>₹${product.price.toFixed(2)}</td>
+                    <td style="color: ${product.stock < 10 ? '#ff7675' : '#00b894'}; font-weight: bold;">${product.stock}</td>
+                    <td>${product.stock < 10 ? '⚠️ Low Stock' : '✅ In Stock'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateGoodsInTable() {
+            const tbody = document.getElementById('goodsInBody');
+            tbody.innerHTML = goodsIn.slice(0, 10).map(item => `
+                <tr>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td>${item.quantity}</td>
+                    <td>₹${item.price.toFixed(2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateSalesTable() {
+            const tbody = document.getElementById('salesBody');
+            tbody.innerHTML = sales.slice(0, 20).map(sale => `
+                <tr>
+                    <td>${sale.date}</td>
+                    <td>${sale.name}</td>
+                    <td>${sale.category}</td>
+                    <td>${sale.quantity}</td>
+                    <td>₹${sale.price.toFixed(2)}</td>
+                    <td>₹${sale.total.toFixed(2)}</td>
+                    <td>${sale.paymentMode}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            const totalProducts = products.length;
+            const lowStock = products.filter(p => p.stock < 10).length;
+            const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
+            const todaySales = sales.filter(s => s.date === new Date().toISOString().split('T')[0]).reduce((sum, s) => sum + s.total, 0);
+            const totalSales = sales.reduce((sum, s) => sum + s.total, 0);
+            
+            document.getElementById('posStats').innerHTML = `
+                <div class="stat-card"><h3>Products</h3><div class="value">${totalProducts}</div></div>
+                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color: #ff7675;">${lowStock}</div></div>
+                <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
+            `;
+            
+            document.getElementById('inventoryStats').innerHTML = `
+                <div class="stat-card"><h3>Total Products</h3><div class="value">${totalProducts}</div></div>
+                <div class="stat-card"><h3>Total Stock</h3><div class="value">${totalStock}</div></div>
+                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color: #ff7675;">${lowStock}</div></div>
+            `;
+            
+            document.getElementById('salesStats').innerHTML = `
+                <div class="stat-card"><h3>Total Sales</h3><div class="value">₹${totalSales.toFixed(2)}</div></div>
+                <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
+                <div class="stat-card"><h3>Transactions</h3><div class="value">${sales.length}</div></div>
+            `;
+        }
+    </script>
+</body>
+</html>
