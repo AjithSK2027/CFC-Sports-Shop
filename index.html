@@ -398,10 +398,20 @@
         .page.active-page { display: block; }
 
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .api-status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .api-status.connected { background: #00b89420; color: #00b894; border: 1px solid #00b89430; }
+        .api-status.disconnected { background: #ff767520; color: #ff7675; border: 1px solid #ff767530; }
 
         @media (max-width: 768px) {
             .pos-container { grid-template-columns: 1fr; }
-            .cart-item { grid-template-columns: 1fr; }
+            .cart-item { grid-template-columns: 1fr; gap: 5px; }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -426,6 +436,8 @@
 
         <div id="pos" class="page active-page">
             <div class="stats" id="posStats"></div>
+            <div id="apiStatus" class="api-status">🔌 Checking connection...</div>
+            
             <div class="pos-container">
                 <div class="card">
                     <h2>🛍️ Select Products</h2>
@@ -535,8 +547,7 @@
 
     <script>
         const SHEET_ID = '1aPUrG2AiPiXT2e0s5HHEzSHleIGmYwBlUZxcd4aOF40';
-        // ⚠️ IMPORTANT: Replace this with your Apps Script URL after deployment
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIQEy7qnsJSfjYhmG6SS7q2NDh3pjg7nWcUnNLt93QETYdRFjc5SN6kIzMQAQRd0_ODw/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsOUta_9wi_iV-6fqx6V5a3Gou85szW6FzfJMCgZmMxmhDsp54LCITDY3wagPkxuXuow/exec';
         
         let products = [];
         let sales = [];
@@ -545,10 +556,30 @@
         let currentCategory = 'all';
         let searchTerm = '';
 
+        // Check API connection
+        async function checkAPIConnection() {
+            const statusDiv = document.getElementById('apiStatus');
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'GET' });
+                const text = await response.text();
+                if (text.includes('Sports Shop API') || text.includes('running')) {
+                    statusDiv.innerHTML = '✅ API Connected! Ready to process sales.';
+                    statusDiv.className = 'api-status connected';
+                } else {
+                    statusDiv.innerHTML = '⚠️ API connected but verify your sheet structure.';
+                    statusDiv.className = 'api-status connected';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `❌ API Error: ${error.message}`;
+                statusDiv.className = 'api-status disconnected';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('goodsInForm').addEventListener('submit', addGoodsIn);
             loadAllData();
+            checkAPIConnection();
         });
 
         function showPage(pageName) {
@@ -600,9 +631,11 @@
                     }
                 }
             } catch (error) {
+                console.error('Error loading products:', error);
                 products = [
                     { code: 'FB001', name: 'Football', category: 'Sports', colour: 'White', price: 2199, stock: 50 },
-                    { code: 'BB001', name: 'Basketball', category: 'Sports', colour: 'Orange', price: 2499, stock: 35 }
+                    { code: 'BB001', name: 'Basketball', category: 'Sports', colour: 'Orange', price: 2499, stock: 35 },
+                    { code: 'RS001', name: 'Running Shoes', category: 'Footwear', colour: 'Blue', price: 3999, stock: 40 }
                 ];
             }
             updateCategoryFilter();
@@ -686,7 +719,7 @@
             
             const grid = document.getElementById('productsGrid');
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="loading">No products found</div>';
+                grid.innerHTML = '<div class="loading" style="text-align:center;padding:40px;color:#888;">No products found</div>';
                 return;
             }
             grid.innerHTML = filtered.map(p => `
@@ -716,14 +749,14 @@
                 cart.push({ ...product, quantity: 1 });
             }
             updateCartDisplay();
-            showAlert(`${product.name} added`, 'success');
+            showAlert(`${product.name} added to cart`, 'success');
         }
 
         function updateCartDisplay() {
             let total = 0;
             const container = document.getElementById('cartItems');
             if (cart.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">Cart empty</div>';
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">Cart is empty</div>';
                 document.getElementById('cartTotal').innerText = '0.00';
                 return;
             }
@@ -737,7 +770,7 @@
                         <div>₹${item.price}</div>
                         <div><input type="number" value="${item.quantity}" min="1" max="${item.stock}" onchange="updateQty(${i}, this.value)"></div>
                         <div>₹${itemTotal.toFixed(2)}</div>
-                        <div><button class="remove-btn" onclick="removeFromCart(${i})">X</button></div>
+                        <div><button class="remove-btn" onclick="removeFromCart(${i})">✖</button></div>
                     </div>
                 `;
             }).join('');
@@ -756,14 +789,15 @@
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCartDisplay();
+            showAlert('Item removed', 'success');
         }
 
         function clearCart() {
-            if (cart.length && confirm('Clear cart?')) { cart = []; updateCartDisplay(); showAlert('Cart cleared', 'success'); }
+            if (cart.length && confirm('Clear entire cart?')) { cart = []; updateCartDisplay(); showAlert('Cart cleared', 'success'); }
         }
 
         async function processSale() {
-            if (cart.length === 0) { showAlert('Cart empty!', 'error'); return; }
+            if (cart.length === 0) { showAlert('Cart is empty!', 'error'); return; }
             
             const paymentMode = document.getElementById('paymentMode').value;
             const customerName = document.getElementById('customerName').value;
@@ -773,6 +807,7 @@
             btn.textContent = 'Processing...';
             
             let successCount = 0;
+            let errorMessage = '';
             
             try {
                 for (const item of cart) {
@@ -788,16 +823,19 @@
                         customerName: customerName
                     };
                     
-                    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
-                        const response = await fetch(APPS_SCRIPT_URL, {
-                            method: 'POST',
-                            mode: 'cors',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(saleData)
-                        });
-                        const result = await response.json();
-                        if (result.success) successCount++;
-                        else console.error('Error:', result.error);
+                    const response = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(saleData)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        successCount++;
+                    } else {
+                        errorMessage = result.error;
+                        console.error('API Error:', result);
                     }
                     
                     // Update local data
@@ -825,12 +863,15 @@
                 updateSalesTable();
                 updateStats();
                 
-                const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-                showAlert(`✅ Sale completed!`, 'success');
+                if (successCount > 0) {
+                    showAlert(`✅ Sale completed! ${successCount} item(s) saved to sheet.`, 'success');
+                } else {
+                    showAlert(`⚠️ Sale recorded locally but sheet save failed: ${errorMessage}`, 'error');
+                }
                 
             } catch (error) {
-                console.error('Error:', error);
-                showAlert('Error saving to sheet. Check Apps Script URL.', 'error');
+                console.error('Sale error:', error);
+                showAlert(`Error: ${error.message}. Check console for details.`, 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = '✅ Complete Sale';
@@ -853,6 +894,9 @@
             if (existing) {
                 existing.stock += newItem.quantity;
                 existing.price = newItem.price;
+                existing.name = newItem.name;
+                existing.category = newItem.category;
+                existing.colour = newItem.colour;
             } else {
                 products.push({
                     code: newItem.code,
@@ -874,21 +918,28 @@
 
         function updateInventoryTable() {
             document.getElementById('inventoryBody').innerHTML = products.map(p => `
-                <tr><td>${p.code}</td><td>${p.name}</td><td>${p.category}</td><td>${p.colour || '-'}</td><td>₹${p.price}</td>
-                <td style="color:${p.stock<10?'#ff7675':'#00b894'}">${p.stock}</td><td>${p.stock<10?'⚠️ Low':'✅ In Stock'}</td></tr>
+                <tr>
+                    <td>${p.code}</td> <td>${p.name}</td> <td>${p.category}</td> <td>${p.colour || '-'}</td>
+                    <td>₹${p.price.toFixed(2)}</td>
+                    <td style="color:${p.stock<10?'#ff7675':'#00b894'}">${p.stock}</td>
+                    <td>${p.stock<10?'⚠️ Low Stock':'✅ In Stock'}</td>
+                </tr>
             `).join('');
         }
 
         function updateGoodsInTable() {
             document.getElementById('goodsInBody').innerHTML = goodsIn.slice(0,10).map(i => `
-                <tr><td>${i.date}</td><td>${i.code}</td><td>${i.name}</td><td>${i.quantity}</td><td>₹${i.price}</td></tr>
+                <tr><td>${i.date}</td><td>${i.code}</td><td>${i.name}</td><td>${i.quantity}</td><td>₹${i.price.toFixed(2)}</td></tr>
             `).join('');
         }
 
         function updateSalesTable() {
             document.getElementById('salesBody').innerHTML = sales.slice(0,20).map(s => `
-                <tr><td>${s.date}</td><td>${s.productCode}</td><td>${s.productName}</td><td>${s.colour||'-'}</td>
-                <td>${s.quantity}</td><td>₹${s.price}</td><td>₹${s.total}</td><td>${s.paymentMode}</td><td>${s.customerName||'-'}</td></tr>
+                <tr>
+                    <td>${s.date}</td><td>${s.productCode}</td><td>${s.productName}</td>
+                    <td>${s.colour||'-'}</td><td>${s.quantity}</td><td>₹${s.price.toFixed(2)}</td>
+                    <td>₹${s.total.toFixed(2)}</td><td>${s.paymentMode}</td><td>${s.customerName||'-'}</td>
+                </tr>
             `).join('');
         }
 
@@ -896,6 +947,8 @@
             const total = products.reduce((s,p)=>s+p.stock,0);
             const low = products.filter(p=>p.stock<10).length;
             const todaySales = sales.filter(s=>s.date===new Date().toISOString().split('T')[0]).reduce((s,item)=>s+item.total,0);
+            const totalSales = sales.reduce((s,item)=>s+item.total,0);
+            
             document.getElementById('posStats').innerHTML = `
                 <div class="stat-card"><h3>Products</h3><div class="value">${products.length}</div></div>
                 <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color:#ff7675">${low}</div></div>
@@ -906,7 +959,6 @@
                 <div class="stat-card"><h3>Products</h3><div class="value">${products.length}</div></div>
                 <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color:#ff7675">${low}</div></div>
             `;
-            const totalSales = sales.reduce((s,item)=>s+item.total,0);
             document.getElementById('salesStats').innerHTML = `
                 <div class="stat-card"><h3>Total Sales</h3><div class="value">₹${totalSales.toFixed(2)}</div></div>
                 <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
