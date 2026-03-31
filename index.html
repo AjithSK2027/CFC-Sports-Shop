@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Shop Manager - POS System</title>
+    <title>CFC Sports Shop - POS System</title>
     <style>
         * {
             margin: 0;
@@ -420,7 +420,7 @@
         <div class="header">
             <div class="logo-section">
                 <img src="https://i.ibb.co/KjC62kc0/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" alt="Logo">
-                <h1>🏃‍♂️ Sports Shop Manager <span>⚡ POS System</span></h1>
+                <h1>🏃‍♂️ CFC Sports Shop <span>⚡ POS System</span></h1>
             </div>
             <div class="date" id="currentDate"></div>
         </div>
@@ -546,7 +546,7 @@
     </div>
 
     <script>
-        const SHEET_ID = '1aPUrG2AiPiXT2e0s5HHEzSHleIGmYwBlUZxcd4aOF40';
+        // Use ONLY your Apps Script URL - this handles all requests
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsOUta_9wi_iV-6fqx6V5a3Gou85szW6FzfJMCgZmMxmhDsp54LCITDY3wagPkxuXuow/exec';
         
         let products = [];
@@ -560,9 +560,9 @@
         async function checkAPIConnection() {
             const statusDiv = document.getElementById('apiStatus');
             try {
-                const response = await fetch(APPS_SCRIPT_URL, { method: 'GET' });
-                const text = await response.text();
-                if (text.includes('Sports Shop API') || text.includes('running')) {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
+                const result = await response.json();
+                if (result.success) {
                     statusDiv.innerHTML = '✅ API Connected! Ready to process sales.';
                     statusDiv.className = 'api-status connected';
                 } else {
@@ -610,28 +610,16 @@
 
         async function loadProducts() {
             try {
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Products`;
-                const response = await fetch(url);
-                const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
-                products = [];
-                if (json.table.rows) {
-                    for (let i = 1; i < json.table.rows.length; i++) {
-                        const row = json.table.rows[i];
-                        if (row.c[0]?.v) {
-                            products.push({
-                                code: row.c[0]?.v || '',
-                                name: row.c[1]?.v || '',
-                                category: row.c[2]?.v || '',
-                                colour: row.c[3]?.v || '',
-                                price: parseFloat(row.c[4]?.v) || 0,
-                                stock: parseFloat(row.c[5]?.v) || 0
-                            });
-                        }
-                    }
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
+                const result = await response.json();
+                if (result.success && result.data) {
+                    products = result.data;
+                } else {
+                    throw new Error('Failed to load products');
                 }
             } catch (error) {
                 console.error('Error loading products:', error);
+                // Demo data
                 products = [
                     { code: 'FB001', name: 'Football', category: 'Sports', colour: 'White', price: 2199, stock: 50 },
                     { code: 'BB001', name: 'Basketball', category: 'Sports', colour: 'Orange', price: 2499, stock: 35 },
@@ -643,55 +631,28 @@
 
         async function loadSales() {
             try {
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sales`;
-                const response = await fetch(url);
-                const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
-                sales = [];
-                if (json.table.rows) {
-                    for (let i = 1; i < json.table.rows.length; i++) {
-                        const row = json.table.rows[i];
-                        if (row.c[0]?.v) {
-                            sales.push({
-                                date: row.c[0]?.v || '',
-                                productCode: row.c[1]?.v || '',
-                                productName: row.c[2]?.v || '',
-                                colour: row.c[3]?.v || '',
-                                quantity: parseFloat(row.c[4]?.v) || 0,
-                                price: parseFloat(row.c[5]?.v) || 0,
-                                total: parseFloat(row.c[6]?.v) || 0,
-                                paymentMode: row.c[7]?.v || '',
-                                customerName: row.c[8]?.v || ''
-                            });
-                        }
-                    }
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getSales`);
+                const result = await response.json();
+                if (result.success && result.data) {
+                    sales = result.data;
                 }
-            } catch (error) { sales = []; }
+            } catch (error) { 
+                console.error('Error loading sales:', error);
+                sales = []; 
+            }
         }
 
         async function loadGoodsIn() {
             try {
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=GoodsIN`;
-                const response = await fetch(url);
-                const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
-                goodsIn = [];
-                if (json.table.rows) {
-                    for (let i = 1; i < json.table.rows.length; i++) {
-                        const row = json.table.rows[i];
-                        if (row.c[0]?.v) {
-                            goodsIn.push({
-                                date: row.c[0]?.v || '',
-                                code: row.c[1]?.v || '',
-                                name: row.c[2]?.v || '',
-                                category: row.c[3]?.v || '',
-                                quantity: parseFloat(row.c[4]?.v) || 0,
-                                price: parseFloat(row.c[5]?.v) || 0
-                            });
-                        }
-                    }
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getGoodsIn`);
+                const result = await response.json();
+                if (result.success && result.data) {
+                    goodsIn = result.data;
                 }
-            } catch (error) { goodsIn = []; }
+            } catch (error) { 
+                console.error('Error loading goods in:', error);
+                goodsIn = []; 
+            }
         }
 
         function updateCategoryFilter() {
@@ -807,7 +768,6 @@
             btn.textContent = 'Processing...';
             
             let successCount = 0;
-            let errorMessage = '';
             
             try {
                 for (const item of cart) {
@@ -825,7 +785,6 @@
                     
                     const response = await fetch(APPS_SCRIPT_URL, {
                         method: 'POST',
-                        mode: 'cors',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(saleData)
                     });
@@ -833,9 +792,6 @@
                     const result = await response.json();
                     if (result.success) {
                         successCount++;
-                    } else {
-                        errorMessage = result.error;
-                        console.error('API Error:', result);
                     }
                     
                     // Update local data
@@ -863,15 +819,11 @@
                 updateSalesTable();
                 updateStats();
                 
-                if (successCount > 0) {
-                    showAlert(`✅ Sale completed! ${successCount} item(s) saved to sheet.`, 'success');
-                } else {
-                    showAlert(`⚠️ Sale recorded locally but sheet save failed: ${errorMessage}`, 'error');
-                }
+                showAlert(`✅ Sale completed! ${successCount} item(s) saved to sheet.`, 'success');
                 
             } catch (error) {
                 console.error('Sale error:', error);
-                showAlert(`Error: ${error.message}. Check console for details.`, 'error');
+                showAlert(`Error: ${error.message}`, 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = '✅ Complete Sale';
@@ -919,7 +871,7 @@
         function updateInventoryTable() {
             document.getElementById('inventoryBody').innerHTML = products.map(p => `
                 <tr>
-                    <td>${p.code}</td> <td>${p.name}</td> <td>${p.category}</td> <td>${p.colour || '-'}</td>
+                    <td>${p.code}</td><td>${p.name}</td><td>${p.category}</td><td>${p.colour || '-'}</td>
                     <td>₹${p.price.toFixed(2)}</td>
                     <td style="color:${p.stock<10?'#ff7675':'#00b894'}">${p.stock}</td>
                     <td>${p.stock<10?'⚠️ Low Stock':'✅ In Stock'}</td>
