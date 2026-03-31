@@ -14,7 +14,6 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0a0e1a;
-            min-height: 100vh;
             padding: 20px;
         }
 
@@ -171,6 +170,7 @@
             border-radius: 20px;
             cursor: pointer;
             color: #a0a0a0;
+            transition: all 0.3s;
         }
 
         .category-btn.active, .category-btn:hover {
@@ -242,6 +242,7 @@
             font-size: 16px;
             font-weight: bold;
             color: #6c5ce7;
+            margin-top: 5px;
         }
 
         .product-card .stock {
@@ -261,7 +262,7 @@
 
         .cart-item {
             display: grid;
-            grid-template-columns: 2fr 0.8fr 0.8fr 1fr auto;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
             gap: 10px;
             align-items: center;
             padding: 12px;
@@ -273,6 +274,8 @@
             font-weight: 600;
             color: #a0a0a0;
             border-bottom: 2px solid #6c5ce7;
+            position: sticky;
+            top: 0;
         }
 
         .cart-item input {
@@ -313,6 +316,7 @@
             cursor: pointer;
             margin-right: 10px;
             margin-top: 10px;
+            transition: all 0.3s;
         }
 
         .btn-success {
@@ -320,9 +324,19 @@
             color: white;
         }
 
+        .btn-success:hover {
+            background: #00a884;
+            transform: translateY(-2px);
+        }
+
         .btn-warning {
             background: #fdcb6e;
             color: #1a1f2e;
+        }
+
+        .btn-warning:hover {
+            background: #fdcb6e;
+            transform: translateY(-2px);
         }
 
         .table-container {
@@ -350,31 +364,6 @@
             top: 0;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #a0a0a0;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            background: #0f1119;
-            border: 1px solid #2d3348;
-            border-radius: 8px;
-            color: white;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
         .alert {
             position: fixed;
             top: 20px;
@@ -394,24 +383,23 @@
         .alert-success { background: #00b894; color: white; }
         .alert-error { background: #ff7675; color: white; }
 
-        .page { display: none; }
+        .page { display: none; animation: fadeIn 0.3s; }
         .page.active-page { display: block; }
-
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        .api-status {
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .api-status.connected { background: #00b89420; color: #00b894; border: 1px solid #00b89430; }
-        .api-status.disconnected { background: #ff767520; color: #ff7675; border: 1px solid #ff767530; }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #a0a0a0;
+        }
 
         @media (max-width: 768px) {
             .pos-container { grid-template-columns: 1fr; }
             .cart-item { grid-template-columns: 1fr; gap: 5px; }
-            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -428,21 +416,20 @@
         <div class="nav">
             <button class="nav-btn active" onclick="showPage('pos')">💰 POS / SALES</button>
             <button class="nav-btn" onclick="showPage('inventory')">📦 Inventory</button>
-            <button class="nav-btn" onclick="showPage('goodsIn')">📥 Goods IN</button>
             <button class="nav-btn" onclick="showPage('salesHistory')">📊 Sales History</button>
         </div>
 
         <div id="alert" class="alert"></div>
 
+        <!-- POS PAGE -->
         <div id="pos" class="page active-page">
             <div class="stats" id="posStats"></div>
-            <div id="apiStatus" class="api-status">🔌 Checking connection...</div>
             
             <div class="pos-container">
                 <div class="card">
                     <h2>🛍️ Select Products</h2>
                     <div class="search-box">
-                        <input type="text" id="searchProduct" placeholder="🔍 Search product..." onkeyup="filterProducts()">
+                        <input type="text" id="searchProduct" placeholder="🔍 Search product by name..." onkeyup="filterProducts()">
                     </div>
                     <div class="category-filter" id="categoryFilter"></div>
                     <div class="products-grid" id="productsGrid"></div>
@@ -453,7 +440,6 @@
                     <div class="cart-container">
                         <div class="cart-item cart-item-header">
                             <div>Product</div>
-                            <div>Code</div>
                             <div>Price</div>
                             <div>Qty</div>
                             <div>Total</div>
@@ -465,79 +451,57 @@
                         Total: ₹<span id="cartTotal">0.00</span>
                     </div>
                     <div style="margin-top: 20px;">
-                        <div class="form-group">
-                            <label>Customer Name (Optional)</label>
-                            <input type="text" id="customerName" placeholder="Enter customer name">
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <select id="paymentMode" style="padding: 12px; background: #0f1119; border: 1px solid #2d3348; color: white; flex: 1; border-radius: 8px;">
+                        <select id="paymentMode" style="padding: 12px; background: #0f1119; border: 1px solid #2d3348; color: white; width: 100%; border-radius: 8px; margin-bottom: 10px;">
                             <option value="Cash">💵 Cash</option>
                             <option value="Card">💳 Card</option>
                             <option value="UPI">📱 UPI</option>
                         </select>
-                        <button class="btn btn-success" id="processSaleBtn" onclick="processSale()">✅ Complete Sale</button>
+                        <button class="btn btn-success" id="processBtn" onclick="processSale()">✅ Complete Sale</button>
                         <button class="btn btn-warning" onclick="clearCart()">🗑️ Clear Cart</button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- INVENTORY PAGE -->
         <div id="inventory" class="page">
             <div class="stats" id="inventoryStats"></div>
             <div class="card">
                 <h2>📦 Current Inventory</h2>
                 <div class="table-container">
                     <table id="inventoryTable">
-                        <thead><tr><th>Code</th><th>Name</th><th>Category</th><th>Colour</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Price (₹)</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
                         <tbody id="inventoryBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <div id="goodsIn" class="page">
-            <div class="card">
-                <h2>📥 Add New Stock</h2>
-                <form id="goodsInForm">
-                    <div class="form-row">
-                        <div class="form-group"><label>Product Code *</label><input type="text" id="productCode" required></div>
-                        <div class="form-group"><label>Product Name *</label><input type="text" id="productName" required></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Category *</label>
-                            <select id="category" required>
-                                <option value="">Select</option>
-                                <option value="Sports">Sports</option>
-                                <option value="Footwear">Footwear</option>
-                                <option value="Fitness">Fitness</option>
-                                <option value="Cricket">Cricket</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Colour</label><input type="text" id="colour"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Price (₹) *</label><input type="number" id="price" step="0.01" required></div>
-                        <div class="form-group"><label>Quantity *</label><input type="number" id="quantity" required></div>
-                    </div>
-                    <button type="submit" class="btn btn-success">➕ Add Stock</button>
-                </form>
-            </div>
-            <div class="card">
-                <h2>Recent Stock Entries</h2>
-                <div class="table-container">
-                    <table id="goodsInTable"><thead><tr><th>Date</th><th>Code</th><th>Product</th><th>Qty</th><th>Price</th></tr></thead><tbody id="goodsInBody"></tbody></table>
-                </div>
-            </div>
-        </div>
-
+        <!-- SALES HISTORY PAGE -->
         <div id="salesHistory" class="page">
             <div class="stats" id="salesStats"></div>
             <div class="card">
                 <h2>📊 Sales Transactions</h2>
                 <div class="table-container">
                     <table id="salesTable">
-                        <thead><tr><th>Date</th><th>Code</th><th>Product</th><th>Colour</th><th>Qty</th><th>Price</th><th>Total</th><th>Payment</th><th>Customer</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price (₹)</th>
+                                <th>Total (₹)</th>
+                                <th>Payment Mode</th>
+                            </tr>
+                        </thead>
                         <tbody id="salesBody"></tbody>
                     </table>
                 </div>
@@ -546,120 +510,139 @@
     </div>
 
     <script>
-        // Use ONLY your Apps Script URL - this handles all requests
+        // Your Google Sheet ID
+        const SHEET_ID = '1aPUrG2AiPiXT2e0s5HHEzSHleIGmYwBlUZxcd4aOF40';
+        
+        // Your Apps Script URL for writing sales
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyahWXl3evVuMYNpVZqqNdHLfuJnWZ_oLdgCCUtRjhDCZctL-CvxjFEScxFw72kimzJGg/exec';
         
         let products = [];
         let sales = [];
-        let goodsIn = [];
         let cart = [];
         let currentCategory = 'all';
         let searchTerm = '';
 
-        // Check API connection
-        async function checkAPIConnection() {
-            const statusDiv = document.getElementById('apiStatus');
-            try {
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
-                const result = await response.json();
-                if (result.success) {
-                    statusDiv.innerHTML = '✅ API Connected! Ready to process sales.';
-                    statusDiv.className = 'api-status connected';
-                } else {
-                    statusDiv.innerHTML = '⚠️ API connected but verify your sheet structure.';
-                    statusDiv.className = 'api-status connected';
-                }
-            } catch (error) {
-                statusDiv.innerHTML = `❌ API Error: ${error.message}`;
-                statusDiv.className = 'api-status disconnected';
-            }
-        }
-
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('goodsInForm').addEventListener('submit', addGoodsIn);
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
             loadAllData();
-            checkAPIConnection();
         });
 
         function showPage(pageName) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
             document.getElementById(pageName).classList.add('active-page');
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
         }
 
-        function showAlert(message, type) {
+        function showAlert(message, type = 'success') {
             const alert = document.getElementById('alert');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             alert.style.display = 'block';
-            setTimeout(() => alert.style.display = 'none', 3000);
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
         }
 
         async function loadAllData() {
             await loadProducts();
             await loadSales();
-            await loadGoodsIn();
             updateProductsGrid();
             updateInventoryTable();
-            updateGoodsInTable();
             updateSalesTable();
             updateStats();
         }
 
+        // Load products from Google Sheet (published as CSV)
         async function loadProducts() {
             try {
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
-                const result = await response.json();
-                if (result.success && result.data) {
-                    products = result.data;
-                } else {
-                    throw new Error('Failed to load products');
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Products`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // Parse CSV
+                const rows = text.split('\n');
+                products = [];
+                
+                for (let i = 1; i < rows.length; i++) {
+                    if (rows[i].trim()) {
+                        const cols = rows[i].split(',');
+                        // Remove quotes if present
+                        const name = cols[0] ? cols[0].replace(/"/g, '') : '';
+                        const category = cols[1] ? cols[1].replace(/"/g, '') : '';
+                        const price = parseFloat(cols[2]) || 0;
+                        const stock = parseFloat(cols[3]) || 0;
+                        
+                        if (name) {
+                            products.push({
+                                name: name,
+                                category: category,
+                                price: price,
+                                stock: stock
+                            });
+                        }
+                    }
                 }
+                
+                console.log('Products loaded:', products.length);
+                updateCategoryFilter();
+                
             } catch (error) {
                 console.error('Error loading products:', error);
+                showAlert('Error loading products. Check if sheet is shared.', 'error');
                 // Demo data
                 products = [
-                    { code: 'FB001', name: 'Football', category: 'Sports', colour: 'White', price: 2199, stock: 50 },
-                    { code: 'BB001', name: 'Basketball', category: 'Sports', colour: 'Orange', price: 2499, stock: 35 },
-                    { code: 'RS001', name: 'Running Shoes', category: 'Footwear', colour: 'Blue', price: 3999, stock: 40 }
+                    { name: 'Football', category: 'Sports', price: 2199, stock: 50 },
+                    { name: 'Basketball', category: 'Sports', price: 2499, stock: 35 },
+                    { name: 'Running Shoes', category: 'Footwear', price: 3999, stock: 40 }
                 ];
+                updateCategoryFilter();
             }
-            updateCategoryFilter();
         }
 
+        // Load sales from Google Sheet
         async function loadSales() {
             try {
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=getSales`);
-                const result = await response.json();
-                if (result.success && result.data) {
-                    sales = result.data;
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sales`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                const rows = text.split('\n');
+                sales = [];
+                
+                for (let i = 1; i < rows.length; i++) {
+                    if (rows[i].trim()) {
+                        const cols = rows[i].split(',');
+                        sales.push({
+                            date: cols[0] ? cols[0].replace(/"/g, '') : '',
+                            productName: cols[2] ? cols[2].replace(/"/g, '') : '',
+                            quantity: parseFloat(cols[4]) || 0,
+                            price: parseFloat(cols[5]) || 0,
+                            total: parseFloat(cols[6]) || 0,
+                            paymentMode: cols[7] ? cols[7].replace(/"/g, '') : ''
+                        });
+                    }
                 }
-            } catch (error) { 
+                
+                console.log('Sales loaded:', sales.length);
+                
+            } catch (error) {
                 console.error('Error loading sales:', error);
-                sales = []; 
-            }
-        }
-
-        async function loadGoodsIn() {
-            try {
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=getGoodsIn`);
-                const result = await response.json();
-                if (result.success && result.data) {
-                    goodsIn = result.data;
-                }
-            } catch (error) { 
-                console.error('Error loading goods in:', error);
-                goodsIn = []; 
+                sales = [];
             }
         }
 
         function updateCategoryFilter() {
             const categories = ['all', ...new Set(products.map(p => p.category))];
-            document.getElementById('categoryFilter').innerHTML = categories.map(cat => 
-                `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">${cat === 'all' ? 'All' : cat}</button>`
-            ).join('');
+            const filterDiv = document.getElementById('categoryFilter');
+            filterDiv.innerHTML = categories.map(cat => `
+                <button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">
+                    ${cat === 'all' ? 'All' : cat}
+                </button>
+            `).join('');
         }
 
         function filterByCategory(category) {
@@ -675,75 +658,119 @@
 
         function updateProductsGrid() {
             let filtered = products.filter(p => p.stock > 0);
-            if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
-            if (searchTerm) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm) || p.code.toLowerCase().includes(searchTerm));
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+            if (searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.name.toLowerCase().includes(searchTerm) || 
+                    p.category.toLowerCase().includes(searchTerm)
+                );
+            }
             
             const grid = document.getElementById('productsGrid');
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="loading" style="text-align:center;padding:40px;color:#888;">No products found</div>';
+                grid.innerHTML = '<div class="loading">No products found. Add stock in your Google Sheet.</div>';
                 return;
             }
-            grid.innerHTML = filtered.map(p => `
-                <div class="product-card" onclick="addToCart('${p.code}')">
-                    <div class="product-icon">${getIcon(p.category)}</div>
-                    <h3>${p.name}</h3>
-                    <div class="category">${p.code}</div>
-                    <div class="price">₹${p.price.toFixed(2)}</div>
-                    <div class="stock ${p.stock < 10 ? 'low' : ''}">Stock: ${p.stock}</div>
+            
+            grid.innerHTML = filtered.map(product => `
+                <div class="product-card" onclick="addToCart('${product.name.replace(/'/g, "\\'")}')">
+                    <div class="product-icon">${getIcon(product.category)}</div>
+                    <h3>${product.name}</h3>
+                    <div class="category">${product.category}</div>
+                    <div class="price">₹${product.price.toFixed(2)}</div>
+                    <div class="stock ${product.stock < 10 ? 'low' : ''}">Stock: ${product.stock}</div>
                 </div>
             `).join('');
         }
 
-        function getIcon(cat) {
-            const icons = { 'Sports': '⚽', 'Footwear': '👟', 'Fitness': '💪', 'Cricket': '🏏' };
-            return icons[cat] || '🏃';
+        function getIcon(category) {
+            const icons = {
+                'Sports': '⚽',
+                'Footwear': '👟',
+                'Fitness': '💪',
+                'Swimming': '🏊',
+                'Cricket': '🏏',
+                'Accessories': '🧤'
+            };
+            return icons[category] || '🏃';
         }
 
-        function addToCart(code) {
-            const product = products.find(p => p.code === code);
-            if (!product || product.stock <= 0) return;
-            const existing = cart.find(item => item.code === code);
-            if (existing) {
-                if (existing.quantity + 1 > product.stock) { showAlert(`Only ${product.stock} left`, 'error'); return; }
-                existing.quantity++;
-            } else {
-                cart.push({ ...product, quantity: 1 });
+        function addToCart(productName) {
+            const product = products.find(p => p.name === productName);
+            if (!product) return;
+            
+            if (product.stock <= 0) {
+                showAlert(`${product.name} is out of stock!`, 'error');
+                return;
             }
+            
+            const existingItem = cart.find(item => item.name === productName);
+            if (existingItem) {
+                if (existingItem.quantity + 1 > product.stock) {
+                    showAlert(`Only ${product.stock} units available`, 'error');
+                    return;
+                }
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    name: product.name,
+                    category: product.category,
+                    price: product.price,
+                    quantity: 1,
+                    maxStock: product.stock
+                });
+            }
+            
             updateCartDisplay();
             showAlert(`${product.name} added to cart`, 'success');
         }
 
         function updateCartDisplay() {
+            const cartContainer = document.getElementById('cartItems');
             let total = 0;
-            const container = document.getElementById('cartItems');
+            
             if (cart.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">Cart is empty</div>';
+                cartContainer.innerHTML = '<div class="loading">Cart is empty</div>';
                 document.getElementById('cartTotal').innerText = '0.00';
                 return;
             }
-            container.innerHTML = cart.map((item, i) => {
+            
+            cartContainer.innerHTML = cart.map((item, index) => {
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
                 return `
                     <div class="cart-item">
                         <div><strong>${item.name}</strong><br><small>${item.category}</small></div>
-                        <div>${item.code}</div>
-                        <div>₹${item.price}</div>
-                        <div><input type="number" value="${item.quantity}" min="1" max="${item.stock}" onchange="updateQty(${i}, this.value)"></div>
+                        <div>₹${item.price.toFixed(2)}</div>
+                        <div><input type="number" value="${item.quantity}" min="1" max="${item.maxStock}" onchange="updateQuantity(${index}, this.value)"></div>
                         <div>₹${itemTotal.toFixed(2)}</div>
-                        <div><button class="remove-btn" onclick="removeFromCart(${i})">✖</button></div>
+                        <div><button class="remove-btn" onclick="removeFromCart(${index})">Remove</button></div>
                     </div>
                 `;
             }).join('');
+            
             document.getElementById('cartTotal').innerText = total.toFixed(2);
         }
 
-        function updateQty(index, val) {
-            let qty = parseInt(val);
-            if (qty < 1) qty = 1;
-            const product = products.find(p => p.code === cart[index].code);
-            if (qty > product.stock) { showAlert(`Only ${product.stock} available`, 'error'); return; }
-            cart[index].quantity = qty;
+        function updateQuantity(index, newQuantity) {
+            const quantity = parseInt(newQuantity);
+            const item = cart[index];
+            const product = products.find(p => p.name === item.name);
+            
+            if (quantity > product.stock) {
+                showAlert(`Only ${product.stock} units available`, 'error');
+                updateCartDisplay();
+                return;
+            }
+            
+            if (quantity < 1) {
+                cart.splice(index, 1);
+            } else {
+                item.quantity = quantity;
+            }
             updateCartDisplay();
         }
 
@@ -754,163 +781,129 @@
         }
 
         function clearCart() {
-            if (cart.length && confirm('Clear entire cart?')) { cart = []; updateCartDisplay(); showAlert('Cart cleared', 'success'); }
+            if (cart.length > 0 && confirm('Clear entire cart?')) {
+                cart = [];
+                updateCartDisplay();
+                showAlert('Cart cleared', 'success');
+            }
         }
 
         async function processSale() {
-            if (cart.length === 0) { showAlert('Cart is empty!', 'error'); return; }
+            if (cart.length === 0) {
+                showAlert('Cart is empty!', 'error');
+                return;
+            }
             
             const paymentMode = document.getElementById('paymentMode').value;
-            const customerName = document.getElementById('customerName').value;
             const today = new Date().toISOString().split('T')[0];
-            const btn = document.getElementById('processSaleBtn');
+            const btn = document.getElementById('processBtn');
             btn.disabled = true;
             btn.textContent = 'Processing...';
             
-            let successCount = 0;
-            
             try {
+                // Save each item to Google Sheets via Apps Script
                 for (const item of cart) {
                     const saleData = {
                         date: today,
-                        productCode: item.code,
+                        productCode: '',
                         productName: item.name,
-                        colour: item.colour || '',
+                        colour: '',
                         quantity: item.quantity,
                         mrp: item.price,
                         totalAmount: item.price * item.quantity,
                         paymentMode: paymentMode,
-                        customerName: customerName
+                        customerName: ''
                     };
                     
-                    const response = await fetch(APPS_SCRIPT_URL, {
+                    await fetch(APPS_SCRIPT_URL, {
                         method: 'POST',
+                        mode: 'no-cors',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(saleData)
                     });
                     
-                    const result = await response.json();
-                    if (result.success) {
-                        successCount++;
+                    // Update local stock
+                    const product = products.find(p => p.name === item.name);
+                    if (product) {
+                        product.stock -= item.quantity;
                     }
                     
-                    // Update local data
+                    // Add to local sales array
                     sales.unshift({
                         date: today,
-                        productCode: item.code,
                         productName: item.name,
-                        colour: item.colour,
                         quantity: item.quantity,
                         price: item.price,
                         total: item.price * item.quantity,
-                        paymentMode: paymentMode,
-                        customerName: customerName
+                        paymentMode: paymentMode
                     });
-                    
-                    const product = products.find(p => p.code === item.code);
-                    if (product) product.stock -= item.quantity;
                 }
                 
+                // Clear cart and refresh displays
                 cart = [];
-                document.getElementById('customerName').value = '';
                 updateCartDisplay();
                 updateProductsGrid();
                 updateInventoryTable();
                 updateSalesTable();
                 updateStats();
                 
-                showAlert(`✅ Sale completed! ${successCount} item(s) saved to sheet.`, 'success');
+                showAlert(`✅ Sale completed! Total: ₹${document.getElementById('cartTotal').innerText}`, 'success');
                 
             } catch (error) {
                 console.error('Sale error:', error);
-                showAlert(`Error: ${error.message}`, 'error');
+                showAlert('Error processing sale', 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = '✅ Complete Sale';
             }
         }
 
-        async function addGoodsIn(e) {
-            e.preventDefault();
-            const newItem = {
-                date: new Date().toISOString().split('T')[0],
-                code: document.getElementById('productCode').value,
-                name: document.getElementById('productName').value,
-                category: document.getElementById('category').value,
-                colour: document.getElementById('colour').value,
-                price: parseFloat(document.getElementById('price').value),
-                quantity: parseFloat(document.getElementById('quantity').value)
-            };
-            goodsIn.unshift(newItem);
-            const existing = products.find(p => p.code === newItem.code);
-            if (existing) {
-                existing.stock += newItem.quantity;
-                existing.price = newItem.price;
-                existing.name = newItem.name;
-                existing.category = newItem.category;
-                existing.colour = newItem.colour;
-            } else {
-                products.push({
-                    code: newItem.code,
-                    name: newItem.name,
-                    category: newItem.category,
-                    colour: newItem.colour,
-                    price: newItem.price,
-                    stock: newItem.quantity
-                });
-            }
-            updateProductsGrid();
-            updateInventoryTable();
-            updateGoodsInTable();
-            updateStats();
-            updateCategoryFilter();
-            document.getElementById('goodsInForm').reset();
-            showAlert(`✅ Added ${newItem.quantity} x ${newItem.name}`, 'success');
-        }
-
         function updateInventoryTable() {
-            document.getElementById('inventoryBody').innerHTML = products.map(p => `
+            const tbody = document.getElementById('inventoryBody');
+            tbody.innerHTML = products.map(product => `
                 <tr>
-                    <td>${p.code}</td><td>${p.name}</td><td>${p.category}</td><td>${p.colour || '-'}</td>
-                    <td>₹${p.price.toFixed(2)}</td>
-                    <td style="color:${p.stock<10?'#ff7675':'#00b894'}">${p.stock}</td>
-                    <td>${p.stock<10?'⚠️ Low Stock':'✅ In Stock'}</td>
+                    <td>${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>₹${product.price.toFixed(2)}</td>
+                    <td style="color: ${product.stock < 10 ? '#ff7675' : '#00b894'}; font-weight: bold;">${product.stock}</td>
+                    <td>${product.stock < 10 ? '⚠️ Low Stock' : '✅ In Stock'}</td>
                 </tr>
             `).join('');
         }
 
-        function updateGoodsInTable() {
-            document.getElementById('goodsInBody').innerHTML = goodsIn.slice(0,10).map(i => `
-                <tr><td>${i.date}</td><td>${i.code}</td><td>${i.name}</td><td>${i.quantity}</td><td>₹${i.price.toFixed(2)}</td></tr>
-            `).join('');
-        }
-
         function updateSalesTable() {
-            document.getElementById('salesBody').innerHTML = sales.slice(0,20).map(s => `
+            const tbody = document.getElementById('salesBody');
+            tbody.innerHTML = sales.slice(0, 20).map(sale => `
                 <tr>
-                    <td>${s.date}</td><td>${s.productCode}</td><td>${s.productName}</td>
-                    <td>${s.colour||'-'}</td><td>${s.quantity}</td><td>₹${s.price.toFixed(2)}</td>
-                    <td>₹${s.total.toFixed(2)}</td><td>${s.paymentMode}</td><td>${s.customerName||'-'}</td>
+                    <td>${sale.date}</td>
+                    <td>${sale.productName}</td>
+                    <td>${sale.quantity}</td>
+                    <td>₹${sale.price.toFixed(2)}</td>
+                    <td>₹${sale.total.toFixed(2)}</td>
+                    <td>${sale.paymentMode}</td>
                 </tr>
             `).join('');
         }
 
         function updateStats() {
-            const total = products.reduce((s,p)=>s+p.stock,0);
-            const low = products.filter(p=>p.stock<10).length;
-            const todaySales = sales.filter(s=>s.date===new Date().toISOString().split('T')[0]).reduce((s,item)=>s+item.total,0);
-            const totalSales = sales.reduce((s,item)=>s+item.total,0);
+            const totalProducts = products.length;
+            const lowStock = products.filter(p => p.stock < 10).length;
+            const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
+            const todaySales = sales.filter(s => s.date === new Date().toISOString().split('T')[0]).reduce((sum, s) => sum + s.total, 0);
+            const totalSales = sales.reduce((sum, s) => sum + s.total, 0);
             
             document.getElementById('posStats').innerHTML = `
-                <div class="stat-card"><h3>Products</h3><div class="value">${products.length}</div></div>
-                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color:#ff7675">${low}</div></div>
+                <div class="stat-card"><h3>Products</h3><div class="value">${totalProducts}</div></div>
+                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color: #ff7675;">${lowStock}</div></div>
                 <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
             `;
+            
             document.getElementById('inventoryStats').innerHTML = `
-                <div class="stat-card"><h3>Total Stock</h3><div class="value">${total}</div></div>
-                <div class="stat-card"><h3>Products</h3><div class="value">${products.length}</div></div>
-                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color:#ff7675">${low}</div></div>
+                <div class="stat-card"><h3>Total Products</h3><div class="value">${totalProducts}</div></div>
+                <div class="stat-card"><h3>Total Stock</h3><div class="value">${totalStock}</div></div>
+                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color: #ff7675;">${lowStock}</div></div>
             `;
+            
             document.getElementById('salesStats').innerHTML = `
                 <div class="stat-card"><h3>Total Sales</h3><div class="value">₹${totalSales.toFixed(2)}</div></div>
                 <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
