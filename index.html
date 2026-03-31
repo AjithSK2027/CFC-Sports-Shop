@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Shop Manager - POS System (₹ INR)</title>
+    <title>Sports Shop Manager - POS System</title>
     <style>
         * {
             margin: 0;
@@ -28,7 +28,6 @@
             padding: 20px 30px;
             border-radius: 12px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -81,17 +80,11 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
             color: #a0a0a0;
+            transition: all 0.3s;
         }
 
-        .nav-btn:hover {
-            background: #2d3348;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.active {
+        .nav-btn:hover, .nav-btn.active {
             background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
             color: white;
             border-color: transparent;
@@ -109,13 +102,7 @@
             padding: 20px;
             border-radius: 12px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
         }
 
         .stat-card h3 {
@@ -140,7 +127,6 @@
             background: #1a1f2e;
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border: 1px solid rgba(255,255,255,0.05);
         }
 
@@ -164,16 +150,11 @@
             border-radius: 8px;
             font-size: 16px;
             color: white;
-            transition: all 0.3s;
         }
 
         .search-box input:focus {
             outline: none;
             border-color: #6c5ce7;
-        }
-
-        .search-box input::placeholder {
-            color: #5a5f73;
         }
 
         .category-filter {
@@ -189,15 +170,12 @@
             border: 1px solid #2d3348;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
             color: #a0a0a0;
         }
 
         .category-btn.active, .category-btn:hover {
             background: #6c5ce7;
             color: white;
-            border-color: #6c5ce7;
         }
 
         .products-grid {
@@ -206,7 +184,6 @@
             gap: 15px;
             max-height: 500px;
             overflow-y: auto;
-            padding: 5px;
         }
 
         .products-grid::-webkit-scrollbar {
@@ -229,13 +206,12 @@
             padding: 12px;
             cursor: pointer;
             transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.05);
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .product-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(108,92,231,0.2);
             border-color: #6c5ce7;
             background: #1a1f2e;
         }
@@ -254,14 +230,12 @@
 
         .product-card h3 {
             font-size: 14px;
-            margin-bottom: 5px;
             color: #ffffff;
         }
 
         .product-card .category {
             font-size: 11px;
             color: #888;
-            margin-bottom: 5px;
         }
 
         .product-card .price {
@@ -285,20 +259,6 @@
             overflow-y: auto;
         }
 
-        .cart-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .cart-container::-webkit-scrollbar-track {
-            background: #0f1119;
-            border-radius: 10px;
-        }
-
-        .cart-container::-webkit-scrollbar-thumb {
-            background: #6c5ce7;
-            border-radius: 10px;
-        }
-
         .cart-item {
             display: grid;
             grid-template-columns: 2fr 0.8fr 0.8fr 1fr auto;
@@ -313,8 +273,6 @@
             font-weight: 600;
             color: #a0a0a0;
             border-bottom: 2px solid #6c5ce7;
-            position: sticky;
-            top: 0;
         }
 
         .cart-item input {
@@ -334,11 +292,6 @@
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .remove-btn:hover {
-            background: #ff5252;
         }
 
         .cart-total {
@@ -360,12 +313,6 @@
             cursor: pointer;
             margin-right: 10px;
             margin-top: 10px;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
-            color: white;
         }
 
         .btn-success {
@@ -384,20 +331,6 @@
             overflow-y: auto;
         }
 
-        .table-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .table-container::-webkit-scrollbar-track {
-            background: #0f1119;
-            border-radius: 10px;
-        }
-
-        .table-container::-webkit-scrollbar-thumb {
-            background: #6c5ce7;
-            border-radius: 10px;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -412,7 +345,6 @@
 
         th {
             background: #0f1119;
-            font-weight: 600;
             color: #6c5ce7;
             position: sticky;
             top: 0;
@@ -425,7 +357,6 @@
         .form-group label {
             display: block;
             margin-bottom: 5px;
-            font-weight: 600;
             color: #a0a0a0;
         }
 
@@ -435,13 +366,7 @@
             background: #0f1119;
             border: 1px solid #2d3348;
             border-radius: 8px;
-            font-size: 14px;
             color: white;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #6c5ce7;
         }
 
         .form-row {
@@ -469,21 +394,14 @@
         .alert-success { background: #00b894; color: white; }
         .alert-error { background: #ff7675; color: white; }
 
-        .page { display: none; animation: fadeIn 0.3s; }
+        .page { display: none; }
         .page.active-page { display: block; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
 
-        .loading { text-align: center; padding: 50px; color: #a0a0a0; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         @media (max-width: 768px) {
             .pos-container { grid-template-columns: 1fr; }
-            .cart-item { grid-template-columns: 1fr; gap: 5px; }
-            .form-row { grid-template-columns: 1fr; }
+            .cart-item { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -491,7 +409,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-section">
-                <img src="https://i.ibb.co/KjC62kc0/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" alt="Sports Shop Logo">
+                <img src="https://i.ibb.co/KjC62kc0/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" alt="Logo">
                 <h1>🏃‍♂️ Sports Shop Manager <span>⚡ POS System</span></h1>
             </div>
             <div class="date" id="currentDate"></div>
@@ -506,15 +424,13 @@
 
         <div id="alert" class="alert"></div>
 
-        <!-- POS / SALES PAGE -->
         <div id="pos" class="page active-page">
             <div class="stats" id="posStats"></div>
-            
             <div class="pos-container">
                 <div class="card">
                     <h2>🛍️ Select Products</h2>
                     <div class="search-box">
-                        <input type="text" id="searchProduct" placeholder="🔍 Search product by name or category..." onkeyup="filterProducts()">
+                        <input type="text" id="searchProduct" placeholder="🔍 Search product..." onkeyup="filterProducts()">
                     </div>
                     <div class="category-filter" id="categoryFilter"></div>
                     <div class="products-grid" id="productsGrid"></div>
@@ -542,8 +458,8 @@
                             <input type="text" id="customerName" placeholder="Enter customer name">
                         </div>
                     </div>
-                    <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <select id="paymentMode" style="padding: 12px; border-radius: 8px; background: #0f1119; border: 1px solid #2d3348; color: white; flex: 1;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <select id="paymentMode" style="padding: 12px; background: #0f1119; border: 1px solid #2d3348; color: white; flex: 1; border-radius: 8px;">
                             <option value="Cash">💵 Cash</option>
                             <option value="Card">💳 Card</option>
                             <option value="UPI">📱 UPI</option>
@@ -555,110 +471,61 @@
             </div>
         </div>
 
-        <!-- Inventory Page -->
         <div id="inventory" class="page">
             <div class="stats" id="inventoryStats"></div>
             <div class="card">
                 <h2>📦 Current Inventory</h2>
                 <div class="table-container">
                     <table id="inventoryTable">
-                        <thead>
-                            <tr><th>Product Code</th><th>Product Name</th><th>Category</th><th>Colour</th><th>Price (₹)</th><th>Stock</th><th>Status</th></tr>
-                        </thead>
+                        <thead><tr><th>Code</th><th>Name</th><th>Category</th><th>Colour</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
                         <tbody id="inventoryBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Goods IN Page -->
         <div id="goodsIn" class="page">
             <div class="card">
                 <h2>📥 Add New Stock</h2>
                 <form id="goodsInForm">
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Product Code *</label>
-                            <input type="text" id="productCode" required placeholder="e.g., FB001">
-                        </div>
-                        <div class="form-group">
-                            <label>Product Name *</label>
-                            <input type="text" id="productName" required>
-                        </div>
+                        <div class="form-group"><label>Product Code *</label><input type="text" id="productCode" required></div>
+                        <div class="form-group"><label>Product Name *</label><input type="text" id="productName" required></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Category *</label>
+                        <div class="form-group"><label>Category *</label>
                             <select id="category" required>
-                                <option value="">Select Category</option>
+                                <option value="">Select</option>
                                 <option value="Sports">Sports</option>
                                 <option value="Footwear">Footwear</option>
                                 <option value="Fitness">Fitness</option>
-                                <option value="Swimming">Swimming</option>
                                 <option value="Cricket">Cricket</option>
-                                <option value="Accessories">Accessories</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Colour</label>
-                            <input type="text" id="colour" placeholder="e.g., White/Black">
-                        </div>
+                        <div class="form-group"><label>Colour</label><input type="text" id="colour"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Price (₹) *</label>
-                            <input type="number" id="price" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Quantity *</label>
-                            <input type="number" id="quantity" required>
-                        </div>
+                        <div class="form-group"><label>Price (₹) *</label><input type="number" id="price" step="0.01" required></div>
+                        <div class="form-group"><label>Quantity *</label><input type="number" id="quantity" required></div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Dealer Price (₹)</label>
-                            <input type="number" id="dealerPrice" step="0.01" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label>Transport Charges (%)</label>
-                            <input type="number" id="transport" step="0.01" value="0">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">➕ Add Stock</button>
+                    <button type="submit" class="btn btn-success">➕ Add Stock</button>
                 </form>
             </div>
-            
             <div class="card">
                 <h2>Recent Stock Entries</h2>
                 <div class="table-container">
-                    <table id="goodsInTable">
-                        <thead><tr><th>Date</th><th>Code</th><th>Product</th><th>Category</th><th>Qty</th><th>Price (₹)</th></thead>
-                        <tbody id="goodsInBody"></tbody>
-                    </table>
+                    <table id="goodsInTable"><thead><tr><th>Date</th><th>Code</th><th>Product</th><th>Qty</th><th>Price</th></tr></thead><tbody id="goodsInBody"></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- Sales History Page -->
         <div id="salesHistory" class="page">
             <div class="stats" id="salesStats"></div>
             <div class="card">
                 <h2>📊 Sales Transactions</h2>
                 <div class="table-container">
                     <table id="salesTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Product Code</th>
-                                <th>Product Name</th>
-                                <th>Colour</th>
-                                <th>Qty</th>
-                                <th>Price (₹)</th>
-                                <th>Total (₹)</th>
-                                <th>Payment</th>
-                                <th>Customer</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Date</th><th>Code</th><th>Product</th><th>Colour</th><th>Qty</th><th>Price</th><th>Total</th><th>Payment</th><th>Customer</th></tr></thead>
                         <tbody id="salesBody"></tbody>
                     </table>
                 </div>
@@ -668,8 +535,8 @@
 
     <script>
         const SHEET_ID = '1aPUrG2AiPiXT2e0s5HHEzSHleIGmYwBlUZxcd4aOF40';
-        // IMPORTANT: Replace this with your Google Apps Script Web App URL after deployment
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/library/d/1rukb4d6QItIOrvQnjvHfIr2anvJrDbhCqtPuGqzdBAprnM-Ps21rNZjk/1';
+        // ⚠️ IMPORTANT: Replace this with your Apps Script URL after deployment
+        const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
         
         let products = [];
         let sales = [];
@@ -679,22 +546,19 @@
         let searchTerm = '';
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN', { 
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-            });
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('goodsInForm').addEventListener('submit', addGoodsIn);
             loadAllData();
         });
 
         function showPage(pageName) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(pageName).classList.add('active-page');
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            if (pageName === 'pos') updateProductsGrid();
         }
 
-        function showAlert(message, type = 'success') {
+        function showAlert(message, type) {
             const alert = document.getElementById('alert');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
@@ -719,12 +583,11 @@
                 const response = await fetch(url);
                 const text = await response.text();
                 const json = JSON.parse(text.substring(47, text.length - 2));
-                
                 products = [];
                 if (json.table.rows) {
                     for (let i = 1; i < json.table.rows.length; i++) {
                         const row = json.table.rows[i];
-                        if (row.c[0] && row.c[0].v) {
+                        if (row.c[0]?.v) {
                             products.push({
                                 code: row.c[0]?.v || '',
                                 name: row.c[1]?.v || '',
@@ -737,11 +600,9 @@
                     }
                 }
             } catch (error) {
-                console.error('Error loading products:', error);
                 products = [
-                    { code: 'FB001', name: 'Football', category: 'Sports', colour: 'White/Black', price: 2199, stock: 50 },
-                    { code: 'BB001', name: 'Basketball', category: 'Sports', colour: 'Orange', price: 2499, stock: 35 },
-                    { code: 'RS001', name: 'Running Shoes', category: 'Footwear', colour: 'Blue', price: 3999, stock: 40 }
+                    { code: 'FB001', name: 'Football', category: 'Sports', colour: 'White', price: 2199, stock: 50 },
+                    { code: 'BB001', name: 'Basketball', category: 'Sports', colour: 'Orange', price: 2499, stock: 35 }
                 ];
             }
             updateCategoryFilter();
@@ -753,12 +614,11 @@
                 const response = await fetch(url);
                 const text = await response.text();
                 const json = JSON.parse(text.substring(47, text.length - 2));
-                
                 sales = [];
                 if (json.table.rows) {
                     for (let i = 1; i < json.table.rows.length; i++) {
                         const row = json.table.rows[i];
-                        if (row.c[0] && row.c[0].v) {
+                        if (row.c[0]?.v) {
                             sales.push({
                                 date: row.c[0]?.v || '',
                                 productCode: row.c[1]?.v || '',
@@ -773,10 +633,7 @@
                         }
                     }
                 }
-            } catch (error) {
-                console.error('Error loading sales:', error);
-                sales = [];
-            }
+            } catch (error) { sales = []; }
         }
 
         async function loadGoodsIn() {
@@ -785,12 +642,11 @@
                 const response = await fetch(url);
                 const text = await response.text();
                 const json = JSON.parse(text.substring(47, text.length - 2));
-                
                 goodsIn = [];
                 if (json.table.rows) {
                     for (let i = 1; i < json.table.rows.length; i++) {
                         const row = json.table.rows[i];
-                        if (row.c[0] && row.c[0].v) {
+                        if (row.c[0]?.v) {
                             goodsIn.push({
                                 date: row.c[0]?.v || '',
                                 code: row.c[1]?.v || '',
@@ -802,20 +658,14 @@
                         }
                     }
                 }
-            } catch (error) {
-                console.error('Error loading goods in:', error);
-                goodsIn = [];
-            }
+            } catch (error) { goodsIn = []; }
         }
 
         function updateCategoryFilter() {
             const categories = ['all', ...new Set(products.map(p => p.category))];
-            const filterDiv = document.getElementById('categoryFilter');
-            filterDiv.innerHTML = categories.map(cat => `
-                <button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">
-                    ${cat === 'all' ? 'All' : cat}
-                </button>
-            `).join('');
+            document.getElementById('categoryFilter').innerHTML = categories.map(cat => 
+                `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">${cat === 'all' ? 'All' : cat}</button>`
+            ).join('');
         }
 
         function filterByCategory(category) {
@@ -830,160 +680,102 @@
         }
 
         function updateProductsGrid() {
-            const grid = document.getElementById('productsGrid');
             let filtered = products.filter(p => p.stock > 0);
+            if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
+            if (searchTerm) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm) || p.code.toLowerCase().includes(searchTerm));
             
-            if (currentCategory !== 'all') {
-                filtered = filtered.filter(p => p.category === currentCategory);
-            }
-            if (searchTerm) {
-                filtered = filtered.filter(p => 
-                    p.name.toLowerCase().includes(searchTerm) || 
-                    p.category.toLowerCase().includes(searchTerm) ||
-                    p.code.toLowerCase().includes(searchTerm)
-                );
-            }
-            
+            const grid = document.getElementById('productsGrid');
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="loading">No products found. Add stock in Goods IN.</div>';
+                grid.innerHTML = '<div class="loading">No products found</div>';
                 return;
             }
-            
-            grid.innerHTML = filtered.map(product => `
-                <div class="product-card" onclick="addToCart('${product.code.replace(/'/g, "\\'")}')">
-                    <div class="product-icon">${getIcon(product.category)}</div>
-                    <h3>${product.name}</h3>
-                    <div class="category">${product.code} | ${product.category}</div>
-                    <div class="price">₹${product.price.toFixed(2)}</div>
-                    <div class="stock ${product.stock < 10 ? 'low' : ''}">Stock: ${product.stock}</div>
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card" onclick="addToCart('${p.code}')">
+                    <div class="product-icon">${getIcon(p.category)}</div>
+                    <h3>${p.name}</h3>
+                    <div class="category">${p.code}</div>
+                    <div class="price">₹${p.price.toFixed(2)}</div>
+                    <div class="stock ${p.stock < 10 ? 'low' : ''}">Stock: ${p.stock}</div>
                 </div>
             `).join('');
         }
 
-        function getIcon(category) {
-            const icons = {
-                'Sports': '⚽',
-                'Footwear': '👟',
-                'Fitness': '💪',
-                'Swimming': '🏊',
-                'Cricket': '🏏',
-                'Accessories': '🧤'
-            };
-            return icons[category] || '🏃';
+        function getIcon(cat) {
+            const icons = { 'Sports': '⚽', 'Footwear': '👟', 'Fitness': '💪', 'Cricket': '🏏' };
+            return icons[cat] || '🏃';
         }
 
-        function addToCart(productCode) {
-            const product = products.find(p => p.code === productCode);
-            if (!product) return;
-            
-            if (product.stock <= 0) {
-                showAlert(`${product.name} is out of stock!`, 'error');
-                return;
-            }
-            
-            const existingItem = cart.find(item => item.code === productCode);
-            if (existingItem) {
-                if (existingItem.quantity + 1 > product.stock) {
-                    showAlert(`Only ${product.stock} units available`, 'error');
-                    return;
-                }
-                existingItem.quantity++;
+        function addToCart(code) {
+            const product = products.find(p => p.code === code);
+            if (!product || product.stock <= 0) return;
+            const existing = cart.find(item => item.code === code);
+            if (existing) {
+                if (existing.quantity + 1 > product.stock) { showAlert(`Only ${product.stock} left`, 'error'); return; }
+                existing.quantity++;
             } else {
-                cart.push({
-                    code: product.code,
-                    name: product.name,
-                    category: product.category,
-                    colour: product.colour,
-                    price: product.price,
-                    quantity: 1,
-                    maxStock: product.stock
-                });
+                cart.push({ ...product, quantity: 1 });
             }
-            
             updateCartDisplay();
-            showAlert(`${product.name} added to cart`, 'success');
+            showAlert(`${product.name} added`, 'success');
         }
 
         function updateCartDisplay() {
-            const cartContainer = document.getElementById('cartItems');
             let total = 0;
-            
+            const container = document.getElementById('cartItems');
             if (cart.length === 0) {
-                cartContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: #a0a0a0;">Cart is empty</div>';
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">Cart empty</div>';
                 document.getElementById('cartTotal').innerText = '0.00';
                 return;
             }
-            
-            cartContainer.innerHTML = cart.map((item, index) => {
+            container.innerHTML = cart.map((item, i) => {
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
                 return `
                     <div class="cart-item">
                         <div><strong>${item.name}</strong><br><small>${item.category}</small></div>
                         <div>${item.code}</div>
-                        <div>₹${item.price.toFixed(2)}</div>
-                        <div><input type="number" value="${item.quantity}" min="1" max="${item.maxStock}" onchange="updateQuantity(${index}, this.value)"></div>
+                        <div>₹${item.price}</div>
+                        <div><input type="number" value="${item.quantity}" min="1" max="${item.stock}" onchange="updateQty(${i}, this.value)"></div>
                         <div>₹${itemTotal.toFixed(2)}</div>
-                        <div><button class="remove-btn" onclick="removeFromCart(${index})">Remove</button></div>
+                        <div><button class="remove-btn" onclick="removeFromCart(${i})">X</button></div>
                     </div>
                 `;
             }).join('');
-            
             document.getElementById('cartTotal').innerText = total.toFixed(2);
         }
 
-        function updateQuantity(index, newQuantity) {
-            const quantity = parseInt(newQuantity);
-            const item = cart[index];
-            const product = products.find(p => p.code === item.code);
-            
-            if (quantity > product.stock) {
-                showAlert(`Only ${product.stock} units available`, 'error');
-                updateCartDisplay();
-                return;
-            }
-            
-            if (quantity < 1) {
-                cart.splice(index, 1);
-            } else {
-                item.quantity = quantity;
-            }
+        function updateQty(index, val) {
+            let qty = parseInt(val);
+            if (qty < 1) qty = 1;
+            const product = products.find(p => p.code === cart[index].code);
+            if (qty > product.stock) { showAlert(`Only ${product.stock} available`, 'error'); return; }
+            cart[index].quantity = qty;
             updateCartDisplay();
         }
 
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCartDisplay();
-            showAlert('Item removed', 'success');
         }
 
         function clearCart() {
-            if (cart.length > 0 && confirm('Clear entire cart?')) {
-                cart = [];
-                updateCartDisplay();
-                showAlert('Cart cleared', 'success');
-            }
+            if (cart.length && confirm('Clear cart?')) { cart = []; updateCartDisplay(); showAlert('Cart cleared', 'success'); }
         }
 
         async function processSale() {
-            if (cart.length === 0) {
-                showAlert('Cart is empty!', 'error');
-                return;
-            }
+            if (cart.length === 0) { showAlert('Cart empty!', 'error'); return; }
             
             const paymentMode = document.getElementById('paymentMode').value;
             const customerName = document.getElementById('customerName').value;
             const today = new Date().toISOString().split('T')[0];
+            const btn = document.getElementById('processSaleBtn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
             
-            const processBtn = document.getElementById('processSaleBtn');
-            processBtn.disabled = true;
-            processBtn.textContent = 'Processing...';
+            let successCount = 0;
             
             try {
-                // Process each item in cart
                 for (const item of cart) {
-                    const totalAmount = item.price * item.quantity;
-                    
                     const saleData = {
                         date: today,
                         productCode: item.code,
@@ -991,42 +783,40 @@
                         colour: item.colour || '',
                         quantity: item.quantity,
                         mrp: item.price,
-                        totalAmount: totalAmount,
+                        totalAmount: item.price * item.quantity,
                         paymentMode: paymentMode,
                         customerName: customerName
                     };
                     
-                    // Send to Google Apps Script
-                    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                        await fetch(APPS_SCRIPT_URL, {
+                    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+                        const response = await fetch(APPS_SCRIPT_URL, {
                             method: 'POST',
-                            mode: 'no-cors',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            mode: 'cors',
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(saleData)
                         });
+                        const result = await response.json();
+                        if (result.success) successCount++;
+                        else console.error('Error:', result.error);
                     }
                     
-                    // Update local sales array
+                    // Update local data
                     sales.unshift({
                         date: today,
                         productCode: item.code,
                         productName: item.name,
-                        colour: item.colour || '',
+                        colour: item.colour,
                         quantity: item.quantity,
                         price: item.price,
-                        total: totalAmount,
+                        total: item.price * item.quantity,
                         paymentMode: paymentMode,
                         customerName: customerName
                     });
                     
-                    // Update local product stock
                     const product = products.find(p => p.code === item.code);
                     if (product) product.stock -= item.quantity;
                 }
                 
-                // Clear cart and reset
                 cart = [];
                 document.getElementById('customerName').value = '';
                 updateCartDisplay();
@@ -1035,129 +825,88 @@
                 updateSalesTable();
                 updateStats();
                 
-                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                showAlert(`✅ Sale completed! Total: ₹${total.toFixed(2)} | Payment: ${paymentMode}`, 'success');
+                const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+                showAlert(`✅ Sale completed!`, 'success');
                 
             } catch (error) {
-                console.error('Sale error:', error);
-                showAlert('Error processing sale. Please check your Apps Script URL.', 'error');
+                console.error('Error:', error);
+                showAlert('Error saving to sheet. Check Apps Script URL.', 'error');
             } finally {
-                processBtn.disabled = false;
-                processBtn.textContent = '✅ Complete Sale';
+                btn.disabled = false;
+                btn.textContent = '✅ Complete Sale';
             }
         }
 
         async function addGoodsIn(e) {
             e.preventDefault();
-            
-            const newGoodsIn = {
+            const newItem = {
                 date: new Date().toISOString().split('T')[0],
                 code: document.getElementById('productCode').value,
                 name: document.getElementById('productName').value,
                 category: document.getElementById('category').value,
                 colour: document.getElementById('colour').value,
                 price: parseFloat(document.getElementById('price').value),
-                quantity: parseFloat(document.getElementById('quantity').value),
-                dealerPrice: parseFloat(document.getElementById('dealerPrice').value) || 0,
-                transport: parseFloat(document.getElementById('transport').value) || 0
+                quantity: parseFloat(document.getElementById('quantity').value)
             };
-            
-            goodsIn.unshift(newGoodsIn);
-            
-            // Update product stock
-            const existingProduct = products.find(p => p.code === newGoodsIn.code);
-            if (existingProduct) {
-                existingProduct.stock += newGoodsIn.quantity;
-                existingProduct.price = newGoodsIn.price;
-                existingProduct.name = newGoodsIn.name;
-                existingProduct.category = newGoodsIn.category;
-                existingProduct.colour = newGoodsIn.colour;
+            goodsIn.unshift(newItem);
+            const existing = products.find(p => p.code === newItem.code);
+            if (existing) {
+                existing.stock += newItem.quantity;
+                existing.price = newItem.price;
             } else {
                 products.push({
-                    code: newGoodsIn.code,
-                    name: newGoodsIn.name,
-                    category: newGoodsIn.category,
-                    colour: newGoodsIn.colour,
-                    price: newGoodsIn.price,
-                    stock: newGoodsIn.quantity
+                    code: newItem.code,
+                    name: newItem.name,
+                    category: newItem.category,
+                    colour: newItem.colour,
+                    price: newItem.price,
+                    stock: newItem.quantity
                 });
             }
-            
             updateProductsGrid();
             updateInventoryTable();
             updateGoodsInTable();
             updateStats();
             updateCategoryFilter();
-            
             document.getElementById('goodsInForm').reset();
-            showAlert(`✅ Stock added: ${newGoodsIn.quantity} x ${newGoodsIn.name}`, 'success');
+            showAlert(`✅ Added ${newItem.quantity} x ${newItem.name}`, 'success');
         }
 
         function updateInventoryTable() {
-            const tbody = document.getElementById('inventoryBody');
-            tbody.innerHTML = products.map(product => `
-                <tr>
-                    <td>${product.code}</td>
-                    <td>${product.name}</td>
-                    <td>${product.category}</td>
-                    <td>${product.colour || '-'}</td>
-                    <td>₹${product.price.toFixed(2)}</td>
-                    <td style="color: ${product.stock < 10 ? '#ff7675' : '#00b894'}; font-weight: bold;">${product.stock}</td>
-                    <td>${product.stock < 10 ? '⚠️ Low Stock' : '✅ In Stock'}</td>
-                </tr>
+            document.getElementById('inventoryBody').innerHTML = products.map(p => `
+                <tr><td>${p.code}</td><td>${p.name}</td><td>${p.category}</td><td>${p.colour || '-'}</td><td>₹${p.price}</td>
+                <td style="color:${p.stock<10?'#ff7675':'#00b894'}">${p.stock}</td><td>${p.stock<10?'⚠️ Low':'✅ In Stock'}</td></tr>
             `).join('');
         }
 
         function updateGoodsInTable() {
-            const tbody = document.getElementById('goodsInBody');
-            tbody.innerHTML = goodsIn.slice(0, 10).map(item => `
-                <tr>
-                    <td>${item.date}</td>
-                    <td>${item.code}</td>
-                    <td>${item.name}</td>
-                    <td>${item.category}</td>
-                    <td>${item.quantity}</td>
-                    <td>₹${item.price.toFixed(2)}</td>
-                </tr>
+            document.getElementById('goodsInBody').innerHTML = goodsIn.slice(0,10).map(i => `
+                <tr><td>${i.date}</td><td>${i.code}</td><td>${i.name}</td><td>${i.quantity}</td><td>₹${i.price}</td></tr>
             `).join('');
         }
 
         function updateSalesTable() {
-            const tbody = document.getElementById('salesBody');
-            tbody.innerHTML = sales.slice(0, 20).map(sale => `
-                <tr>
-                    <td>${sale.date}</td>
-                    <td>${sale.productCode}</td>
-                    <td>${sale.productName}</td>
-                    <td>${sale.colour || '-'}</td>
-                    <td>${sale.quantity}</td>
-                    <td>₹${sale.price.toFixed(2)}</td>
-                    <td>₹${sale.total.toFixed(2)}</td>
-                    <td>${sale.paymentMode}</td>
-                    <td>${sale.customerName || '-'}</td>
-                </tr>
+            document.getElementById('salesBody').innerHTML = sales.slice(0,20).map(s => `
+                <tr><td>${s.date}</td><td>${s.productCode}</td><td>${s.productName}</td><td>${s.colour||'-'}</td>
+                <td>${s.quantity}</td><td>₹${s.price}</td><td>₹${s.total}</td><td>${s.paymentMode}</td><td>${s.customerName||'-'}</td></tr>
             `).join('');
         }
 
         function updateStats() {
-            const totalProducts = products.length;
-            const lowStock = products.filter(p => p.stock < 10).length;
-            const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
-            const todaySales = sales.filter(s => s.date === new Date().toISOString().split('T')[0]).reduce((sum, s) => sum + s.total, 0);
-            const totalSales = sales.reduce((sum, s) => sum + s.total, 0);
-            
+            const total = products.reduce((s,p)=>s+p.stock,0);
+            const low = products.filter(p=>p.stock<10).length;
+            const todaySales = sales.filter(s=>s.date===new Date().toISOString().split('T')[0]).reduce((s,item)=>s+item.total,0);
             document.getElementById('posStats').innerHTML = `
-                <div class="stat-card"><h3>Products</h3><div class="value">${totalProducts}</div></div>
-                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color: #ff7675;">${lowStock}</div></div>
+                <div class="stat-card"><h3>Products</h3><div class="value">${products.length}</div></div>
+                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color:#ff7675">${low}</div></div>
                 <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
             `;
-            
             document.getElementById('inventoryStats').innerHTML = `
-                <div class="stat-card"><h3>Total Products</h3><div class="value">${totalProducts}</div></div>
-                <div class="stat-card"><h3>Total Stock</h3><div class="value">${totalStock}</div></div>
-                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color: #ff7675;">${lowStock}</div></div>
+                <div class="stat-card"><h3>Total Stock</h3><div class="value">${total}</div></div>
+                <div class="stat-card"><h3>Products</h3><div class="value">${products.length}</div></div>
+                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color:#ff7675">${low}</div></div>
             `;
-            
+            const totalSales = sales.reduce((s,item)=>s+item.total,0);
             document.getElementById('salesStats').innerHTML = `
                 <div class="stat-card"><h3>Total Sales</h3><div class="value">₹${totalSales.toFixed(2)}</div></div>
                 <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
