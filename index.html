@@ -3,77 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Hub Pro | Coffeeland FC</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Sports Hub Pro | Elite POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --glass: rgba(30, 41, 59, 0.7); --accent: #38bdf8; --neon-green: #4ade80; --text: #f8fafc; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: radial-gradient(circle at top right, #1e293b, #020617); color: var(--text); margin: 0; padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 420px; background: var(--glass); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        header { text-align: center; margin-bottom: 20px; }
-        header h1 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
-        .section { margin-bottom: 12px; }
-        label { display: block; font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; }
-        select, input { width: 100%; padding: 12px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; font-size: 14px; box-sizing: border-box; }
-        .info-panel { background: rgba(2,6,23,0.5); border-radius: 16px; padding: 15px; margin: 15px 0; display: none; border: 1px solid rgba(56,189,248,0.2); }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; }
-        .stock-pill { padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 10px; }
-        .total-box { background: linear-gradient(135deg, #38bdf8, #2563eb); padding: 15px; border-radius: 16px; text-align: center; margin: 15px 0; }
-        .total-box h2 { margin: 5px 0 0; font-size: 28px; font-weight: 800; }
-        .btn { width: 100%; padding: 16px; background: white; color: #020617; border: none; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-        .btn:hover { background: var(--neon-green); }
+        :root {
+            --bg: #05070a;
+            --surface: #0f1218;
+            --surface-accent: #171b24;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --neon-green: #4ade80;
+            --neon-red: #f43f5e;
+            --text-main: #f8fafc;
+            --text-dim: #64748b;
+            --border: rgba(255, 255, 255, 0.06);
+        }
 
-        #upiModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
-        #upiModal img { max-width: 80%; border-radius: 20px; border: 5px solid white; margin-bottom: 20px; }
-        #upiModal h2 { color: white; font-size: 32px; margin-bottom: 10px; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 30px 24px;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header img { width: 100px; margin-bottom: 12px; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.2)); }
+        .header h1 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--text-main); }
+        .header p { margin: 4px 0 0; font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+
+        .field-label { display: block; font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; margin-left: 4px; }
+
+        .input-wrapper { margin-bottom: 20px; position: relative; }
+        select, input {
+            width: 100%;
+            padding: 16px;
+            background: var(--surface-accent);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 600;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+
+        .dash-panel {
+            background: rgba(2, 6, 23, 0.4);
+            border-radius: 20px;
+            padding: 18px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            display: none;
+            animation: slideDown 0.4s ease-out;
+        }
+        .dash-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .dash-row:last-child { margin-bottom: 0; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; }
+        .dash-item span { font-size: 11px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; }
+        .dash-item div { font-size: 16px; font-weight: 700; }
+        
+        .stock-tag { padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .stock-good { background: rgba(74, 222, 128, 0.1); color: var(--neon-green); }
+        .stock-low { background: rgba(244, 63, 94, 0.1); color: var(--neon-red); animation: pulse 2s infinite; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .total-card {
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+            padding: 24px;
+            border-radius: 24px;
+            text-align: center;
+            margin: 25px 0;
+            box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.5);
+        }
+        .total-card span { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 2px; }
+        .total-card h2 { margin: 5px 0 0; font-size: 36px; font-weight: 800; color: white; }
+
+        .btn-finish {
+            width: 100%;
+            padding: 20px;
+            background: #ffffff;
+            color: #000;
+            border: none;
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-finish:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(255,255,255,0.2); background: var(--neon-green); }
+
+        #upiModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        #upiModal img { max-width: 85%; border-radius: 24px; border: 4px solid #fff; box-shadow: 0 0 50px rgba(56, 189, 248, 0.3); margin: 20px 0; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header><h1>SPORTS HUB</h1></header>
-
-    <div class="section"><label>1. Category</label><select id="catSelect" onchange="filterBrands()"><option value="">Select Item</option></select></div>
-    <div class="section" id="brandGroup" style="display:none;"><label>2. Brand</label><select id="brandSelect" onchange="filterModels()"></select></div>
-    <div class="section" id="modelGroup" style="display:none;"><label>3. Model</label><select id="modelSelect" onchange="filterSizes()"></select></div>
-    
-    <div class="section" id="sizeGroup" style="display:none;"><label>4. Size</label><select id="sizeSelect" onchange="filterColors()"></select></div>
-    <div class="section" id="colorGroup" style="display:none;"><label>5. Color</label><select id="colorSelect" onchange="loadProduct()"></select></div>
-
-    <div id="productDetails" class="info-panel">
-        <div class="info-row"><span>Stock Status</span><span id="resStock" class="stock-pill"></span></div>
-        <div class="info-row"><span style="color:#94a3b8">Dealer Price</span><span id="resDealer" style="font-weight:600">₹0</span></div>
-        <div class="info-row"><span style="color:#94a3b8">Product Code</span><span id="resCode" style="color:var(--accent)"></span></div>
+<div class="app-container">
+    <div class="header">
+        <img src="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" alt="Logo">
+        <h1>SPORTS HUB</h1>
+        <p>Elite Performance</p>
     </div>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <div class="section"><label>Sale Price</label><input type="number" id="salePrice" oninput="updateTotal()"></div>
-        <div class="section"><label>Qty</label><input type="number" id="qty" value="1" min="1" oninput="validateQty()"></div>
+    <div class="input-wrapper">
+        <label class="field-label">1. Select Category</label>
+        <select id="catSelect" onchange="filterBrands()"><option value="">Loading Inventory...</option></select>
     </div>
 
-    <div class="section"><label>Customer Name</label><input type="text" id="custName" placeholder="Guest Name"></div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <div class="section">
-            <label>Payment Mode</label>
-            <select id="payMode" onchange="toggleReceivedBy()">
-                <option value="UPI">UPI</option>
-                <option value="Cash">Cash</option>
-            </select>
+    <div id="brandGroup" class="input-wrapper" style="display:none;">
+        <label class="field-label">2. Brand</label>
+        <select id="brandSelect" onchange="filterModels()"></select>
+    </div>
+
+    <div id="modelGroup" class="input-wrapper" style="display:none;">
+        <label class="field-label">3. Model</label>
+        <select id="modelSelect" onchange="filterSizes()"></select>
+    </div>
+
+    <div class="grid-2">
+        <div id="sizeGroup" class="input-wrapper" style="display:none;">
+            <label class="field-label">4. Size</label>
+            <select id="sizeSelect" onchange="filterColors()"></select>
         </div>
-        <div class="section" id="receivedGroup" style="display:none;">
-            <label>Received By</label>
-            <input type="text" id="receivedBy" placeholder="Staff Name">
+        <div id="colorGroup" class="input-wrapper" style="display:none;">
+            <label class="field-label">5. Color</label>
+            <select id="colorSelect" onchange="loadProduct()"></select>
         </div>
     </div>
 
-    <div class="total-box"><span>Payable Total</span><h2 id="finalTotal">₹0</h2></div>
-    <button onclick="handleFinishClick()" id="submitBtn" class="btn">Finish Sale</button>
+    <div id="dashPanel" class="dash-panel">
+        <div class="dash-row">
+            <div class="dash-item"><span>Status</span><div id="resStockTag" class="stock-tag"></div></div>
+            <div class="dash-item" style="text-align: right;"><span>Dealer Price</span><div id="resDealer" style="color: var(--accent);">₹0</div></div>
+        </div>
+        <div class="dash-row">
+            <div class="dash-item"><span>Product Code</span><div id="resCode" style="font-size: 12px; color: var(--text-dim);">--</div></div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="input-wrapper"><label class="field-label">Sale Price (₹)</label><input type="number" id="salePrice" oninput="updateTotal()"></div>
+        <div class="input-wrapper"><label class="field-label">Quantity</label><input type="number" id="qty" value="1" min="1" oninput="validateQty()"></div>
+    </div>
+
+    <div class="grid-2">
+        <div class="input-wrapper">
+            <label class="field-label">Payment Mode</label>
+            <select id="payMode" onchange="toggleReceivedBy()"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
+        </div>
+        <div id="receivedGroup" class="input-wrapper" style="display:none;"><label class="field-label">Received By</label><input type="text" id="receivedBy" placeholder="Staff Name"></div>
+    </div>
+
+    <div class="input-wrapper"><label class="field-label">Customer Name</label><input type="text" id="custName" placeholder="Enter Guest Name"></div>
+
+    <div class="total-card">
+        <span>Amount Payable</span>
+        <h2 id="finalTotal">₹0</h2>
+    </div>
+
+    <button onclick="handleFinish()" id="finishBtn" class="btn-finish">Finish Transaction</button>
 </div>
 
 <div id="upiModal">
-    <h2 id="upiAmtDisplay"></h2>
-    <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" alt="UPI QR">
-    <button onclick="submitSale()" class="btn" style="background:var(--neon-green)">PAID & LOG SALE</button>
-    <button onclick="closeModal()" style="background:none; border:none; color:white; margin-top:15px; cursor:pointer;">Cancel</button>
+    <span style="color: var(--accent); font-weight: 800; letter-spacing: 2px;">PAYMENT SECURE</span>
+    <h2 id="upiAmtDisplay" style="color:white; font-size:48px; margin: 10px 0;">₹0</h2>
+    <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" alt="QR">
+    <button onclick="submitSale()" class="btn-finish" style="background: var(--neon-green); width: 250px;">Confirm Payment</button>
+    <button onclick="closeModal()" style="background:none; border:none; color: var(--text-dim); margin-top: 20px; font-weight: 700; cursor: pointer;">Cancel</button>
 </div>
 
 <script>
@@ -83,29 +202,35 @@
 
     window.onload = () => {
         fetch(scriptURL).then(r => r.json()).then(data => {
-            rawData = data;
-            const cats = [...new Set(data.map(i => i.name))];
+            rawData = data.map(item => ({
+                ...item, 
+                stock: Number(item.stock || 0),
+                dealerCost: Number(item.dealerCost || 0),
+                basePrice: Number(item.basePrice || 0)
+            }));
+            
+            const cats = [...new Set(rawData.map(i => i.name))];
             const sel = document.getElementById('catSelect');
-            cats.forEach(c => sel.add(new Option(c, c)));
+            sel.innerHTML = '<option value="">Select Category</option>';
+            
+            cats.forEach(categoryName => {
+                const categoryItems = rawData.filter(item => item.name === categoryName);
+                const totalCategoryStock = categoryItems.reduce((sum, item) => sum + item.stock, 0);
+                
+                const opt = document.createElement('option');
+                opt.value = categoryName;
+                
+                if (totalCategoryStock <= 0) {
+                    opt.text = `🚫 ${categoryName} (OUT OF STOCK)`;
+                    opt.disabled = true;
+                    opt.style.color = "#475569"; 
+                } else {
+                    opt.text = categoryName;
+                }
+                sel.add(opt);
+            });
         });
     };
-
-    function toggleReceivedBy() {
-        const mode = document.getElementById('payMode').value;
-        document.getElementById('receivedGroup').style.display = (mode === 'Cash') ? 'block' : 'none';
-    }
-
-    function handleFinishClick() {
-        const mode = document.getElementById('payMode').value;
-        if(mode === 'UPI') {
-            document.getElementById('upiAmtDisplay').innerText = document.getElementById('finalTotal').innerText;
-            document.getElementById('upiModal').style.display = 'flex';
-        } else {
-            submitSale();
-        }
-    }
-
-    function closeModal() { document.getElementById('upiModal').style.display = 'none'; }
 
     function filterBrands() {
         const c = document.getElementById('catSelect').value;
@@ -122,11 +247,9 @@
         const c = document.getElementById('catSelect').value;
         const b = document.getElementById('brandSelect').value;
         const ms = document.getElementById('modelSelect');
-        const models = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(x => x);
-        if (models.length === 0) {
-            document.getElementById('modelGroup').style.display = 'none';
-            ms.value = ""; filterSizes();
-        } else {
+        const models = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(x => x && x.trim() !== "");
+        if (models.length === 0) { document.getElementById('modelGroup').style.display = 'none'; ms.value = ""; filterSizes(); }
+        else {
             ms.innerHTML = '<option value="">Select Model</option>';
             models.forEach(m => ms.add(new Option(m, m)));
             document.getElementById('modelGroup').style.display = 'block';
@@ -138,11 +261,9 @@
         const b = document.getElementById('brandSelect').value;
         const m = document.getElementById('modelSelect').value;
         const ss = document.getElementById('sizeSelect');
-        const sizes = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m)).map(i => i.size))].filter(x => x);
-        if (sizes.length === 0) {
-            document.getElementById('sizeGroup').style.display = 'none';
-            ss.value = ""; filterColors();
-        } else {
+        const sizes = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m)).map(i => i.size))].filter(x => x && x.trim() !== "");
+        if (sizes.length === 0) { document.getElementById('sizeGroup').style.display = 'none'; ss.value = ""; filterColors(); }
+        else {
             ss.innerHTML = '<option value="">Select Size</option>';
             sizes.forEach(s => ss.add(new Option(s, s)));
             document.getElementById('sizeGroup').style.display = 'block';
@@ -155,10 +276,14 @@
         const m = document.getElementById('modelSelect').value;
         const s = document.getElementById('sizeSelect').value;
         const cs = document.getElementById('colorSelect');
-        const colors = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m) && (s === "" ? true : i.size === s)).map(i => i.color))].filter(x => x);
-        if (colors.length === 0) {
-            document.getElementById('colorGroup').style.display = 'none';
-            cs.value = ""; loadProduct();
+        
+        // REFINEMENT: Only show colors that have stock for the selected category/brand/model/size
+        const colors = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m) && (s === "" ? true : i.size === s) && i.stock > 0).map(i => i.color))].filter(x => x && x.trim() !== "");
+        
+        if (colors.length === 0) { 
+            document.getElementById('colorGroup').style.display = 'none'; 
+            cs.value = ""; 
+            loadProduct(); 
         } else {
             cs.innerHTML = '<option value="">Select Color</option>';
             colors.forEach(col => cs.add(new Option(col, col)));
@@ -173,47 +298,50 @@
         const s = document.getElementById('sizeSelect').value;
         const col = document.getElementById('colorSelect').value;
         selectedItem = rawData.find(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m) && (s === "" ? true : i.size === s) && (col === "" ? true : i.color === col));
+        
         if(selectedItem) {
-            document.getElementById('productDetails').style.display = 'block';
+            document.getElementById('dashPanel').style.display = 'block';
             document.getElementById('resCode').innerText = selectedItem.code;
-            document.getElementById('resDealer').innerText = '₹' + selectedItem.dealerCost;
-            const stock = document.getElementById('resStock');
-            stock.innerText = selectedItem.stock + ' IN STOCK';
-            stock.style.color = selectedItem.stock > 0 ? '#4ade80' : '#f43f5e';
+            document.getElementById('resDealer').innerText = '₹' + selectedItem.dealerCost.toFixed(2);
+            
+            const stockTag = document.getElementById('resStockTag');
+            const stockCount = selectedItem.stock;
+            stockTag.innerText = stockCount + ' Units In Stock';
+
+            if (stockCount <= 1) {
+                stockTag.className = 'stock-tag stock-low';
+            } else {
+                stockTag.className = 'stock-tag stock-good';
+            }
+
             document.getElementById('salePrice').value = selectedItem.basePrice;
             updateTotal();
         }
     }
 
-    function validateQty() {
-        if(selectedItem && parseInt(document.getElementById('qty').value) > selectedItem.stock) {
-            alert("Exceeds Available Stock!"); document.getElementById('qty').value = selectedItem.stock;
-        }
-        updateTotal();
-    }
-
+    function toggleReceivedBy() { document.getElementById('receivedGroup').style.display = (document.getElementById('payMode').value === 'Cash') ? 'block' : 'none'; }
+    function validateQty() { if(selectedItem && parseInt(document.getElementById('qty').value) > selectedItem.stock) { alert("Insufficient Stock!"); document.getElementById('qty').value = selectedItem.stock; } updateTotal(); }
     function updateTotal() {
         const p = parseFloat(document.getElementById('salePrice').value) || 0;
         const q = parseInt(document.getElementById('qty').value) || 0;
         document.getElementById('finalTotal').innerText = '₹' + (p * q).toLocaleString('en-IN');
     }
-
-    function resetBelow(l) {
-        document.getElementById('productDetails').style.display = 'none';
-        if(l === 'brand') { document.getElementById('modelGroup').style.display = 'none'; document.getElementById('sizeGroup').style.display = 'none'; document.getElementById('colorGroup').style.display = 'none'; }
+    function resetBelow(l) { if(l === 'brand') { document.getElementById('modelGroup').style.display = 'none'; document.getElementById('sizeGroup').style.display = 'none'; document.getElementById('colorGroup').style.display = 'none'; document.getElementById('dashPanel').style.display = 'none'; } }
+    function handleFinish() {
+        if(!selectedItem) return alert("Select an item first");
+        if(selectedItem.stock <= 0) return alert("Error: This variant is out of stock!");
+        if(document.getElementById('payMode').value === 'UPI') {
+            document.getElementById('upiAmtDisplay').innerText = document.getElementById('finalTotal').innerText;
+            document.getElementById('upiModal').style.display = 'flex';
+        } else { submitSale(); }
     }
-
+    function closeModal() { document.getElementById('upiModal').style.display = 'none'; }
     async function submitSale() {
-        if(!selectedItem || document.getElementById('qty').value <= 0) return alert("Incomplete Selection");
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.innerText = "Processing...";
-        const payload = { 
-            code: selectedItem.code, name: selectedItem.name, qty: document.getElementById('qty').value, 
-            price: document.getElementById('salePrice').value, mode: document.getElementById('payMode').value, 
-            customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A"
-        };
+        const btn = document.getElementById('finishBtn');
+        btn.disabled = true; btn.innerText = "Syncing...";
+        const payload = { code: selectedItem.code, name: selectedItem.name, qty: document.getElementById('qty').value, price: document.getElementById('salePrice').value, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        alert("Transaction Recorded!"); location.reload();
+        alert("Transaction Successful!"); location.reload();
     }
 </script>
 </body>
