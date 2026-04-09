@@ -3,30 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Hub Pro | Cart</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Sports Hub Pro | Elite POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #05070a; --surface: #0f1218; --accent: #38bdf8; --text: #f8fafc; --dim: #64748b; --border: rgba(255,255,255,0.06); --neon-green: #4ade80; --neon-red: #f43f5e; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 32px; padding: 24px; box-shadow: 0 40px 80px rgba(0,0,0,0.8); }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { width: 80px; filter: drop-shadow(0 0 10px var(--accent)); }
-        
-        .field-label { display: block; font-size: 10px; font-weight: 800; color: var(--dim); text-transform: uppercase; margin: 0 0 8px 4px; letter-spacing: 1px; }
-        .input-wrapper { margin-bottom: 15px; }
-        select, input { width: 100%; padding: 14px; background: #171b24; border: 1px solid var(--border); border-radius: 14px; color: white; outline: none; box-sizing: border-box; }
-        
-        /* Dashboard & Cart */
-        .dash-panel { background: rgba(2, 6, 23, 0.4); border-radius: 18px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; display: none; }
-        .cart-section { background: rgba(255,255,255,0.02); border-radius: 20px; padding: 15px; border: 1px dashed var(--border); margin: 20px 0; display: none; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-        .remove-btn { color: var(--neon-red); cursor: pointer; font-weight: 800; padding: 5px; }
+        :root {
+            --bg: #020408;
+            --surface: #0a0e14;
+            --surface-raised: #121820;
+            --accent: #38bdf8;
+            --emerald: #10b981;
+            --text-main: #f8fafc;
+            --text-dim: #64748b;
+            --border: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.03);
+            --neon-red: #f43f5e;
+        }
 
-        .btn-add { width: 100%; padding: 15px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 14px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
-        .btn-finish { width: 100%; padding: 20px; background: white; color: black; border: none; border-radius: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        .total-card { background: linear-gradient(135deg, #0ea5e9, #2563eb); padding: 20px; border-radius: 22px; text-align: center; margin-top: 10px; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #0f172a, var(--bg));
+            color: var(--text-main);
+            margin: 0; padding: 15px;
+            display: flex; justify-content: center;
+            min-height: 100vh;
+        }
 
-        #upiModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .app-container {
+            width: 100%; max-width: 410px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 35px;
+            padding: 24px;
+            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7);
+            backdrop-filter: blur(20px);
+        }
+
+        .header { text-align: center; margin-bottom: 25px; }
+        .header img { width: 85px; filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.3)); margin-bottom: 10px; }
+        .header h1 { font-size: 18px; font-weight: 800; letter-spacing: 4px; margin: 0; text-transform: uppercase; }
+        .header span { font-size: 10px; color: var(--accent); font-weight: 700; letter-spacing: 2px; }
+
+        /* Predictive Search */
+        .search-wrapper { position: relative; margin-bottom: 20px; }
+        .suggestions-list {
+            position: absolute; top: 60px; left: 0; right: 0;
+            background: var(--surface-raised); border: 1px solid var(--accent);
+            border-radius: 18px; z-index: 1000; max-height: 200px; overflow-y: auto; display: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .suggestion-item { padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .suggestion-item:hover { background: rgba(56, 189, 248, 0.1); }
+
+        .section-label { font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 10px 5px; display: block; }
+        
+        .input-box {
+            width: 100%; padding: 16px; background: var(--surface-raised); border: 1px solid var(--border);
+            border-radius: 18px; color: white; font-size: 15px; font-weight: 600; outline: none; transition: 0.3s; margin-bottom: 12px; box-sizing: border-box;
+        }
+        .input-box:focus { border-color: var(--accent); }
+
+        .dash-panel { background: #111827; border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; display: none; }
+        
+        /* Cyber Receipt UI */
+        .receipt-card {
+            background: var(--glass);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 24px;
+            padding: 24px;
+            margin: 15px 0;
+            backdrop-filter: blur(10px);
+        }
+        .receipt-header { text-align: center; font-weight: 800; letter-spacing: 3px; color: var(--accent); font-size: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .receipt-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .receipt-line span { font-size: 14px; font-weight: 600; }
+        .receipt-total { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--accent); color: var(--text-main); }
+        .receipt-total h2 { margin: 0; font-size: 32px; font-weight: 800; }
+        .savings-badge { background: rgba(16, 185, 129, 0.1); color: var(--emerald); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
+
+        .btn-add { width: 100%; padding: 16px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 18px; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-add:hover { background: var(--accent); color: var(--bg); }
+        .btn-finish { width: 100%; padding: 22px; background: white; color: black; border: none; border-radius: 22px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .btn-finish:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+
+        #upiModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; padding: 25px; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -34,56 +95,55 @@
 <div class="app-container">
     <div class="header">
         <img src="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png">
-        <h2 style="margin:10px 0 0; font-size:18px; letter-spacing:2px;">SPORTS HUB</h2>
+        <h1>SPORTS HUB</h1>
+        <span>ELITE PERFORMANCE</span>
     </div>
 
-    <div class="input-wrapper"><input type="text" id="idSearch" placeholder="Search Product ID..." oninput="handleSearch()"></div>
-    <div class="input-wrapper"><select id="catSelect" onchange="filterBrands()"><option value="">Loading...</option></select></div>
-    <div id="brandGroup" class="input-wrapper" style="display:none;"><select id="brandSelect" onchange="filterModels()"></select></div>
-    <div id="modelGroup" class="input-wrapper" style="display:none;"><select id="modelSelect" onchange="filterSizes()"></select></div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <div id="sizeGroup" class="input-wrapper" style="display:none;"><select id="sizeSelect" onchange="filterColors()"></select></div>
-        <div id="colorGroup" class="input-wrapper" style="display:none;"><select id="colorSelect" onchange="loadProduct()"></select></div>
+    <div class="search-wrapper">
+        <input type="text" id="idSearch" class="input-box" placeholder="Quick Search ID or Name..." oninput="handleSearch()">
+        <div id="suggestions" class="suggestions-list"></div>
+    </div>
+    
+    <span class="section-label">Inventory Path</span>
+    <select id="catSelect" class="input-box" onchange="filterBrands()"><option value="">Loading Inventory...</option></select>
+    
+    <div id="brandGroup" style="display:none;"><select id="brandSelect" class="input-box" onchange="filterModels()"></select></div>
+    <div id="modelGroup" style="display:none;"><select id="modelSelect" class="input-box" onchange="filterSizes()"></select></div>
+    
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+        <div id="sizeGroup" style="display:none;"><select id="sizeSelect" class="input-box" onchange="filterColors()"></select></div>
+        <div id="colorGroup" style="display:none;"><select id="colorSelect" class="input-box" onchange="loadProduct()"></select></div>
     </div>
 
     <div id="dashPanel" class="dash-panel">
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <div id="resStockTag" style="font-size:12px; font-weight:800;"></div>
-            <div id="resDealer" style="color:var(--accent); font-weight:700;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <div id="resStockTag" class="stock-pill"></div>
+            <div id="resDealer" style="font-size: 13px; font-weight: 700; color: var(--accent);"></div>
         </div>
-        <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:10px;">
-            <input type="number" id="salePrice" placeholder="Price">
-            <input type="number" id="qty" value="1" placeholder="Qty">
+        <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap:12px;">
+            <input type="number" id="salePrice" class="input-box" placeholder="Sold Price" style="margin-bottom:0;">
+            <input type="number" id="qty" class="input-box" value="1" style="margin-bottom:0;">
         </div>
-        <button class="btn-add" onclick="addToCart()">+ ADD TO CART</button>
+        <button class="btn-add" onclick="addToCart()">+ Add to Basket</button>
     </div>
 
-    <div id="cartSection" class="cart-section">
-        <label class="field-label">Items in Cart</label>
-        <div id="cartList"></div>
+    <div id="receiptSection" style="display:none;">
+        <span class="section-label">Basket Summary</span>
+        <div class="receipt-card" id="receiptContent"></div>
     </div>
 
-    <div class="input-wrapper">
-        <div style="display:flex; gap:10px;">
-            <select id="payMode" onchange="toggleReceivedBy()" style="width:100px;"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
-            <input type="text" id="custName" placeholder="Customer Name">
-        </div>
+    <span class="section-label">Staff & Client</span>
+    <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:12px;">
+        <select id="payMode" class="input-box"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
+        <input type="text" id="custName" class="input-box" placeholder="Customer Name">
     </div>
-    <div id="receivedGroup" class="input-wrapper" style="display:none;"><input type="text" id="receivedBy" placeholder="Staff Name"></div>
+    <input type="text" id="receivedBy" class="input-box" placeholder="Received By Staff Name">
 
-    <div class="total-card"><span>Payable Total</span><h2 id="finalTotal" style="margin:5px 0 0; font-size:32px;">₹0</h2></div>
-    <button onclick="handleFinish()" class="btn-finish" id="finishBtn">Finish Transaction</button>
-</div>
-
-<div id="upiModal">
-    <h2 id="upiAmtDisplay" style="color:white; font-size:48px; margin-bottom:20px;"></h2>
-    <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" style="width:280px; border-radius:20px;">
-    <button onclick="submitSale()" class="btn-finish" style="background:var(--neon-green); width:280px; margin-top:20px;">Confirm Paid</button>
-    <button onclick="closeModal()" style="color:white; background:none; border:none; margin-top:20px;">Cancel</button>
+    <button onclick="handleFinish()" class="btn-finish" id="finishBtn">Confirm & Checkout</button>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxFYSwJAnR_KRFuH4tjSwCT1LO5zg-hFYyfmG88zEesDVP7kxM_kUQoLAEeF7MdiTYHHg/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzEujlzXAv9WynXK7RGVHGPDsA6Upt2v7P1zF0C855THpKi2kCSUgAjLd6HV-vNXNy7Cw/exec';
     let rawData = [], cart = [], selectedItem = null;
 
     window.onload = () => {
@@ -91,7 +151,7 @@
             rawData = data.map(i => ({...i, stock: Number(i.stock || 0), dealerCost: Number(i.dealerCost || 0)}));
             const cats = [...new Set(rawData.map(i => i.name))];
             const sel = document.getElementById('catSelect');
-            sel.innerHTML = '<option value="">Select Category</option>';
+            sel.innerHTML = '<option value="">Category</option>';
             cats.forEach(c => {
                 const total = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
                 sel.add(new Option(`${c} (${total})`, c));
@@ -100,15 +160,29 @@
     };
 
     function handleSearch() {
-        const code = document.getElementById('idSearch').value.toUpperCase();
-        const found = rawData.find(i => i.code === code);
-        if(found) {
-            document.getElementById('catSelect').value = found.name;
-            filterBrands(found.brand); filterModels(found.model); filterSizes(found.size); filterColors(found.color);
-        }
+        const query = document.getElementById('idSearch').value.toUpperCase();
+        const suggs = document.getElementById('suggestions');
+        if (query.length < 2) { suggs.style.display = 'none'; return; }
+        const matches = rawData.filter(i => i.code.toUpperCase().includes(query) || i.name.toUpperCase().includes(query)).slice(0, 5);
+        if (matches.length > 0) {
+            suggs.innerHTML = '';
+            matches.forEach(i => {
+                const d = document.createElement('div');
+                d.className = 'suggestion-item';
+                d.innerHTML = `<b>${i.code}</b> - ${i.name} (${i.size}/${i.color})`;
+                d.onclick = () => { selectProduct(i); suggs.style.display = 'none'; document.getElementById('idSearch').value = i.code; };
+                suggs.appendChild(d);
+            });
+            suggs.style.display = 'block';
+        } else { suggs.style.display = 'none'; }
     }
 
-    function filterBrands(pre) {
+    function selectProduct(item) {
+        document.getElementById('catSelect').value = item.name;
+        filterBrands(item.brand, item.model, item.size, item.color);
+    }
+
+    function filterBrands(pB, pM, pS, pC) {
         const c = document.getElementById('catSelect').value;
         const bs = document.getElementById('brandSelect');
         bs.innerHTML = '<option value="">Brand</option>';
@@ -119,34 +193,57 @@
             bs.add(new Option(`${b} (${bStock})`, b));
         });
         document.getElementById('brandGroup').style.display='block';
-        if(pre) { bs.value = pre; filterModels(); }
+        if(pB) { bs.value = pB; filterModels(pM, pS, pC); }
     }
 
-    function filterModels() {
+    function filterModels(pM, pS, pC) {
         const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value;
         const ms = document.getElementById('modelSelect');
         ms.innerHTML = '<option value="">Model</option>';
         const mods = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(x => x);
-        if(mods.length === 0) { document.getElementById('modelGroup').style.display='none'; filterSizes(); }
-        else { mods.forEach(m => ms.add(new Option(m, m))); document.getElementById('modelGroup').style.display='block'; }
+        if(mods.length === 0) { document.getElementById('modelGroup').style.display='none'; filterSizes(pS, pC); }
+        else { 
+            mods.forEach(m => {
+                const mStock = rawData.filter(i => i.name === c && i.brand === b && i.model === m).reduce((a, b) => a + b.stock, 0);
+                ms.add(new Option(`${m} (${mStock})`, m));
+            }); 
+            document.getElementById('modelGroup').style.display='block';
+            if(pM) { ms.value = pM; filterSizes(pS, pC); }
+        }
     }
 
-    function filterSizes() {
+    function filterSizes(pS, pC) {
         const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, m = document.getElementById('modelSelect').value;
         const ss = document.getElementById('sizeSelect');
         ss.innerHTML = '<option value="">Size</option>';
-        const sizes = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true)).map(i => i.size))].filter(x => x);
-        if(sizes.length === 0) { document.getElementById('sizeGroup').style.display='none'; filterColors(); }
-        else { sizes.forEach(s => ss.add(new Option(s, s))); document.getElementById('sizeGroup').style.display='block'; }
+        const filtered = rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true));
+        const sizes = [...new Set(filtered.map(i => i.size))].filter(x => x);
+        if(sizes.length === 0) { document.getElementById('sizeGroup').style.display='none'; filterColors(pC); }
+        else { 
+            sizes.forEach(s => {
+                const sStock = filtered.filter(i => i.size === s).reduce((a, b) => a + b.stock, 0);
+                ss.add(new Option(`${s} (${sStock})`, s));
+            }); 
+            document.getElementById('sizeGroup').style.display='block';
+            if(pS) { ss.value = pS; filterColors(pC); }
+        }
     }
 
-    function filterColors() {
+    function filterColors(pC) {
         const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, m = document.getElementById('modelSelect').value, s = document.getElementById('sizeSelect').value;
         const cs = document.getElementById('colorSelect');
         cs.innerHTML = '<option value="">Color</option>';
-        const cols = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true)).map(i => i.color))].filter(x => x);
+        const filtered = rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true));
+        const cols = [...new Set(filtered.map(i => i.color))].filter(x => x);
         if(cols.length === 0) { document.getElementById('colorGroup').style.display='none'; loadProduct(); }
-        else { cols.forEach(col => cs.add(new Option(col, col))); document.getElementById('colorGroup').style.display='block'; }
+        else { 
+            cols.forEach(col => {
+                const cStock = filtered.filter(i => i.color === col).reduce((a, b) => a + b.stock, 0);
+                cs.add(new Option(`${col} (${cStock})`, col));
+            }); 
+            document.getElementById('colorGroup').style.display='block';
+            if(pC) { cs.value = pC; loadProduct(); }
+        }
     }
 
     function loadProduct() {
@@ -155,57 +252,84 @@
         if(selectedItem) {
             document.getElementById('dashPanel').style.display = 'block';
             document.getElementById('resDealer').innerText = 'Dealer: ₹' + selectedItem.dealerCost.toFixed(2);
-            document.getElementById('resStockTag').innerText = selectedItem.stock + ' IN STOCK';
-            document.getElementById('resStockTag').style.color = selectedItem.stock <= 1 ? '#f43f5e' : '#4ade80';
+            const tag = document.getElementById('resStockTag');
+            tag.innerText = selectedItem.stock + ' IN STOCK';
+            tag.className = selectedItem.stock <= 1 ? 'stock-pill stock-warn' : 'stock-pill stock-ok';
             document.getElementById('salePrice').value = selectedItem.basePrice;
         }
     }
 
     function addToCart() {
-        const price = parseFloat(document.getElementById('salePrice').value), qty = parseInt(document.getElementById('qty').value);
-        if(!selectedItem || qty < 1 || qty > selectedItem.stock) return alert("Check selection/stock");
-        
-        cart.push({ code: selectedItem.code, name: selectedItem.name, color: selectedItem.color, qty: qty, price: price });
-        renderCart();
+        const sp = parseFloat(document.getElementById('salePrice').value), q = parseInt(document.getElementById('qty').value);
+        if(!selectedItem || q < 1 || q > selectedItem.stock) return alert("Check selection/stock");
+        cart.push({ ...selectedItem, qty: q, price: sp });
+        renderReceipt();
         document.getElementById('dashPanel').style.display = 'none';
         document.getElementById('idSearch').value = '';
     }
 
-    function renderCart() {
-        const list = document.getElementById('cartList');
-        list.innerHTML = '';
-        let total = 0;
-        cart.forEach((item, i) => {
-            total += (item.price * item.qty);
-            const div = document.createElement('div');
-            div.className = 'cart-item';
-            div.innerHTML = `<div><strong>${item.name}</strong><br><small>${item.qty} x ₹${item.price}</small></div><span class="remove-btn" onclick="removeItem(${i})">×</span>`;
-            list.appendChild(div);
-        });
-        document.getElementById('finalTotal').innerText = '₹' + total.toLocaleString('en-IN');
-        document.getElementById('cartSection').style.display = cart.length > 0 ? 'block' : 'none';
+    function renderReceipt() {
+        const receipt = document.getElementById('receiptContent');
+        const section = document.getElementById('receiptSection');
+        let total = 0, savings = 0;
+        
+        receipt.innerHTML = `
+            <div class="receipt-header">TRANSACTION SUMMARY</div>
+            ${cart.map((item, i) => {
+                const lineTotal = item.price * item.qty;
+                const lineDiscount = (item.basePrice - item.price) * item.qty;
+                total += lineTotal; savings += lineDiscount;
+                return `
+                    <div class="receipt-line">
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="color:black; font-weight:700;">${item.name}</span>
+                            <small style="color:#666; font-size:11px;">${item.qty} units • ${item.color}</small>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:700; color:black;">₹${lineTotal.toLocaleString()}</div>
+                            <div onclick="removeItem(${i})" style="color:var(--neon-red); font-size:10px; cursor:pointer; font-weight:800; margin-top:2px;">REMOVE</div>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+            <div class="receipt-total receipt-line">
+                <div style="display:flex; flex-direction:column;">
+                    <span style="color:var(--accent); font-size:11px; letter-spacing:1px;">GRAND TOTAL</span>
+                    <h2 style="color:black;">₹${total.toLocaleString()}</h2>
+                </div>
+                ${savings > 0 ? `<div class="savings-badge">SAVED ₹${savings.toLocaleString()}</div>` : ''}
+            </div>
+        `;
+        section.style.display = cart.length > 0 ? 'block' : 'none';
     }
 
-    function removeItem(i) { cart.splice(i, 1); renderCart(); }
-    function toggleReceivedBy() { document.getElementById('receivedGroup').style.display = (document.getElementById('payMode').value === 'Cash' ? 'block' : 'none'); }
-    
-    function handleFinish() {
+    function removeItem(i) { cart.splice(i, 1); renderReceipt(); }
+    function closeModal() { document.getElementById('upiModal').style.display = 'none'; }
+
+    async function handleFinish() {
         if(cart.length === 0) return alert("Cart empty");
         if(document.getElementById('payMode').value === 'UPI') {
             document.getElementById('upiAmtDisplay').innerText = document.getElementById('finalTotal').innerText;
             document.getElementById('upiModal').style.display = 'flex';
-        } else submitSale();
+        } else { submitSale(); }
     }
-
-    function closeModal() { document.getElementById('upiModal').style.display = 'none'; }
 
     async function submitSale() {
         const btn = document.getElementById('finishBtn');
-        btn.disabled = true; btn.innerText = "Syncing...";
+        btn.disabled = true; btn.innerText = "Processing...";
         const payload = { cart: cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        alert("Success!"); location.reload();
+        alert("Transaction Successful!"); location.reload();
     }
 </script>
+
+<div id="upiModal">
+    <span style="color:var(--accent); font-weight:800; letter-spacing:2px; font-size:12px;">SCAN TO PAY</span>
+    <h2 id="upiAmtDisplay" style="color:white; margin:10px 0 25px;"></h2>
+    <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" style="width:280px; border-radius:25px; border:6px solid white;">
+    <button onclick="submitSale()" class="btn-finish" style="background:var(--emerald); width:280px; margin-top:30px; color:white;">Payment Verified</button>
+    <button onclick="closeModal()" style="color:white; background:none; border:none; margin-top:20px; font-weight:700; cursor:pointer;">Cancel</button>
+</div>
+
 </body>
 </html>
