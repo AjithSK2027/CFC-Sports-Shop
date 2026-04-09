@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Hub Pro | Ultra-Fast POS</title>
+    <title>Sports Hub Pro | Target Total POS</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -84,9 +84,9 @@
         .receipt-line { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .receipt-item-name { font-size: 15px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px; }
         .receipt-item-details { font-size: 11px; color: var(--text-dim); display: block; }
-        .receipt-discount-tag { color: var(--emerald); font-weight: 700; font-size: 11px; margin-top: 4px; display: block; }
+        .receipt-discount-tag { color: var(--emerald); font-weight: 800; font-size: 10px; margin-top: 5px; display: inline-block; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; }
         
-        .qty-controls { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        .qty-controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
         .qty-btn { width: 30px; height: 30px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-raised); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; }
         .qty-val { font-size: 15px; font-weight: 700; min-width: 25px; text-align: center; }
 
@@ -111,7 +111,6 @@
             margin: 15px 0;
         }
 
-        /* Speed Loader Bar */
         #loadingBar {
             position: fixed; top: 0; left: 0; height: 3px;
             background: var(--accent); width: 0;
@@ -135,7 +134,7 @@
     </div>
     
     <span class="section-label">Inventory Path</span>
-    <select id="catSelect" class="input-box" onchange="filterBrands()"><option value="">Loading...</option></select>
+    <select id="catSelect" class="input-box" onchange="filterBrands()"><option value="">Category</option></select>
     
     <div id="brandGroup" style="display:none;"><select id="brandSelect" class="input-box" onchange="filterModels()"></select></div>
     <div id="modelGroup" style="display:none;"><select id="modelSelect" class="input-box" onchange="filterSizes()"></select></div>
@@ -165,10 +164,10 @@
         <span class="section-label">Basket Summary</span>
         <div class="receipt-card" id="receiptContent"></div>
         
-        <span class="section-label">Global Adjustments</span>
+        <span class="section-label">Target Rounding</span>
         <div class="global-discount-wrap">
-            <input type="number" id="globalDisc" class="input-box" placeholder="Discount %" oninput="applyGlobalDiscount()" style="margin-bottom:0; border-color:var(--emerald);">
-            <div style="background:var(--surface-raised); border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--emerald);">APPLY TO ALL</div>
+            <input type="number" id="targetTotal" class="input-box" placeholder="Target Bill Total" oninput="applyTargetRounding()" style="margin-bottom:0; border-color:var(--emerald);">
+            <div style="background:var(--surface-raised); border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--emerald);">AUTO-ADJUST</div>
         </div>
     </div>
 
@@ -196,7 +195,6 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbz22v-vi--FVqqqU4iQaSXngUZdXIQ9EII5vA68WJWzhMMsrmw4zG6uTaWYqd8riyzF9Q/exec';
     let rawData = [], cart = [], selectedItem = null, grandTotal = 0;
 
-    // PERFORMANCE: Load from cache instantly, then update in background
     window.onload = () => {
         const bar = document.getElementById('loadingBar');
         bar.style.width = '30%';
@@ -342,22 +340,37 @@
             ...selectedItem, 
             qty: q, 
             price: sp, 
-            originalBasePrice: selectedItem.basePrice 
+            originalMRP: selectedItem.basePrice 
         });
         
-        document.getElementById('globalDisc').value = '';
+        document.getElementById('targetTotal').value = '';
         renderReceipt();
         document.getElementById('dashPanel').style.display = 'none';
         document.getElementById('idSearch').value = '';
     }
 
-    function applyGlobalDiscount() {
-        const perc = parseFloat(document.getElementById('globalDisc').value) || 0;
-        if(perc < 0 || perc > 100) return;
+    // THE TARGET TOTAL MAGIC
+    function applyTargetRounding() {
+        const target = parseFloat(document.getElementById('targetTotal').value);
+        if (!target || target <= 0) {
+            // Revert to MRP if target cleared
+            cart.forEach(item => item.price = item.originalMRP);
+            renderReceipt();
+            return;
+        }
+
+        // 1. Calculate the current sum at full MRP
+        const currentSumMRP = cart.reduce((sum, item) => sum + (item.originalMRP * item.qty), 0);
+        
+        // 2. Determine the reduction ratio needed
+        // target / currentSumMRP = the multiplier for each item's price
+        const multiplier = target / currentSumMRP;
+
         cart.forEach(item => {
-            const discountAmount = (item.basePrice * perc) / 100;
-            item.price = Math.round(item.basePrice - discountAmount);
+            // Apply the same ratio to every item
+            item.price = Math.round(item.originalMRP * multiplier);
         });
+
         renderReceipt();
     }
 
@@ -369,14 +382,20 @@
             <div class="receipt-header">TRANSACTION SUMMARY</div>
             ${cart.map((item, i) => {
                 const lineTotal = item.price * item.qty;
-                const unitDiscount = item.basePrice - item.price;
+                const totalMRPPerItem = item.originalMRP * item.qty;
+                
+                // Calculate percentage discount for this specific item
+                const discPercentage = item.originalMRP > 0 
+                    ? Math.round(((item.originalMRP - item.price) / item.originalMRP) * 100) 
+                    : 0;
+                
                 grandTotal += lineTotal;
                 return `
                     <div class="receipt-line">
                         <div style="flex:1;">
                             <span class="receipt-item-name">${item.name}</span>
-                            <span class="receipt-item-details">${item.color} • MRP: ₹${item.basePrice}</span>
-                            ${unitDiscount > 0 ? `<span class="receipt-discount-tag">Disc: ₹${unitDiscount} / unit</span>` : ''}
+                            <span class="receipt-item-details">${item.color} • MRP: ₹${item.originalMRP}</span>
+                            ${discPercentage > 0 ? `<span class="receipt-discount-tag">DISC: ${discPercentage}% OFF</span>` : ''}
                             <div class="qty-controls">
                                 <div class="qty-btn" onclick="updateQty(${i}, -1)">−</div>
                                 <span class="qty-val">${item.qty}</span>
@@ -424,7 +443,6 @@
         const payload = { cart: cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
         
-        // Success: Clear cache to force fresh stock count on reload
         localStorage.removeItem('sportsHubCache');
         alert("Transaction Finalized!"); location.reload();
     }
