@@ -1,107 +1,220 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Sports Hub Sales</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Hub Pro | Coffeeland FC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { background: #1a73e8; color: white; font-weight: bold; border: none; cursor: pointer; }
-        .total { font-size: 1.2em; font-weight: bold; color: #d93025; }
+        :root { --bg: #020617; --glass: rgba(30, 41, 59, 0.7); --accent: #38bdf8; --neon-green: #4ade80; --text: #f8fafc; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: radial-gradient(circle at top right, #1e293b, #020617); color: var(--text); margin: 0; padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 420px; background: var(--glass); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
+        .section { margin-bottom: 12px; }
+        label { display: block; font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; }
+        select, input { width: 100%; padding: 12px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; font-size: 14px; box-sizing: border-box; }
+        .info-panel { background: rgba(2,6,23,0.5); border-radius: 16px; padding: 15px; margin: 15px 0; display: none; border: 1px solid rgba(56,189,248,0.2); }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; }
+        .stock-pill { padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 10px; }
+        .total-box { background: linear-gradient(135deg, #38bdf8, #2563eb); padding: 15px; border-radius: 16px; text-align: center; margin: 15px 0; }
+        .total-box h2 { margin: 5px 0 0; font-size: 28px; font-weight: 800; }
+        .btn { width: 100%; padding: 16px; background: white; color: #020617; border: none; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        .btn:hover { background: var(--neon-green); }
+
+        #upiModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+        #upiModal img { max-width: 80%; border-radius: 20px; border: 5px solid white; margin-bottom: 20px; }
+        #upiModal h2 { color: white; font-size: 32px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>Sports Hub Sale</h2>
+<div class="container">
+    <header><h1>SPORTS HUB</h1></header>
+
+    <div class="section"><label>1. Category</label><select id="catSelect" onchange="filterBrands()"><option value="">Select Item</option></select></div>
+    <div class="section" id="brandGroup" style="display:none;"><label>2. Brand</label><select id="brandSelect" onchange="filterModels()"></select></div>
+    <div class="section" id="modelGroup" style="display:none;"><label>3. Model</label><select id="modelSelect" onchange="filterSizes()"></select></div>
     
-    <label>Product Code</label>
-    <input type="text" id="pCode" list="productList" placeholder="Enter or Scan Code" onchange="updateDetails()">
-    <datalist id="productList"></datalist>
+    <div class="section" id="sizeGroup" style="display:none;"><label>4. Size</label><select id="sizeSelect" onchange="filterColors()"></select></div>
+    <div class="section" id="colorGroup" style="display:none;"><label>5. Color</label><select id="colorSelect" onchange="loadProduct()"></select></div>
 
-    <p id="pName">Product: --</p>
-    
-    <label>Quantity</label>
-    <input type="number" id="qty" value="1" oninput="calculate()">
+    <div id="productDetails" class="info-panel">
+        <div class="info-row"><span>Stock Status</span><span id="resStock" class="stock-pill"></span></div>
+        <div class="info-row"><span style="color:#94a3b8">Dealer Price</span><span id="resDealer" style="font-weight:600">₹0</span></div>
+        <div class="info-row"><span style="color:#94a3b8">Product Code</span><span id="resCode" style="color:var(--accent)"></span></div>
+    </div>
 
-    <label>Price</label>
-    <input type="number" id="price" oninput="calculate()">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="section"><label>Sale Price</label><input type="number" id="salePrice" oninput="updateTotal()"></div>
+        <div class="section"><label>Qty</label><input type="number" id="qty" value="1" min="1" oninput="validateQty()"></div>
+    </div>
 
-    <label>Payment Mode</label>
-    <select id="mode">
-        <option>UPI</option>
-        <option>Cash</option>
-        <option>Card</option>
-    </select>
+    <div class="section"><label>Customer Name</label><input type="text" id="custName" placeholder="Guest Name"></div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="section">
+            <label>Payment Mode</label>
+            <select id="payMode" onchange="toggleReceivedBy()">
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+            </select>
+        </div>
+        <div class="section" id="receivedGroup" style="display:none;">
+            <label>Received By</label>
+            <input type="text" id="receivedBy" placeholder="Staff Name">
+        </div>
+    </div>
 
-    <label>Customer Name</label>
-    <input type="text" id="customer" placeholder="Optional">
+    <div class="total-box"><span>Payable Total</span><h2 id="finalTotal">₹0</h2></div>
+    <button onclick="handleFinishClick()" id="submitBtn" class="btn">Finish Sale</button>
+</div>
 
-    <div class="total">Total: ₹<span id="totalDisplay">0</span></div>
-    
-    <button onclick="submitSale()" id="subBtn">Submit Sale</button>
+<div id="upiModal">
+    <h2 id="upiAmtDisplay"></h2>
+    <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" alt="UPI QR">
+    <button onclick="submitSale()" class="btn" style="background:var(--neon-green)">PAID & LOG SALE</button>
+    <button onclick="closeModal()" style="background:none; border:none; color:white; margin-top:15px; cursor:pointer;">Cancel</button>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbz5NTLwcEh5FclZMOokc7bY0_Ypw9rPdIB_0T9Dw0MPVSMGiezzBF0hN1U38tIwVTqpkg/exec';
-    let inventory = [];
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzIgdrtGAS0eSDdN-P0Qcz1sJUTYXzaDWf9g3w00QGeYPSBnyC4rOypZZRbq5mSdptV9g/exec';
+    let rawData = [];
+    let selectedItem = null;
 
-    // Load products on start
-    fetch(scriptURL).then(res => res.json()).then(data => {
-        inventory = data;
-        const list = document.getElementById('productList');
-        data.forEach(p => {
-            let opt = document.createElement('option');
-            opt.value = p.code;
-            opt.innerHTML = p.name;
-            list.appendChild(opt);
+    window.onload = () => {
+        fetch(scriptURL).then(r => r.json()).then(data => {
+            rawData = data;
+            const cats = [...new Set(data.map(i => i.name))];
+            const sel = document.getElementById('catSelect');
+            cats.forEach(c => sel.add(new Option(c, c)));
         });
-    });
+    };
 
-    function updateDetails() {
-        const code = document.getElementById('pCode').value;
-        const item = inventory.find(i => i.code === code);
-        if(item) {
-            document.getElementById('pName').innerText = "Product: " + item.name + " (" + item.color + ")";
-            document.getElementById('price').value = item.price;
-            calculate();
+    function toggleReceivedBy() {
+        const mode = document.getElementById('payMode').value;
+        document.getElementById('receivedGroup').style.display = (mode === 'Cash') ? 'block' : 'none';
+    }
+
+    function handleFinishClick() {
+        const mode = document.getElementById('payMode').value;
+        if(mode === 'UPI') {
+            document.getElementById('upiAmtDisplay').innerText = document.getElementById('finalTotal').innerText;
+            document.getElementById('upiModal').style.display = 'flex';
+        } else {
+            submitSale();
         }
     }
 
-    function calculate() {
-        const q = document.getElementById('qty').value;
-        const p = document.getElementById('price').value;
-        document.getElementById('totalDisplay').innerText = q * p;
+    function closeModal() { document.getElementById('upiModal').style.display = 'none'; }
+
+    function filterBrands() {
+        const c = document.getElementById('catSelect').value;
+        const bs = document.getElementById('brandSelect');
+        bs.innerHTML = '<option value="">Select Brand</option>';
+        if(!c) { document.getElementById('brandGroup').style.display = 'none'; return; }
+        const brands = [...new Set(rawData.filter(i => i.name === c).map(i => i.brand))];
+        brands.forEach(b => bs.add(new Option(b, b)));
+        document.getElementById('brandGroup').style.display = 'block';
+        resetBelow('brand');
+    }
+
+    function filterModels() {
+        const c = document.getElementById('catSelect').value;
+        const b = document.getElementById('brandSelect').value;
+        const ms = document.getElementById('modelSelect');
+        const models = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(x => x);
+        if (models.length === 0) {
+            document.getElementById('modelGroup').style.display = 'none';
+            ms.value = ""; filterSizes();
+        } else {
+            ms.innerHTML = '<option value="">Select Model</option>';
+            models.forEach(m => ms.add(new Option(m, m)));
+            document.getElementById('modelGroup').style.display = 'block';
+        }
+    }
+
+    function filterSizes() {
+        const c = document.getElementById('catSelect').value;
+        const b = document.getElementById('brandSelect').value;
+        const m = document.getElementById('modelSelect').value;
+        const ss = document.getElementById('sizeSelect');
+        const sizes = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m)).map(i => i.size))].filter(x => x);
+        if (sizes.length === 0) {
+            document.getElementById('sizeGroup').style.display = 'none';
+            ss.value = ""; filterColors();
+        } else {
+            ss.innerHTML = '<option value="">Select Size</option>';
+            sizes.forEach(s => ss.add(new Option(s, s)));
+            document.getElementById('sizeGroup').style.display = 'block';
+        }
+    }
+
+    function filterColors() {
+        const c = document.getElementById('catSelect').value;
+        const b = document.getElementById('brandSelect').value;
+        const m = document.getElementById('modelSelect').value;
+        const s = document.getElementById('sizeSelect').value;
+        const cs = document.getElementById('colorSelect');
+        const colors = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m) && (s === "" ? true : i.size === s)).map(i => i.color))].filter(x => x);
+        if (colors.length === 0) {
+            document.getElementById('colorGroup').style.display = 'none';
+            cs.value = ""; loadProduct();
+        } else {
+            cs.innerHTML = '<option value="">Select Color</option>';
+            colors.forEach(col => cs.add(new Option(col, col)));
+            document.getElementById('colorGroup').style.display = 'block';
+        }
+    }
+
+    function loadProduct() {
+        const c = document.getElementById('catSelect').value;
+        const b = document.getElementById('brandSelect').value;
+        const m = document.getElementById('modelSelect').value;
+        const s = document.getElementById('sizeSelect').value;
+        const col = document.getElementById('colorSelect').value;
+        selectedItem = rawData.find(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m) && (s === "" ? true : i.size === s) && (col === "" ? true : i.color === col));
+        if(selectedItem) {
+            document.getElementById('productDetails').style.display = 'block';
+            document.getElementById('resCode').innerText = selectedItem.code;
+            document.getElementById('resDealer').innerText = '₹' + selectedItem.dealerCost;
+            const stock = document.getElementById('resStock');
+            stock.innerText = selectedItem.stock + ' IN STOCK';
+            stock.style.color = selectedItem.stock > 0 ? '#4ade80' : '#f43f5e';
+            document.getElementById('salePrice').value = selectedItem.basePrice;
+            updateTotal();
+        }
+    }
+
+    function validateQty() {
+        if(selectedItem && parseInt(document.getElementById('qty').value) > selectedItem.stock) {
+            alert("Exceeds Available Stock!"); document.getElementById('qty').value = selectedItem.stock;
+        }
+        updateTotal();
+    }
+
+    function updateTotal() {
+        const p = parseFloat(document.getElementById('salePrice').value) || 0;
+        const q = parseInt(document.getElementById('qty').value) || 0;
+        document.getElementById('finalTotal').innerText = '₹' + (p * q).toLocaleString('en-IN');
+    }
+
+    function resetBelow(l) {
+        document.getElementById('productDetails').style.display = 'none';
+        if(l === 'brand') { document.getElementById('modelGroup').style.display = 'none'; document.getElementById('sizeGroup').style.display = 'none'; document.getElementById('colorGroup').style.display = 'none'; }
     }
 
     async function submitSale() {
-        const btn = document.getElementById('subBtn');
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        const code = document.getElementById('pCode').value;
-        const item = inventory.find(i => i.code === code);
-
-        const payload = {
-            code: code,
-            name: item ? item.name : "Unknown",
-            color: item ? item.color : "-",
-            qty: document.getElementById('qty').value,
-            price: document.getElementById('price').value,
-            mode: document.getElementById('mode').value,
-            customer: document.getElementById('customer').value
+        if(!selectedItem || document.getElementById('qty').value <= 0) return alert("Incomplete Selection");
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true; btn.innerText = "Processing...";
+        const payload = { 
+            code: selectedItem.code, name: selectedItem.name, qty: document.getElementById('qty').value, 
+            price: document.getElementById('salePrice').value, mode: document.getElementById('payMode').value, 
+            customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A"
         };
-
-        await fetch(scriptURL, {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        });
-
-        alert("Sale Logged to Sports Hub!");
-        location.reload();
+        await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+        alert("Transaction Recorded!"); location.reload();
     }
 </script>
-
 </body>
 </html>
