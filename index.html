@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Hub Pro | Global Discount POS</title>
+    <title>Sports Hub Pro | Ultra-Fast POS</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -82,11 +82,11 @@
         }
         .receipt-header { text-align: center; font-weight: 800; letter-spacing: 3px; color: var(--accent); font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; }
         .receipt-line { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .receipt-item-name { font-size: 15px; font-weight: 700; color: var(--text-main); display: block; }
-        .receipt-item-details { font-size: 11px; color: var(--text-dim); display: block; margin-top: 2px; }
-        .receipt-discount-tag { color: var(--emerald); font-weight: 800; font-size: 10px; margin-top: 5px; display: inline-block; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; }
+        .receipt-item-name { font-size: 15px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px; }
+        .receipt-item-details { font-size: 11px; color: var(--text-dim); display: block; }
+        .receipt-discount-tag { color: var(--emerald); font-weight: 700; font-size: 11px; margin-top: 4px; display: block; }
         
-        .qty-controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .qty-controls { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
         .qty-btn { width: 30px; height: 30px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-raised); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; }
         .qty-val { font-size: 15px; font-weight: 700; min-width: 25px; text-align: center; }
 
@@ -110,9 +110,18 @@
             gap: 12px;
             margin: 15px 0;
         }
+
+        /* Speed Loader Bar */
+        #loadingBar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: var(--accent); width: 0;
+            transition: width 0.4s ease; z-index: 9999;
+        }
     </style>
 </head>
 <body>
+
+<div id="loadingBar"></div>
 
 <div class="app-container">
     <div class="header">
@@ -138,7 +147,7 @@
 
     <div id="dashPanel" class="dash-panel">
         <div class="product-preview-frame">
-            <img id="prodImage" src="" alt="">
+            <img id="prodImage" src="" alt="" loading="lazy">
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding:0 5px;">
@@ -187,17 +196,40 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbz22v-vi--FVqqqU4iQaSXngUZdXIQ9EII5vA68WJWzhMMsrmw4zG6uTaWYqd8riyzF9Q/exec';
     let rawData = [], cart = [], selectedItem = null, grandTotal = 0;
 
+    // PERFORMANCE: Load from cache instantly, then update in background
     window.onload = () => {
-        fetch(scriptURL).then(r => r.json()).then(data => {
-            rawData = data;
-            const cats = [...new Set(data.map(i => i.name))];
-            const sel = document.getElementById('catSelect');
-            cats.forEach(c => {
-                const total = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
-                sel.add(new Option(`${c} (${total})`, c));
+        const bar = document.getElementById('loadingBar');
+        bar.style.width = '30%';
+
+        const cachedData = localStorage.getItem('sportsHubCache');
+        if (cachedData) {
+            rawData = JSON.parse(cachedData);
+            populateCategories();
+            bar.style.width = '60%';
+        }
+
+        fetch(scriptURL)
+            .then(r => r.json())
+            .then(data => {
+                rawData = data;
+                localStorage.setItem('sportsHubCache', JSON.stringify(data));
+                populateCategories();
+                bar.style.width = '100%';
+                setTimeout(() => bar.style.width = '0', 500);
             });
-        });
     };
+
+    function populateCategories() {
+        const cats = [...new Set(rawData.map(i => i.name))];
+        const sel = document.getElementById('catSelect');
+        const currentVal = sel.value;
+        sel.innerHTML = '<option value="">Category</option>';
+        cats.forEach(c => {
+            const total = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
+            sel.add(new Option(`${c} (${total})`, c));
+        });
+        if(currentVal) sel.value = currentVal;
+    }
 
     function handleSearch() {
         const query = document.getElementById('idSearch').value.toUpperCase();
@@ -306,7 +338,6 @@
         const sp = parseFloat(document.getElementById('salePrice').value), q = parseInt(document.getElementById('qty').value);
         if(!selectedItem || q < 1 || q > selectedItem.stock) return alert("Check selection/stock");
         
-        // Push with originalBasePrice to keep reference for global discounts
         cart.push({ 
             ...selectedItem, 
             qty: q, 
@@ -314,25 +345,19 @@
             originalBasePrice: selectedItem.basePrice 
         });
         
-        // Reset global discount input when adding new item to avoid confusion
         document.getElementById('globalDisc').value = '';
-        
         renderReceipt();
         document.getElementById('dashPanel').style.display = 'none';
         document.getElementById('idSearch').value = '';
     }
 
-    // THE MAGIC FUNCTION: recaculates everything in the cart
     function applyGlobalDiscount() {
         const perc = parseFloat(document.getElementById('globalDisc').value) || 0;
         if(perc < 0 || perc > 100) return;
-
         cart.forEach(item => {
-            // Calculate discounted price based on the original MRP (basePrice)
             const discountAmount = (item.basePrice * perc) / 100;
             item.price = Math.round(item.basePrice - discountAmount);
         });
-
         renderReceipt();
     }
 
@@ -398,6 +423,9 @@
         closeModal();
         const payload = { cart: cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+        
+        // Success: Clear cache to force fresh stock count on reload
+        localStorage.removeItem('sportsHubCache');
         alert("Transaction Finalized!"); location.reload();
     }
 </script>
