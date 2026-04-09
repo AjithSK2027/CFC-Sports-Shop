@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Hub Pro | mPOS</title>
+    <title>Sports Hub Pro | Global Discount POS</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -48,7 +48,6 @@
             border-radius: 18px; z-index: 1000; max-height: 200px; overflow-y: auto; display: none;
         }
         .suggestion-item { padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
-        .suggestion-item:hover { background: rgba(56, 189, 248, 0.1); }
 
         .section-label { font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 10px 5px; display: block; }
         
@@ -59,43 +58,58 @@
 
         .dash-panel { background: #111827; border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; display: none; }
         
-        /* RECEIPT UI */
+        .product-preview-frame {
+            width: 100%; height: 220px;
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 24px;
+            margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
+        .product-preview-frame img {
+            max-width: 85%; max-height: 85%;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9));
+            transition: 0.6s cubic-bezier(0.16, 1, 0.32, 1);
+            opacity: 0; transform: translateY(10px) scale(0.95);
+        }
+        .product-preview-frame img.loaded { opacity: 1; transform: translateY(0) scale(1); }
+
         .receipt-card {
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(56, 189, 248, 0.2);
             border-radius: 24px; padding: 24px; margin: 15px 0; backdrop-filter: blur(12px);
         }
         .receipt-header { text-align: center; font-weight: 800; letter-spacing: 3px; color: var(--accent); font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; }
         .receipt-line { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .receipt-item-name { font-size: 15px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px; }
-        .receipt-item-details { font-size: 11px; color: var(--text-dim); display: block; }
-        .receipt-discount-tag { color: var(--emerald); font-weight: 700; font-size: 11px; margin-top: 4px; display: block; }
+        .receipt-item-name { font-size: 15px; font-weight: 700; color: var(--text-main); display: block; }
+        .receipt-item-details { font-size: 11px; color: var(--text-dim); display: block; margin-top: 2px; }
+        .receipt-discount-tag { color: var(--emerald); font-weight: 800; font-size: 10px; margin-top: 5px; display: inline-block; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; }
         
-        .qty-controls { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-        .qty-btn { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-raised); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; }
-        .qty-val { font-size: 14px; font-weight: 700; min-width: 20px; text-align: center; }
+        .qty-controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .qty-btn { width: 30px; height: 30px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-raised); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; }
+        .qty-val { font-size: 15px; font-weight: 700; min-width: 25px; text-align: center; }
 
         .receipt-item-total { font-size: 16px; font-weight: 800; color: var(--text-main); text-align: right; }
-        .receipt-remove { font-size: 9px; font-weight: 800; color: var(--neon-red); cursor: pointer; text-transform: uppercase; margin-top: 8px; letter-spacing: 1px; text-align: right; }
+        .receipt-remove { font-size: 9px; font-weight: 800; color: var(--neon-red); cursor: pointer; text-transform: uppercase; margin-top: 8px; letter-spacing: 1.5px; text-align: right; }
 
         .receipt-total-footer { margin-top: 10px; padding-top: 20px; border-top: 1px solid var(--accent); display: flex; justify-content: space-between; align-items: center; }
-        .grand-total-label { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 1.5px; }
-        .grand-total-amount { font-size: 32px; font-weight: 800; color: var(--text-main); text-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+        .grand-total-label { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 2px; }
+        .grand-total-amount { font-size: 34px; font-weight: 800; color: var(--text-main); text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
 
-        .btn-finish { width: 100%; padding: 22px; background: white; color: black; border: none; border-radius: 22px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
-        .btn-finish:active { transform: scale(0.95); }
-
-        /* UPI MODAL */
-        #paymentModal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 2000; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
-            backdrop-filter: blur(10px);
-        }
-        .modal-content {
-            background: var(--surface-raised); border: 1px solid var(--accent);
-            padding: 30px; border-radius: 30px; text-align: center; width: 100%; max-width: 320px;
-        }
-        .qr-frame { background: white; padding: 15px; border-radius: 20px; margin: 20px 0; }
+        .btn-finish { width: 100%; padding: 22px; background: white; color: black; border: none; border-radius: 22px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 15px; }
+        
+        #paymentModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(15px); }
+        .modal-content { background: var(--surface-raised); border: 1px solid var(--accent); padding: 30px; border-radius: 35px; text-align: center; width: 100%; max-width: 330px; }
+        .qr-frame { background: white; padding: 15px; border-radius: 22px; margin: 25px 0; }
         .qr-frame img { width: 100%; display: block; }
+
+        .global-discount-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
     </style>
 </head>
 <body>
@@ -123,20 +137,30 @@
     </div>
 
     <div id="dashPanel" class="dash-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <div id="resStockTag" style="font-size:11px; font-weight:800; color:var(--emerald);"></div>
+        <div class="product-preview-frame">
+            <img id="prodImage" src="" alt="">
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding:0 5px;">
+            <div id="resStockTag" style="font-size:11px; font-weight:800; color:var(--emerald); letter-spacing:1px;"></div>
             <div id="resDealer" style="font-size: 13px; font-weight: 700; color: var(--accent);"></div>
         </div>
         <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap:12px;">
-            <input type="number" id="salePrice" class="input-box" placeholder="Sold Price" style="margin-bottom:0;">
+            <input type="number" id="salePrice" class="input-box" placeholder="Unit Price" style="margin-bottom:0;">
             <input type="number" id="qty" class="input-box" value="1" style="margin-bottom:0;">
         </div>
-        <button style="width:100%; padding:16px; background:transparent; border:2px solid var(--accent); color:var(--accent); border-radius:18px; font-weight:800; margin-top:10px; cursor:pointer;" onclick="addToCart()">+ Add to Basket</button>
+        <button style="width:100%; padding:18px; background:transparent; border:2px solid var(--accent); color:var(--accent); border-radius:20px; font-weight:800; margin-top:15px; cursor:pointer;" onclick="addToCart()">Add to Basket</button>
     </div>
 
     <div id="receiptSection" style="display:none;">
         <span class="section-label">Basket Summary</span>
         <div class="receipt-card" id="receiptContent"></div>
+        
+        <span class="section-label">Global Adjustments</span>
+        <div class="global-discount-wrap">
+            <input type="number" id="globalDisc" class="input-box" placeholder="Discount %" oninput="applyGlobalDiscount()" style="margin-bottom:0; border-color:var(--emerald);">
+            <div style="background:var(--surface-raised); border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--emerald);">APPLY TO ALL</div>
+        </div>
     </div>
 
     <span class="section-label">Transaction Details</span>
@@ -151,28 +175,23 @@
 
 <div id="paymentModal">
     <div class="modal-content">
-        <span style="color:var(--accent); font-weight:800; letter-spacing:1px; font-size:12px;">TOTAL TO PAY</span>
-        <h2 id="modalTotal" style="font-size:32px; margin:10px 0;">₹0</h2>
-        
-        <div class="qr-frame">
-            <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" alt="UPI QR">
-        </div>
-        
+        <span style="color:var(--accent); font-weight:800; letter-spacing:1.5px; font-size:12px;">TOTAL TO PAY</span>
+        <h2 id="modalTotal" style="font-size:36px; margin:12px 0;">₹0</h2>
+        <div class="qr-frame"><img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" alt="UPI QR"></div>
         <button onclick="submitSale()" class="btn-finish" style="background:var(--emerald); color:white; margin-top:10px;">Payment Received</button>
-        <button onclick="closeModal()" style="background:none; border:none; color:var(--text-dim); margin-top:15px; cursor:pointer; font-weight:700;">Cancel</button>
+        <button onclick="closeModal()" style="background:none; border:none; color:var(--text-dim); margin-top:20px; cursor:pointer; font-weight:700;">Cancel</button>
     </div>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzEujlzXAv9WynXK7RGVHGPDsA6Upt2v7P1zF0C855THpKi2kCSUgAjLd6HV-vNXNy7Cw/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz22v-vi--FVqqqU4iQaSXngUZdXIQ9EII5vA68WJWzhMMsrmw4zG6uTaWYqd8riyzF9Q/exec';
     let rawData = [], cart = [], selectedItem = null, grandTotal = 0;
 
     window.onload = () => {
         fetch(scriptURL).then(r => r.json()).then(data => {
-            rawData = data.map(i => ({...i, stock: Number(i.stock || 0), dealerCost: Number(i.dealerCost || 0)}));
-            const cats = [...new Set(rawData.map(i => i.name))];
+            rawData = data;
+            const cats = [...new Set(data.map(i => i.name))];
             const sel = document.getElementById('catSelect');
-            sel.innerHTML = '<option value="">Category</option>';
             cats.forEach(c => {
                 const total = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
                 sel.add(new Option(`${c} (${total})`, c));
@@ -275,17 +294,46 @@
             document.getElementById('resDealer').innerText = 'Dealer Cost: ₹' + selectedItem.dealerCost.toFixed(2);
             document.getElementById('resStockTag').innerText = selectedItem.stock + ' IN STOCK';
             document.getElementById('salePrice').value = selectedItem.basePrice;
+            
+            const img = document.getElementById('prodImage');
+            img.classList.remove('loaded');
+            img.src = selectedItem.photo || "https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png";
+            img.onload = () => img.classList.add('loaded');
         }
     }
 
     function addToCart() {
         const sp = parseFloat(document.getElementById('salePrice').value), q = parseInt(document.getElementById('qty').value);
         if(!selectedItem || q < 1 || q > selectedItem.stock) return alert("Check selection/stock");
-        const existing = cart.find(i => i.code === selectedItem.code && i.price === sp);
-        if(existing) { existing.qty += q; } else { cart.push({ ...selectedItem, qty: q, price: sp }); }
+        
+        // Push with originalBasePrice to keep reference for global discounts
+        cart.push({ 
+            ...selectedItem, 
+            qty: q, 
+            price: sp, 
+            originalBasePrice: selectedItem.basePrice 
+        });
+        
+        // Reset global discount input when adding new item to avoid confusion
+        document.getElementById('globalDisc').value = '';
+        
         renderReceipt();
         document.getElementById('dashPanel').style.display = 'none';
         document.getElementById('idSearch').value = '';
+    }
+
+    // THE MAGIC FUNCTION: recaculates everything in the cart
+    function applyGlobalDiscount() {
+        const perc = parseFloat(document.getElementById('globalDisc').value) || 0;
+        if(perc < 0 || perc > 100) return;
+
+        cart.forEach(item => {
+            // Calculate discounted price based on the original MRP (basePrice)
+            const discountAmount = (item.basePrice * perc) / 100;
+            item.price = Math.round(item.basePrice - discountAmount);
+        });
+
+        renderReceipt();
     }
 
     function renderReceipt() {
@@ -310,7 +358,7 @@
                                 <div class="qty-btn" onclick="updateQty(${i}, 1)">+</div>
                             </div>
                         </div>
-                        <div class="receipt-price-block">
+                        <div style="text-align:right;">
                             <div class="receipt-item-total">₹${lineTotal.toLocaleString()}</div>
                             <div onclick="removeItem(${i})" class="receipt-remove">REMOVE</div>
                         </div>
@@ -333,34 +381,24 @@
     }
 
     function removeItem(i) { cart.splice(i, 1); renderReceipt(); }
-
+    
     function handleCheckoutFlow() {
         if(cart.length === 0) return alert("Cart empty");
-        const mode = document.getElementById('payMode').value;
-        if(mode === "UPI") {
+        if(document.getElementById('payMode').value === "UPI") {
             document.getElementById('modalTotal').innerText = "₹" + grandTotal.toLocaleString();
             document.getElementById('paymentModal').style.display = "flex";
-        } else {
-            submitSale();
-        }
+        } else { submitSale(); }
     }
-
+    
     function closeModal() { document.getElementById('paymentModal').style.display = "none"; }
 
     async function submitSale() {
         const btn = document.getElementById('finishBtn');
         btn.disabled = true; btn.innerText = "Syncing...";
         closeModal();
-        
-        const payload = { 
-            cart: cart, 
-            mode: document.getElementById('payMode').value, 
-            customer: document.getElementById('custName').value || "Guest", 
-            receivedBy: document.getElementById('receivedBy').value || "N/A" 
-        };
-        
+        const payload = { cart: cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        alert("Success!"); location.reload();
+        alert("Transaction Finalized!"); location.reload();
     }
 </script>
 </body>
