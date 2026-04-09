@@ -1,915 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CFC Sports Shop - POS System</title>
+    <title>Sports Hub Sales</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0a0e1a;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1a1f2e 0%, #0f1119 100%);
-            padding: 20px 30px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-section img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .header h1 {
-            color: #6c5ce7;
-            font-size: 24px;
-        }
-
-        .header h1 span {
-            font-size: 14px;
-            color: #00b894;
-            margin-left: 10px;
-        }
-
-        .date {
-            color: #a0a0a0;
-            font-size: 14px;
-        }
-
-        .nav {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            padding: 12px 24px;
-            background: #1a1f2e;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #a0a0a0;
-            transition: all 0.3s;
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
-            color: white;
-            border-color: transparent;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: #1a1f2e;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .stat-card h3 {
-            font-size: 14px;
-            color: #a0a0a0;
-            margin-bottom: 10px;
-        }
-
-        .stat-card .value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #6c5ce7;
-        }
-
-        .pos-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .card {
-            background: #1a1f2e;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .card h2 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #ffffff;
-            border-bottom: 2px solid rgba(108,92,231,0.3);
-            padding-bottom: 10px;
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px;
-            background: #0f1119;
-            border: 1px solid #2d3348;
-            border-radius: 8px;
-            font-size: 16px;
-            color: white;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: #6c5ce7;
-        }
-
-        .category-filter {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .category-btn {
-            padding: 8px 16px;
-            background: #0f1119;
-            border: 1px solid #2d3348;
-            border-radius: 20px;
-            cursor: pointer;
-            color: #a0a0a0;
-            transition: all 0.3s;
-        }
-
-        .category-btn.active, .category-btn:hover {
-            background: #6c5ce7;
-            color: white;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .products-grid::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .products-grid::-webkit-scrollbar-track {
-            background: #0f1119;
-            border-radius: 10px;
-        }
-
-        .products-grid::-webkit-scrollbar-thumb {
-            background: #6c5ce7;
-            border-radius: 10px;
-        }
-
-        .product-card {
-            background: #0f1119;
-            border-radius: 10px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .product-card:hover {
-            transform: translateY(-3px);
-            border-color: #6c5ce7;
-            background: #1a1f2e;
-        }
-
-        .product-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 10px;
-            background: linear-gradient(135deg, #6c5ce7 0%, #a363d9 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-        }
-
-        .product-card h3 {
-            font-size: 14px;
-            color: #ffffff;
-        }
-
-        .product-card .category {
-            font-size: 11px;
-            color: #888;
-        }
-
-        .product-card .price {
-            font-size: 16px;
-            font-weight: bold;
-            color: #6c5ce7;
-            margin-top: 5px;
-        }
-
-        .product-card .stock {
-            font-size: 11px;
-            color: #00b894;
-            margin-top: 5px;
-        }
-
-        .product-card .stock.low {
-            color: #ff7675;
-        }
-
-        .cart-container {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .cart-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr auto;
-            gap: 10px;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .cart-item-header {
-            background: #0f1119;
-            font-weight: 600;
-            color: #a0a0a0;
-            border-bottom: 2px solid #6c5ce7;
-            position: sticky;
-            top: 0;
-        }
-
-        .cart-item input {
-            width: 60px;
-            padding: 5px;
-            background: #0f1119;
-            border: 1px solid #2d3348;
-            border-radius: 5px;
-            text-align: center;
-            color: white;
-        }
-
-        .remove-btn {
-            background: #ff7675;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .cart-total {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px solid rgba(108,92,231,0.3);
-            text-align: right;
-            font-size: 24px;
-            font-weight: bold;
-            color: #6c5ce7;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 10px;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-
-        .btn-success {
-            background: #00b894;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #00a884;
-            transform: translateY(-2px);
-        }
-
-        .btn-warning {
-            background: #fdcb6e;
-            color: #1a1f2e;
-        }
-
-        .btn-warning:hover {
-            background: #fdcb6e;
-            transform: translateY(-2px);
-        }
-
-        .table-container {
-            overflow-x: auto;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: #e0e0e0;
-        }
-
-        th {
-            background: #0f1119;
-            color: #6c5ce7;
-            position: sticky;
-            top: 0;
-        }
-
-        .alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            display: none;
-            z-index: 1000;
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .alert-success { background: #00b894; color: white; }
-        .alert-error { background: #ff7675; color: white; }
-
-        .page { display: none; animation: fadeIn 0.3s; }
-        .page.active-page { display: block; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #a0a0a0;
-        }
-
-        @media (max-width: 768px) {
-            .pos-container { grid-template-columns: 1fr; }
-            .cart-item { grid-template-columns: 1fr; gap: 5px; }
-        }
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #1a73e8; color: white; font-weight: bold; border: none; cursor: pointer; }
+        .total { font-size: 1.2em; font-weight: bold; color: #d93025; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo-section">
-                <img src="https://i.ibb.co/KjC62kc0/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" alt="Logo">
-                <h1>🏃‍♂️ CFC Sports Shop <span>⚡ POS System</span></h1>
-            </div>
-            <div class="date" id="currentDate"></div>
-        </div>
 
-        <div class="nav">
-            <button class="nav-btn active" onclick="showPage('pos')">💰 POS / SALES</button>
-            <button class="nav-btn" onclick="showPage('inventory')">📦 Inventory</button>
-            <button class="nav-btn" onclick="showPage('salesHistory')">📊 Sales History</button>
-        </div>
+<div class="card">
+    <h2>Sports Hub Sale</h2>
+    
+    <label>Product Code</label>
+    <input type="text" id="pCode" list="productList" placeholder="Enter or Scan Code" onchange="updateDetails()">
+    <datalist id="productList"></datalist>
 
-        <div id="alert" class="alert"></div>
+    <p id="pName">Product: --</p>
+    
+    <label>Quantity</label>
+    <input type="number" id="qty" value="1" oninput="calculate()">
 
-        <!-- POS PAGE -->
-        <div id="pos" class="page active-page">
-            <div class="stats" id="posStats"></div>
-            
-            <div class="pos-container">
-                <div class="card">
-                    <h2>🛍️ Select Products</h2>
-                    <div class="search-box">
-                        <input type="text" id="searchProduct" placeholder="🔍 Search product by name..." onkeyup="filterProducts()">
-                    </div>
-                    <div class="category-filter" id="categoryFilter"></div>
-                    <div class="products-grid" id="productsGrid"></div>
-                </div>
+    <label>Price</label>
+    <input type="number" id="price" oninput="calculate()">
 
-                <div class="card">
-                    <h2>🛒 Shopping Cart</h2>
-                    <div class="cart-container">
-                        <div class="cart-item cart-item-header">
-                            <div>Product</div>
-                            <div>Price</div>
-                            <div>Qty</div>
-                            <div>Total</div>
-                            <div></div>
-                        </div>
-                        <div id="cartItems"></div>
-                    </div>
-                    <div class="cart-total">
-                        Total: ₹<span id="cartTotal">0.00</span>
-                    </div>
-                    <div style="margin-top: 20px;">
-                        <select id="paymentMode" style="padding: 12px; background: #0f1119; border: 1px solid #2d3348; color: white; width: 100%; border-radius: 8px; margin-bottom: 10px;">
-                            <option value="Cash">💵 Cash</option>
-                            <option value="Card">💳 Card</option>
-                            <option value="UPI">📱 UPI</option>
-                        </select>
-                        <button class="btn btn-success" id="processBtn" onclick="processSale()">✅ Complete Sale</button>
-                        <button class="btn btn-warning" onclick="clearCart()">🗑️ Clear Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <label>Payment Mode</label>
+    <select id="mode">
+        <option>UPI</option>
+        <option>Cash</option>
+        <option>Card</option>
+    </select>
 
-        <!-- INVENTORY PAGE -->
-        <div id="inventory" class="page">
-            <div class="stats" id="inventoryStats"></div>
-            <div class="card">
-                <h2>📦 Current Inventory</h2>
-                <div class="table-container">
-                    <table id="inventoryTable">
-                        <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Price (₹)</th>
-                                <th>Stock</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventoryBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <label>Customer Name</label>
+    <input type="text" id="customer" placeholder="Optional">
 
-        <!-- SALES HISTORY PAGE -->
-        <div id="salesHistory" class="page">
-            <div class="stats" id="salesStats"></div>
-            <div class="card">
-                <h2>📊 Sales Transactions</h2>
-                <div class="table-container">
-                    <table id="salesTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Price (₹)</th>
-                                <th>Total (₹)</th>
-                                <th>Payment Mode</th>
-                            </tr>
-                        </thead>
-                        <tbody id="salesBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="total">Total: ₹<span id="totalDisplay">0</span></div>
+    
+    <button onclick="submitSale()" id="subBtn">Submit Sale</button>
+</div>
 
-    <script>
-        // Your Google Sheet ID
-        const SHEET_ID = '1aPUrG2AiPiXT2e0s5HHEzSHleIGmYwBlUZxcd4aOF40';
-        
-        // Your Apps Script URL for writing sales
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyahWXl3evVuMYNpVZqqNdHLfuJnWZ_oLdgCCUtRjhDCZctL-CvxjFEScxFw72kimzJGg/exec';
-        
-        let products = [];
-        let sales = [];
-        let cart = [];
-        let currentCategory = 'all';
-        let searchTerm = '';
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz5NTLwcEh5FclZMOokc7bY0_Ypw9rPdIB_0T9Dw0MPVSMGiezzBF0hN1U38tIwVTqpkg/exec';
+    let inventory = [];
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN', { 
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-            });
-            loadAllData();
+    // Load products on start
+    fetch(scriptURL).then(res => res.json()).then(data => {
+        inventory = data;
+        const list = document.getElementById('productList');
+        data.forEach(p => {
+            let opt = document.createElement('option');
+            opt.value = p.code;
+            opt.innerHTML = p.name;
+            list.appendChild(opt);
+        });
+    });
+
+    function updateDetails() {
+        const code = document.getElementById('pCode').value;
+        const item = inventory.find(i => i.code === code);
+        if(item) {
+            document.getElementById('pName').innerText = "Product: " + item.name + " (" + item.color + ")";
+            document.getElementById('price').value = item.price;
+            calculate();
+        }
+    }
+
+    function calculate() {
+        const q = document.getElementById('qty').value;
+        const p = document.getElementById('price').value;
+        document.getElementById('totalDisplay').innerText = q * p;
+    }
+
+    async function submitSale() {
+        const btn = document.getElementById('subBtn');
+        btn.innerText = "Processing...";
+        btn.disabled = true;
+
+        const code = document.getElementById('pCode').value;
+        const item = inventory.find(i => i.code === code);
+
+        const payload = {
+            code: code,
+            name: item ? item.name : "Unknown",
+            color: item ? item.color : "-",
+            qty: document.getElementById('qty').value,
+            price: document.getElementById('price').value,
+            mode: document.getElementById('mode').value,
+            customer: document.getElementById('customer').value
+        };
+
+        await fetch(scriptURL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
         });
 
-        function showPage(pageName) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
-            document.getElementById(pageName).classList.add('active-page');
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
+        alert("Sale Logged to Sports Hub!");
+        location.reload();
+    }
+</script>
 
-        function showAlert(message, type = 'success') {
-            const alert = document.getElementById('alert');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            alert.style.display = 'block';
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 3000);
-        }
-
-        async function loadAllData() {
-            await loadProducts();
-            await loadSales();
-            updateProductsGrid();
-            updateInventoryTable();
-            updateSalesTable();
-            updateStats();
-        }
-
-        // Load products from Google Sheet (published as CSV)
-        async function loadProducts() {
-            try {
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Products`;
-                const response = await fetch(url);
-                const text = await response.text();
-                
-                // Parse CSV
-                const rows = text.split('\n');
-                products = [];
-                
-                for (let i = 1; i < rows.length; i++) {
-                    if (rows[i].trim()) {
-                        const cols = rows[i].split(',');
-                        // Remove quotes if present
-                        const name = cols[0] ? cols[0].replace(/"/g, '') : '';
-                        const category = cols[1] ? cols[1].replace(/"/g, '') : '';
-                        const price = parseFloat(cols[2]) || 0;
-                        const stock = parseFloat(cols[3]) || 0;
-                        
-                        if (name) {
-                            products.push({
-                                name: name,
-                                category: category,
-                                price: price,
-                                stock: stock
-                            });
-                        }
-                    }
-                }
-                
-                console.log('Products loaded:', products.length);
-                updateCategoryFilter();
-                
-            } catch (error) {
-                console.error('Error loading products:', error);
-                showAlert('Error loading products. Check if sheet is shared.', 'error');
-                // Demo data
-                products = [
-                    { name: 'Football', category: 'Sports', price: 2199, stock: 50 },
-                    { name: 'Basketball', category: 'Sports', price: 2499, stock: 35 },
-                    { name: 'Running Shoes', category: 'Footwear', price: 3999, stock: 40 }
-                ];
-                updateCategoryFilter();
-            }
-        }
-
-        // Load sales from Google Sheet
-        async function loadSales() {
-            try {
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sales`;
-                const response = await fetch(url);
-                const text = await response.text();
-                
-                const rows = text.split('\n');
-                sales = [];
-                
-                for (let i = 1; i < rows.length; i++) {
-                    if (rows[i].trim()) {
-                        const cols = rows[i].split(',');
-                        sales.push({
-                            date: cols[0] ? cols[0].replace(/"/g, '') : '',
-                            productName: cols[2] ? cols[2].replace(/"/g, '') : '',
-                            quantity: parseFloat(cols[4]) || 0,
-                            price: parseFloat(cols[5]) || 0,
-                            total: parseFloat(cols[6]) || 0,
-                            paymentMode: cols[7] ? cols[7].replace(/"/g, '') : ''
-                        });
-                    }
-                }
-                
-                console.log('Sales loaded:', sales.length);
-                
-            } catch (error) {
-                console.error('Error loading sales:', error);
-                sales = [];
-            }
-        }
-
-        function updateCategoryFilter() {
-            const categories = ['all', ...new Set(products.map(p => p.category))];
-            const filterDiv = document.getElementById('categoryFilter');
-            filterDiv.innerHTML = categories.map(cat => `
-                <button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">
-                    ${cat === 'all' ? 'All' : cat}
-                </button>
-            `).join('');
-        }
-
-        function filterByCategory(category) {
-            currentCategory = category;
-            updateCategoryFilter();
-            filterProducts();
-        }
-
-        function filterProducts() {
-            searchTerm = document.getElementById('searchProduct').value.toLowerCase();
-            updateProductsGrid();
-        }
-
-        function updateProductsGrid() {
-            let filtered = products.filter(p => p.stock > 0);
-            
-            if (currentCategory !== 'all') {
-                filtered = filtered.filter(p => p.category === currentCategory);
-            }
-            if (searchTerm) {
-                filtered = filtered.filter(p => 
-                    p.name.toLowerCase().includes(searchTerm) || 
-                    p.category.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            const grid = document.getElementById('productsGrid');
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="loading">No products found. Add stock in your Google Sheet.</div>';
-                return;
-            }
-            
-            grid.innerHTML = filtered.map(product => `
-                <div class="product-card" onclick="addToCart('${product.name.replace(/'/g, "\\'")}')">
-                    <div class="product-icon">${getIcon(product.category)}</div>
-                    <h3>${product.name}</h3>
-                    <div class="category">${product.category}</div>
-                    <div class="price">₹${product.price.toFixed(2)}</div>
-                    <div class="stock ${product.stock < 10 ? 'low' : ''}">Stock: ${product.stock}</div>
-                </div>
-            `).join('');
-        }
-
-        function getIcon(category) {
-            const icons = {
-                'Sports': '⚽',
-                'Footwear': '👟',
-                'Fitness': '💪',
-                'Swimming': '🏊',
-                'Cricket': '🏏',
-                'Accessories': '🧤'
-            };
-            return icons[category] || '🏃';
-        }
-
-        function addToCart(productName) {
-            const product = products.find(p => p.name === productName);
-            if (!product) return;
-            
-            if (product.stock <= 0) {
-                showAlert(`${product.name} is out of stock!`, 'error');
-                return;
-            }
-            
-            const existingItem = cart.find(item => item.name === productName);
-            if (existingItem) {
-                if (existingItem.quantity + 1 > product.stock) {
-                    showAlert(`Only ${product.stock} units available`, 'error');
-                    return;
-                }
-                existingItem.quantity++;
-            } else {
-                cart.push({
-                    name: product.name,
-                    category: product.category,
-                    price: product.price,
-                    quantity: 1,
-                    maxStock: product.stock
-                });
-            }
-            
-            updateCartDisplay();
-            showAlert(`${product.name} added to cart`, 'success');
-        }
-
-        function updateCartDisplay() {
-            const cartContainer = document.getElementById('cartItems');
-            let total = 0;
-            
-            if (cart.length === 0) {
-                cartContainer.innerHTML = '<div class="loading">Cart is empty</div>';
-                document.getElementById('cartTotal').innerText = '0.00';
-                return;
-            }
-            
-            cartContainer.innerHTML = cart.map((item, index) => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-                return `
-                    <div class="cart-item">
-                        <div><strong>${item.name}</strong><br><small>${item.category}</small></div>
-                        <div>₹${item.price.toFixed(2)}</div>
-                        <div><input type="number" value="${item.quantity}" min="1" max="${item.maxStock}" onchange="updateQuantity(${index}, this.value)"></div>
-                        <div>₹${itemTotal.toFixed(2)}</div>
-                        <div><button class="remove-btn" onclick="removeFromCart(${index})">Remove</button></div>
-                    </div>
-                `;
-            }).join('');
-            
-            document.getElementById('cartTotal').innerText = total.toFixed(2);
-        }
-
-        function updateQuantity(index, newQuantity) {
-            const quantity = parseInt(newQuantity);
-            const item = cart[index];
-            const product = products.find(p => p.name === item.name);
-            
-            if (quantity > product.stock) {
-                showAlert(`Only ${product.stock} units available`, 'error');
-                updateCartDisplay();
-                return;
-            }
-            
-            if (quantity < 1) {
-                cart.splice(index, 1);
-            } else {
-                item.quantity = quantity;
-            }
-            updateCartDisplay();
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartDisplay();
-            showAlert('Item removed', 'success');
-        }
-
-        function clearCart() {
-            if (cart.length > 0 && confirm('Clear entire cart?')) {
-                cart = [];
-                updateCartDisplay();
-                showAlert('Cart cleared', 'success');
-            }
-        }
-
-        async function processSale() {
-            if (cart.length === 0) {
-                showAlert('Cart is empty!', 'error');
-                return;
-            }
-            
-            const paymentMode = document.getElementById('paymentMode').value;
-            const today = new Date().toISOString().split('T')[0];
-            const btn = document.getElementById('processBtn');
-            btn.disabled = true;
-            btn.textContent = 'Processing...';
-            
-            try {
-                // Save each item to Google Sheets via Apps Script
-                for (const item of cart) {
-                    const saleData = {
-                        date: today,
-                        productCode: '',
-                        productName: item.name,
-                        colour: '',
-                        quantity: item.quantity,
-                        mrp: item.price,
-                        totalAmount: item.price * item.quantity,
-                        paymentMode: paymentMode,
-                        customerName: ''
-                    };
-                    
-                    await fetch(APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(saleData)
-                    });
-                    
-                    // Update local stock
-                    const product = products.find(p => p.name === item.name);
-                    if (product) {
-                        product.stock -= item.quantity;
-                    }
-                    
-                    // Add to local sales array
-                    sales.unshift({
-                        date: today,
-                        productName: item.name,
-                        quantity: item.quantity,
-                        price: item.price,
-                        total: item.price * item.quantity,
-                        paymentMode: paymentMode
-                    });
-                }
-                
-                // Clear cart and refresh displays
-                cart = [];
-                updateCartDisplay();
-                updateProductsGrid();
-                updateInventoryTable();
-                updateSalesTable();
-                updateStats();
-                
-                showAlert(`✅ Sale completed! Total: ₹${document.getElementById('cartTotal').innerText}`, 'success');
-                
-            } catch (error) {
-                console.error('Sale error:', error);
-                showAlert('Error processing sale', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '✅ Complete Sale';
-            }
-        }
-
-        function updateInventoryTable() {
-            const tbody = document.getElementById('inventoryBody');
-            tbody.innerHTML = products.map(product => `
-                <tr>
-                    <td>${product.name}</td>
-                    <td>${product.category}</td>
-                    <td>₹${product.price.toFixed(2)}</td>
-                    <td style="color: ${product.stock < 10 ? '#ff7675' : '#00b894'}; font-weight: bold;">${product.stock}</td>
-                    <td>${product.stock < 10 ? '⚠️ Low Stock' : '✅ In Stock'}</td>
-                </tr>
-            `).join('');
-        }
-
-        function updateSalesTable() {
-            const tbody = document.getElementById('salesBody');
-            tbody.innerHTML = sales.slice(0, 20).map(sale => `
-                <tr>
-                    <td>${sale.date}</td>
-                    <td>${sale.productName}</td>
-                    <td>${sale.quantity}</td>
-                    <td>₹${sale.price.toFixed(2)}</td>
-                    <td>₹${sale.total.toFixed(2)}</td>
-                    <td>${sale.paymentMode}</td>
-                </tr>
-            `).join('');
-        }
-
-        function updateStats() {
-            const totalProducts = products.length;
-            const lowStock = products.filter(p => p.stock < 10).length;
-            const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
-            const todaySales = sales.filter(s => s.date === new Date().toISOString().split('T')[0]).reduce((sum, s) => sum + s.total, 0);
-            const totalSales = sales.reduce((sum, s) => sum + s.total, 0);
-            
-            document.getElementById('posStats').innerHTML = `
-                <div class="stat-card"><h3>Products</h3><div class="value">${totalProducts}</div></div>
-                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color: #ff7675;">${lowStock}</div></div>
-                <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
-            `;
-            
-            document.getElementById('inventoryStats').innerHTML = `
-                <div class="stat-card"><h3>Total Products</h3><div class="value">${totalProducts}</div></div>
-                <div class="stat-card"><h3>Total Stock</h3><div class="value">${totalStock}</div></div>
-                <div class="stat-card"><h3>Low Stock</h3><div class="value" style="color: #ff7675;">${lowStock}</div></div>
-            `;
-            
-            document.getElementById('salesStats').innerHTML = `
-                <div class="stat-card"><h3>Total Sales</h3><div class="value">₹${totalSales.toFixed(2)}</div></div>
-                <div class="stat-card"><h3>Today's Sales</h3><div class="value">₹${todaySales.toFixed(2)}</div></div>
-                <div class="stat-card"><h3>Transactions</h3><div class="value">${sales.length}</div></div>
-            `;
-        }
-    </script>
 </body>
 </html>
