@@ -336,13 +336,30 @@
         } else { submitSale(); }
     }
     function closeModal() { document.getElementById('upiModal').style.display = 'none'; }
-    async function submitSale() {
-        const btn = document.getElementById('finishBtn');
-        btn.disabled = true; btn.innerText = "Syncing...";
-        const payload = { code: selectedItem.code, name: selectedItem.name, qty: document.getElementById('qty').value, price: document.getElementById('salePrice').value, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
-        await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        alert("Transaction Successful!"); location.reload();
-    }
+   async function submitSale() {
+    const btn = document.getElementById('finishBtn');
+    btn.disabled = true; 
+    btn.innerText = "Syncing...";
+
+    const payload = { 
+        code: selectedItem.code, 
+        name: selectedItem.name, 
+        color: selectedItem.color, // MUST HAVE THIS for Column E
+        qty: document.getElementById('qty').value, 
+        price: document.getElementById('salePrice').value, 
+        mode: document.getElementById('payMode').value, 
+        customer: document.getElementById('custName').value || "Guest",
+        receivedBy: document.getElementById('receivedBy').value || "N/A" // MUST HAVE THIS for Column K
+    };
+
+    await fetch(scriptURL, { 
+        method: 'POST', 
+        body: JSON.stringify(payload) 
+    });
+
+    alert("Transaction Successful!"); 
+    location.reload();
+}
 </script>
 </body>
 </html>
