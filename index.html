@@ -3,363 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Hub Pro | Elite POS</title>
+    <title>Sports Hub Pro | Cart</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #05070a;
-            --surface: #0f1218;
-            --surface-accent: #171b24;
-            --accent: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.15);
-            --neon-green: #4ade80;
-            --neon-red: #f43f5e;
-            --text-main: #f8fafc;
-            --text-dim: #64748b;
-            --border: rgba(255, 255, 255, 0.06);
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 420px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 32px;
-            padding: 30px 24px;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);
-            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .header { text-align: center; margin-bottom: 30px; }
-        .header img { width: 100px; margin-bottom: 12px; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.2)); }
-        .header h1 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--text-main); }
-        .header p { margin: 4px 0 0; font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
-
-        .field-label { display: block; font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; margin-left: 4px; }
-
-        .input-wrapper { margin-bottom: 20px; position: relative; }
-        select, input {
-            width: 100%;
-            padding: 16px;
-            background: var(--surface-accent);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            color: var(--text-main);
-            font-size: 15px;
-            font-weight: 600;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-        select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
-
-        .dash-panel {
-            background: rgba(2, 6, 23, 0.4);
-            border-radius: 20px;
-            padding: 18px;
-            margin: 20px 0;
-            border: 1px solid var(--border);
-            display: none;
-            animation: slideDown 0.4s ease-out;
-        }
-        .dash-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .dash-row:last-child { margin-bottom: 0; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; }
-        .dash-item span { font-size: 11px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; }
-        .dash-item div { font-size: 16px; font-weight: 700; }
+        :root { --bg: #05070a; --surface: #0f1218; --accent: #38bdf8; --text: #f8fafc; --dim: #64748b; --border: rgba(255,255,255,0.06); --neon-green: #4ade80; --neon-red: #f43f5e; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 32px; padding: 24px; box-shadow: 0 40px 80px rgba(0,0,0,0.8); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { width: 80px; filter: drop-shadow(0 0 10px var(--accent)); }
         
-        .stock-tag { padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .stock-good { background: rgba(74, 222, 128, 0.1); color: var(--neon-green); }
-        .stock-low { background: rgba(244, 63, 94, 0.1); color: var(--neon-red); animation: pulse 2s infinite; }
+        .field-label { display: block; font-size: 10px; font-weight: 800; color: var(--dim); text-transform: uppercase; margin: 0 0 8px 4px; letter-spacing: 1px; }
+        .input-wrapper { margin-bottom: 15px; }
+        select, input { width: 100%; padding: 14px; background: #171b24; border: 1px solid var(--border); border-radius: 14px; color: white; outline: none; box-sizing: border-box; }
+        
+        /* Dashboard & Cart */
+        .dash-panel { background: rgba(2, 6, 23, 0.4); border-radius: 18px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; display: none; }
+        .cart-section { background: rgba(255,255,255,0.02); border-radius: 20px; padding: 15px; border: 1px dashed var(--border); margin: 20px 0; display: none; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .remove-btn { color: var(--neon-red); cursor: pointer; font-weight: 800; padding: 5px; }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
-        .total-card {
-            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
-            padding: 24px;
-            border-radius: 24px;
-            text-align: center;
-            margin: 25px 0;
-            box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.5);
-        }
-        .total-card span { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 2px; }
-        .total-card h2 { margin: 5px 0 0; font-size: 36px; font-weight: 800; color: white; }
-
-        .btn-finish {
-            width: 100%;
-            padding: 20px;
-            background: #ffffff;
-            color: #000;
-            border: none;
-            border-radius: 18px;
-            font-size: 16px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .btn-finish:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(255,255,255,0.2); background: var(--neon-green); }
+        .btn-add { width: 100%; padding: 15px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 14px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
+        .btn-finish { width: 100%; padding: 20px; background: white; color: black; border: none; border-radius: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        .total-card { background: linear-gradient(135deg, #0ea5e9, #2563eb); padding: 20px; border-radius: 22px; text-align: center; margin-top: 10px; }
 
         #upiModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        #upiModal img { max-width: 85%; border-radius: 24px; border: 4px solid #fff; box-shadow: 0 0 50px rgba(56, 189, 248, 0.3); margin: 20px 0; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="header">
-        <img src="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" alt="Logo">
-        <h1>SPORTS HUB</h1>
-        <p>Elite Performance</p>
+        <img src="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png">
+        <h2 style="margin:10px 0 0; font-size:18px; letter-spacing:2px;">SPORTS HUB</h2>
     </div>
 
-    <div class="input-wrapper">
-        <label class="field-label">1. Select Category</label>
-        <select id="catSelect" onchange="filterBrands()"><option value="">Loading Inventory...</option></select>
-    </div>
-
-    <div id="brandGroup" class="input-wrapper" style="display:none;">
-        <label class="field-label">2. Brand</label>
-        <select id="brandSelect" onchange="filterModels()"></select>
-    </div>
-
-    <div id="modelGroup" class="input-wrapper" style="display:none;">
-        <label class="field-label">3. Model</label>
-        <select id="modelSelect" onchange="filterSizes()"></select>
-    </div>
-
-    <div class="grid-2">
-        <div id="sizeGroup" class="input-wrapper" style="display:none;">
-            <label class="field-label">4. Size</label>
-            <select id="sizeSelect" onchange="filterColors()"></select>
-        </div>
-        <div id="colorGroup" class="input-wrapper" style="display:none;">
-            <label class="field-label">5. Color</label>
-            <select id="colorSelect" onchange="loadProduct()"></select>
-        </div>
+    <div class="input-wrapper"><input type="text" id="idSearch" placeholder="Search Product ID..." oninput="handleSearch()"></div>
+    <div class="input-wrapper"><select id="catSelect" onchange="filterBrands()"><option value="">Loading...</option></select></div>
+    <div id="brandGroup" class="input-wrapper" style="display:none;"><select id="brandSelect" onchange="filterModels()"></select></div>
+    <div id="modelGroup" class="input-wrapper" style="display:none;"><select id="modelSelect" onchange="filterSizes()"></select></div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div id="sizeGroup" class="input-wrapper" style="display:none;"><select id="sizeSelect" onchange="filterColors()"></select></div>
+        <div id="colorGroup" class="input-wrapper" style="display:none;"><select id="colorSelect" onchange="loadProduct()"></select></div>
     </div>
 
     <div id="dashPanel" class="dash-panel">
-        <div class="dash-row">
-            <div class="dash-item"><span>Status</span><div id="resStockTag" class="stock-tag"></div></div>
-            <div class="dash-item" style="text-align: right;"><span>Dealer Price</span><div id="resDealer" style="color: var(--accent);">₹0</div></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <div id="resStockTag" style="font-size:12px; font-weight:800;"></div>
+            <div id="resDealer" style="color:var(--accent); font-weight:700;"></div>
         </div>
-        <div class="dash-row">
-            <div class="dash-item"><span>Product Code</span><div id="resCode" style="font-size: 12px; color: var(--text-dim);">--</div></div>
+        <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:10px;">
+            <input type="number" id="salePrice" placeholder="Price">
+            <input type="number" id="qty" value="1" placeholder="Qty">
+        </div>
+        <button class="btn-add" onclick="addToCart()">+ ADD TO CART</button>
+    </div>
+
+    <div id="cartSection" class="cart-section">
+        <label class="field-label">Items in Cart</label>
+        <div id="cartList"></div>
+    </div>
+
+    <div class="input-wrapper">
+        <div style="display:flex; gap:10px;">
+            <select id="payMode" onchange="toggleReceivedBy()" style="width:100px;"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
+            <input type="text" id="custName" placeholder="Customer Name">
         </div>
     </div>
+    <div id="receivedGroup" class="input-wrapper" style="display:none;"><input type="text" id="receivedBy" placeholder="Staff Name"></div>
 
-    <div class="grid-2">
-        <div class="input-wrapper"><label class="field-label">Sale Price (₹)</label><input type="number" id="salePrice" oninput="updateTotal()"></div>
-        <div class="input-wrapper"><label class="field-label">Quantity</label><input type="number" id="qty" value="1" min="1" oninput="validateQty()"></div>
-    </div>
-
-    <div class="grid-2">
-        <div class="input-wrapper">
-            <label class="field-label">Payment Mode</label>
-            <select id="payMode" onchange="toggleReceivedBy()"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
-        </div>
-        <div id="receivedGroup" class="input-wrapper" style="display:none;"><label class="field-label">Received By</label><input type="text" id="receivedBy" placeholder="Staff Name"></div>
-    </div>
-
-    <div class="input-wrapper"><label class="field-label">Customer Name</label><input type="text" id="custName" placeholder="Enter Guest Name"></div>
-
-    <div class="total-card">
-        <span>Amount Payable</span>
-        <h2 id="finalTotal">₹0</h2>
-    </div>
-
-    <button onclick="handleFinish()" id="finishBtn" class="btn-finish">Finish Transaction</button>
+    <div class="total-card"><span>Payable Total</span><h2 id="finalTotal" style="margin:5px 0 0; font-size:32px;">₹0</h2></div>
+    <button onclick="handleFinish()" class="btn-finish" id="finishBtn">Finish Transaction</button>
 </div>
 
 <div id="upiModal">
-    <span style="color: var(--accent); font-weight: 800; letter-spacing: 2px;">PAYMENT SECURE</span>
-    <h2 id="upiAmtDisplay" style="color:white; font-size:48px; margin: 10px 0;">₹0</h2>
-    <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" alt="QR">
-    <button onclick="submitSale()" class="btn-finish" style="background: var(--neon-green); width: 250px;">Confirm Payment</button>
-    <button onclick="closeModal()" style="background:none; border:none; color: var(--text-dim); margin-top: 20px; font-weight: 700; cursor: pointer;">Cancel</button>
+    <h2 id="upiAmtDisplay" style="color:white; font-size:48px; margin-bottom:20px;"></h2>
+    <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" style="width:280px; border-radius:20px;">
+    <button onclick="submitSale()" class="btn-finish" style="background:var(--neon-green); width:280px; margin-top:20px;">Confirm Paid</button>
+    <button onclick="closeModal()" style="color:white; background:none; border:none; margin-top:20px;">Cancel</button>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxR_tatjvlItiR_aSS2G2rjc5wFLwlp5Q01wqH_BDDAdsD3SqKFYE-ojzzaEe6StwozKA/exec';
-    let rawData = [];
-    let selectedItem = null;
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxFYSwJAnR_KRFuH4tjSwCT1LO5zg-hFYyfmG88zEesDVP7kxM_kUQoLAEeF7MdiTYHHg/exec';
+    let rawData = [], cart = [], selectedItem = null;
 
     window.onload = () => {
         fetch(scriptURL).then(r => r.json()).then(data => {
-            rawData = data.map(item => ({
-                ...item, 
-                stock: Number(item.stock || 0),
-                dealerCost: Number(item.dealerCost || 0),
-                basePrice: Number(item.basePrice || 0)
-            }));
-            
+            rawData = data.map(i => ({...i, stock: Number(i.stock || 0), dealerCost: Number(i.dealerCost || 0)}));
             const cats = [...new Set(rawData.map(i => i.name))];
             const sel = document.getElementById('catSelect');
             sel.innerHTML = '<option value="">Select Category</option>';
-            
-            cats.forEach(categoryName => {
-                const categoryItems = rawData.filter(item => item.name === categoryName);
-                const totalCategoryStock = categoryItems.reduce((sum, item) => sum + item.stock, 0);
-                
-                const opt = document.createElement('option');
-                opt.value = categoryName;
-                
-                if (totalCategoryStock <= 0) {
-                    opt.text = `🚫 ${categoryName} (OUT OF STOCK)`;
-                    opt.disabled = true;
-                    opt.style.color = "#475569"; 
-                } else {
-                    opt.text = categoryName;
-                }
-                sel.add(opt);
+            cats.forEach(c => {
+                const total = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
+                sel.add(new Option(`${c} (${total})`, c));
             });
         });
     };
 
-    function filterBrands() {
+    function handleSearch() {
+        const code = document.getElementById('idSearch').value.toUpperCase();
+        const found = rawData.find(i => i.code === code);
+        if(found) {
+            document.getElementById('catSelect').value = found.name;
+            filterBrands(found.brand); filterModels(found.model); filterSizes(found.size); filterColors(found.color);
+        }
+    }
+
+    function filterBrands(pre) {
         const c = document.getElementById('catSelect').value;
         const bs = document.getElementById('brandSelect');
-        bs.innerHTML = '<option value="">Select Brand</option>';
-        if(!c) { document.getElementById('brandGroup').style.display = 'none'; return; }
+        bs.innerHTML = '<option value="">Brand</option>';
+        if(!c) return document.getElementById('brandGroup').style.display='none';
         const brands = [...new Set(rawData.filter(i => i.name === c).map(i => i.brand))];
-        brands.forEach(b => bs.add(new Option(b, b)));
-        document.getElementById('brandGroup').style.display = 'block';
-        resetBelow('brand');
+        brands.forEach(b => {
+            const bStock = rawData.filter(i => i.name === c && i.brand === b).reduce((a, b) => a + b.stock, 0);
+            bs.add(new Option(`${b} (${bStock})`, b));
+        });
+        document.getElementById('brandGroup').style.display='block';
+        if(pre) { bs.value = pre; filterModels(); }
     }
 
     function filterModels() {
-        const c = document.getElementById('catSelect').value;
-        const b = document.getElementById('brandSelect').value;
+        const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value;
         const ms = document.getElementById('modelSelect');
-        const models = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(x => x && x.trim() !== "");
-        if (models.length === 0) { document.getElementById('modelGroup').style.display = 'none'; ms.value = ""; filterSizes(); }
-        else {
-            ms.innerHTML = '<option value="">Select Model</option>';
-            models.forEach(m => ms.add(new Option(m, m)));
-            document.getElementById('modelGroup').style.display = 'block';
-        }
+        ms.innerHTML = '<option value="">Model</option>';
+        const mods = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(x => x);
+        if(mods.length === 0) { document.getElementById('modelGroup').style.display='none'; filterSizes(); }
+        else { mods.forEach(m => ms.add(new Option(m, m))); document.getElementById('modelGroup').style.display='block'; }
     }
 
     function filterSizes() {
-        const c = document.getElementById('catSelect').value;
-        const b = document.getElementById('brandSelect').value;
-        const m = document.getElementById('modelSelect').value;
+        const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, m = document.getElementById('modelSelect').value;
         const ss = document.getElementById('sizeSelect');
-        const sizes = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m)).map(i => i.size))].filter(x => x && x.trim() !== "");
-        if (sizes.length === 0) { document.getElementById('sizeGroup').style.display = 'none'; ss.value = ""; filterColors(); }
-        else {
-            ss.innerHTML = '<option value="">Select Size</option>';
-            sizes.forEach(s => ss.add(new Option(s, s)));
-            document.getElementById('sizeGroup').style.display = 'block';
-        }
+        ss.innerHTML = '<option value="">Size</option>';
+        const sizes = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true)).map(i => i.size))].filter(x => x);
+        if(sizes.length === 0) { document.getElementById('sizeGroup').style.display='none'; filterColors(); }
+        else { sizes.forEach(s => ss.add(new Option(s, s))); document.getElementById('sizeGroup').style.display='block'; }
     }
 
     function filterColors() {
-        const c = document.getElementById('catSelect').value;
-        const b = document.getElementById('brandSelect').value;
-        const m = document.getElementById('modelSelect').value;
-        const s = document.getElementById('sizeSelect').value;
+        const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, m = document.getElementById('modelSelect').value, s = document.getElementById('sizeSelect').value;
         const cs = document.getElementById('colorSelect');
-        
-        // REFINEMENT: Only show colors that have stock for the selected category/brand/model/size
-        const colors = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m) && (s === "" ? true : i.size === s) && i.stock > 0).map(i => i.color))].filter(x => x && x.trim() !== "");
-        
-        if (colors.length === 0) { 
-            document.getElementById('colorGroup').style.display = 'none'; 
-            cs.value = ""; 
-            loadProduct(); 
-        } else {
-            cs.innerHTML = '<option value="">Select Color</option>';
-            colors.forEach(col => cs.add(new Option(col, col)));
-            document.getElementById('colorGroup').style.display = 'block';
-        }
+        cs.innerHTML = '<option value="">Color</option>';
+        const cols = [...new Set(rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true)).map(i => i.color))].filter(x => x);
+        if(cols.length === 0) { document.getElementById('colorGroup').style.display='none'; loadProduct(); }
+        else { cols.forEach(col => cs.add(new Option(col, col))); document.getElementById('colorGroup').style.display='block'; }
     }
 
     function loadProduct() {
-        const c = document.getElementById('catSelect').value;
-        const b = document.getElementById('brandSelect').value;
-        const m = document.getElementById('modelSelect').value;
-        const s = document.getElementById('sizeSelect').value;
-        const col = document.getElementById('colorSelect').value;
-        selectedItem = rawData.find(i => i.name === c && i.brand === b && (m === "" ? true : i.model === m) && (s === "" ? true : i.size === s) && (col === "" ? true : i.color === col));
-        
+        const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, m = document.getElementById('modelSelect').value, s = document.getElementById('sizeSelect').value, col = document.getElementById('colorSelect').value;
+        selectedItem = rawData.find(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true) && (col ? i.color === col : true));
         if(selectedItem) {
             document.getElementById('dashPanel').style.display = 'block';
-            document.getElementById('resCode').innerText = selectedItem.code;
-            document.getElementById('resDealer').innerText = '₹' + selectedItem.dealerCost.toFixed(2);
-            
-            const stockTag = document.getElementById('resStockTag');
-            const stockCount = selectedItem.stock;
-            stockTag.innerText = stockCount + ' Units In Stock';
-
-            if (stockCount <= 1) {
-                stockTag.className = 'stock-tag stock-low';
-            } else {
-                stockTag.className = 'stock-tag stock-good';
-            }
-
+            document.getElementById('resDealer').innerText = 'Dealer: ₹' + selectedItem.dealerCost.toFixed(2);
+            document.getElementById('resStockTag').innerText = selectedItem.stock + ' IN STOCK';
+            document.getElementById('resStockTag').style.color = selectedItem.stock <= 1 ? '#f43f5e' : '#4ade80';
             document.getElementById('salePrice').value = selectedItem.basePrice;
-            updateTotal();
         }
     }
 
-    function toggleReceivedBy() { document.getElementById('receivedGroup').style.display = (document.getElementById('payMode').value === 'Cash') ? 'block' : 'none'; }
-    function validateQty() { if(selectedItem && parseInt(document.getElementById('qty').value) > selectedItem.stock) { alert("Insufficient Stock!"); document.getElementById('qty').value = selectedItem.stock; } updateTotal(); }
-    function updateTotal() {
-        const p = parseFloat(document.getElementById('salePrice').value) || 0;
-        const q = parseInt(document.getElementById('qty').value) || 0;
-        document.getElementById('finalTotal').innerText = '₹' + (p * q).toLocaleString('en-IN');
+    function addToCart() {
+        const price = parseFloat(document.getElementById('salePrice').value), qty = parseInt(document.getElementById('qty').value);
+        if(!selectedItem || qty < 1 || qty > selectedItem.stock) return alert("Check selection/stock");
+        
+        cart.push({ code: selectedItem.code, name: selectedItem.name, color: selectedItem.color, qty: qty, price: price });
+        renderCart();
+        document.getElementById('dashPanel').style.display = 'none';
+        document.getElementById('idSearch').value = '';
     }
-    function resetBelow(l) { if(l === 'brand') { document.getElementById('modelGroup').style.display = 'none'; document.getElementById('sizeGroup').style.display = 'none'; document.getElementById('colorGroup').style.display = 'none'; document.getElementById('dashPanel').style.display = 'none'; } }
+
+    function renderCart() {
+        const list = document.getElementById('cartList');
+        list.innerHTML = '';
+        let total = 0;
+        cart.forEach((item, i) => {
+            total += (item.price * item.qty);
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `<div><strong>${item.name}</strong><br><small>${item.qty} x ₹${item.price}</small></div><span class="remove-btn" onclick="removeItem(${i})">×</span>`;
+            list.appendChild(div);
+        });
+        document.getElementById('finalTotal').innerText = '₹' + total.toLocaleString('en-IN');
+        document.getElementById('cartSection').style.display = cart.length > 0 ? 'block' : 'none';
+    }
+
+    function removeItem(i) { cart.splice(i, 1); renderCart(); }
+    function toggleReceivedBy() { document.getElementById('receivedGroup').style.display = (document.getElementById('payMode').value === 'Cash' ? 'block' : 'none'); }
+    
     function handleFinish() {
-        if(!selectedItem) return alert("Select an item first");
-        if(selectedItem.stock <= 0) return alert("Error: This variant is out of stock!");
+        if(cart.length === 0) return alert("Cart empty");
         if(document.getElementById('payMode').value === 'UPI') {
             document.getElementById('upiAmtDisplay').innerText = document.getElementById('finalTotal').innerText;
             document.getElementById('upiModal').style.display = 'flex';
-        } else { submitSale(); }
+        } else submitSale();
     }
+
     function closeModal() { document.getElementById('upiModal').style.display = 'none'; }
-   async function submitSale() {
-    const btn = document.getElementById('finishBtn');
-    btn.disabled = true; 
-    btn.innerText = "Syncing...";
 
-    const payload = { 
-        code: selectedItem.code, 
-        name: selectedItem.name, 
-        color: selectedItem.color, // MUST HAVE THIS for Column E
-        qty: document.getElementById('qty').value, 
-        price: document.getElementById('salePrice').value, 
-        mode: document.getElementById('payMode').value, 
-        customer: document.getElementById('custName').value || "Guest",
-        receivedBy: document.getElementById('receivedBy').value || "N/A" // MUST HAVE THIS for Column K
-    };
-
-    await fetch(scriptURL, { 
-        method: 'POST', 
-        body: JSON.stringify(payload) 
-    });
-
-    alert("Transaction Successful!"); 
-    location.reload();
-}
+    async function submitSale() {
+        const btn = document.getElementById('finishBtn');
+        btn.disabled = true; btn.innerText = "Syncing...";
+        const payload = { cart: cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
+        await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+        alert("Success!"); location.reload();
+    }
 </script>
 </body>
 </html>
