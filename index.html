@@ -59,16 +59,13 @@
 
         .dash-panel { background: #111827; border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; display: none; }
         
-        /* THE REIMAGINED RECEIPT UI */
+        /* RECEIPT UI */
         .receipt-card {
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(56, 189, 248, 0.2);
             border-radius: 24px; padding: 24px; margin: 15px 0; backdrop-filter: blur(12px);
         }
         .receipt-header { text-align: center; font-weight: 800; letter-spacing: 3px; color: var(--accent); font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; }
-        
         .receipt-line { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .receipt-line:last-of-type { border-bottom: none; }
-
         .receipt-item-name { font-size: 15px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px; }
         .receipt-item-details { font-size: 11px; color: var(--text-dim); display: block; }
         .receipt-discount-tag { color: var(--emerald); font-weight: 700; font-size: 11px; margin-top: 4px; display: block; }
@@ -77,18 +74,28 @@
         .qty-btn { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-raised); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; }
         .qty-val { font-size: 14px; font-weight: 700; min-width: 20px; text-align: center; }
 
-        .receipt-price-block { text-align: right; }
-        .receipt-item-total { font-size: 16px; font-weight: 800; color: var(--text-main); }
-        .receipt-remove { font-size: 9px; font-weight: 800; color: var(--neon-red); cursor: pointer; text-transform: uppercase; margin-top: 8px; letter-spacing: 1px; }
+        .receipt-item-total { font-size: 16px; font-weight: 800; color: var(--text-main); text-align: right; }
+        .receipt-remove { font-size: 9px; font-weight: 800; color: var(--neon-red); cursor: pointer; text-transform: uppercase; margin-top: 8px; letter-spacing: 1px; text-align: right; }
 
         .receipt-total-footer { margin-top: 10px; padding-top: 20px; border-top: 1px solid var(--accent); display: flex; justify-content: space-between; align-items: center; }
         .grand-total-label { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 1.5px; }
         .grand-total-amount { font-size: 32px; font-weight: 800; color: var(--text-main); text-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
 
-        .btn-add { width: 100%; padding: 16px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 18px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        .btn-finish { width: 100%; padding: 22px; background: white; color: black; border: none; border-radius: 22px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 15px; }
+        .btn-finish { width: 100%; padding: 22px; background: white; color: black; border: none; border-radius: 22px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .btn-finish:active { transform: scale(0.95); }
 
-        #upiModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; padding: 25px; }
+        /* UPI MODAL */
+        #paymentModal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 2000; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .modal-content {
+            background: var(--surface-raised); border: 1px solid var(--accent);
+            padding: 30px; border-radius: 30px; text-align: center; width: 100%; max-width: 320px;
+        }
+        .qr-frame { background: white; padding: 15px; border-radius: 20px; margin: 20px 0; }
+        .qr-frame img { width: 100%; display: block; }
     </style>
 </head>
 <body>
@@ -124,7 +131,7 @@
             <input type="number" id="salePrice" class="input-box" placeholder="Sold Price" style="margin-bottom:0;">
             <input type="number" id="qty" class="input-box" value="1" style="margin-bottom:0;">
         </div>
-        <button class="btn-add" onclick="addToCart()">+ Add to Basket</button>
+        <button style="width:100%; padding:16px; background:transparent; border:2px solid var(--accent); color:var(--accent); border-radius:18px; font-weight:800; margin-top:10px; cursor:pointer;" onclick="addToCart()">+ Add to Basket</button>
     </div>
 
     <div id="receiptSection" style="display:none;">
@@ -139,12 +146,26 @@
     </div>
     <input type="text" id="receivedBy" class="input-box" placeholder="Received By Staff Name">
 
-    <button onclick="handleFinish()" class="btn-finish" id="finishBtn">Confirm & Checkout</button>
+    <button onclick="handleCheckoutFlow()" class="btn-finish" id="finishBtn">Confirm & Checkout</button>
+</div>
+
+<div id="paymentModal">
+    <div class="modal-content">
+        <span style="color:var(--accent); font-weight:800; letter-spacing:1px; font-size:12px;">TOTAL TO PAY</span>
+        <h2 id="modalTotal" style="font-size:32px; margin:10px 0;">₹0</h2>
+        
+        <div class="qr-frame">
+            <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" alt="UPI QR">
+        </div>
+        
+        <button onclick="submitSale()" class="btn-finish" style="background:var(--emerald); color:white; margin-top:10px;">Payment Received</button>
+        <button onclick="closeModal()" style="background:none; border:none; color:var(--text-dim); margin-top:15px; cursor:pointer; font-weight:700;">Cancel</button>
+    </div>
 </div>
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzEujlzXAv9WynXK7RGVHGPDsA6Upt2v7P1zF0C855THpKi2kCSUgAjLd6HV-vNXNy7Cw/exec';
-    let rawData = [], cart = [], selectedItem = null;
+    let rawData = [], cart = [], selectedItem = null, grandTotal = 0;
 
     window.onload = () => {
         fetch(scriptURL).then(r => r.json()).then(data => {
@@ -252,8 +273,7 @@
         if(selectedItem) {
             document.getElementById('dashPanel').style.display = 'block';
             document.getElementById('resDealer').innerText = 'Dealer Cost: ₹' + selectedItem.dealerCost.toFixed(2);
-            const tag = document.getElementById('resStockTag');
-            tag.innerText = selectedItem.stock + ' IN STOCK';
+            document.getElementById('resStockTag').innerText = selectedItem.stock + ' IN STOCK';
             document.getElementById('salePrice').value = selectedItem.basePrice;
         }
     }
@@ -261,15 +281,8 @@
     function addToCart() {
         const sp = parseFloat(document.getElementById('salePrice').value), q = parseInt(document.getElementById('qty').value);
         if(!selectedItem || q < 1 || q > selectedItem.stock) return alert("Check selection/stock");
-        
-        // Check if item already in cart
         const existing = cart.find(i => i.code === selectedItem.code && i.price === sp);
-        if(existing) {
-            existing.qty += q;
-        } else {
-            cart.push({ ...selectedItem, qty: q, price: sp });
-        }
-        
+        if(existing) { existing.qty += q; } else { cart.push({ ...selectedItem, qty: q, price: sp }); }
         renderReceipt();
         document.getElementById('dashPanel').style.display = 'none';
         document.getElementById('idSearch').value = '';
@@ -278,21 +291,19 @@
     function renderReceipt() {
         const receipt = document.getElementById('receiptContent');
         const section = document.getElementById('receiptSection');
-        let total = 0;
-        
+        grandTotal = 0;
         receipt.innerHTML = `
             <div class="receipt-header">TRANSACTION SUMMARY</div>
             ${cart.map((item, i) => {
                 const lineTotal = item.price * item.qty;
                 const unitDiscount = item.basePrice - item.price;
-                total += lineTotal;
+                grandTotal += lineTotal;
                 return `
                     <div class="receipt-line">
                         <div style="flex:1;">
                             <span class="receipt-item-name">${item.name}</span>
                             <span class="receipt-item-details">${item.color} • MRP: ₹${item.basePrice}</span>
                             ${unitDiscount > 0 ? `<span class="receipt-discount-tag">Disc: ₹${unitDiscount} / unit</span>` : ''}
-                            
                             <div class="qty-controls">
                                 <div class="qty-btn" onclick="updateQty(${i}, -1)">−</div>
                                 <span class="qty-val">${item.qty}</span>
@@ -306,10 +317,9 @@
                     </div>
                 `;
             }).join('')}
-            
             <div class="receipt-total-footer">
                 <span class="grand-total-label">GRAND TOTAL</span>
-                <div class="grand-total-amount">₹${total.toLocaleString()}</div>
+                <div class="grand-total-amount">₹${grandTotal.toLocaleString()}</div>
             </div>
         `;
         section.style.display = cart.length > 0 ? 'block' : 'none';
@@ -317,30 +327,40 @@
 
     function updateQty(index, change) {
         const item = cart[index];
-        const newQty = item.qty + change;
-        
-        // Check stock availability (get latest stock from rawData)
         const masterItem = rawData.find(i => i.code === item.code);
-        if (newQty > masterItem.stock) return alert("Stock Limit!");
-        
-        if (newQty > 0) {
-            item.qty = newQty;
-            renderReceipt();
-        } else {
-            removeItem(index);
-        }
+        if (item.qty + change > masterItem.stock) return alert("Stock Limit!");
+        if (item.qty + change > 0) { item.qty += change; renderReceipt(); } else { removeItem(index); }
     }
 
     function removeItem(i) { cart.splice(i, 1); renderReceipt(); }
 
-    async function handleFinish() {
+    function handleCheckoutFlow() {
         if(cart.length === 0) return alert("Cart empty");
+        const mode = document.getElementById('payMode').value;
+        if(mode === "UPI") {
+            document.getElementById('modalTotal').innerText = "₹" + grandTotal.toLocaleString();
+            document.getElementById('paymentModal').style.display = "flex";
+        } else {
+            submitSale();
+        }
+    }
+
+    function closeModal() { document.getElementById('paymentModal').style.display = "none"; }
+
+    async function submitSale() {
         const btn = document.getElementById('finishBtn');
-        btn.disabled = true; btn.innerText = "Processing...";
+        btn.disabled = true; btn.innerText = "Syncing...";
+        closeModal();
         
-        const payload = { cart: cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
+        const payload = { 
+            cart: cart, 
+            mode: document.getElementById('payMode').value, 
+            customer: document.getElementById('custName').value || "Guest", 
+            receivedBy: document.getElementById('receivedBy').value || "N/A" 
+        };
+        
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        alert("Transaction Successful!"); location.reload();
+        alert("Success!"); location.reload();
     }
 </script>
 </body>
