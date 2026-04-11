@@ -1,0 +1,16 @@
+{
+  "name": "Coffeeland FC Attendance",
+  "short_name": "CFC Attendance",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#fbbf24",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/KjC62kc0/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
