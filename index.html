@@ -2,199 +2,154 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Hub Pro | Target Total POS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CFC | Sports Hub POS</title>
+    
     <link rel="apple-touch-icon" href="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<link rel="icon" type="image/png" href="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="CFC Fees">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: { pitch: '#050505', espresso: '#0F0A08', bean: '#1A1412', mint: '#10B981', rose: '#F43F5E', accent: '#38bdf8' }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
-            --bg: #020408;
-            --surface: #0a0e14;
-            --surface-raised: #121820;
-            --accent: #38bdf8;
-            --emerald: #10b981;
-            --text-main: #f8fafc;
-            --text-dim: #64748b;
-            --border: rgba(255, 255, 255, 0.05);
-            --neon-red: #f43f5e;
+            --bg-body: #F9FAFB;
+            --bg-header: rgba(249, 250, 251, 0.85);
+            --bg-card: #FFFFFF;
+            --text-main: #111827;
+            --text-gray: #6B7280;
+            --border: rgba(0, 0, 0, 0.08);
+            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-body: #050505;
+                --bg-header: rgba(5, 5, 5, 0.6);
+                --bg-card: linear-gradient(165deg, #1A1412 0%, #0F0A08 100%);
+                --text-main: #E5E7EB;
+                --text-gray: #9CA3AF;
+                --border: rgba(255, 255, 255, 0.05);
+                --card-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+            }
         }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at top right, #0f172a, var(--bg));
-            color: var(--text-main);
-            margin: 0; padding: 15px;
-            display: flex; justify-content: center;
-            min-height: 100vh;
-        }
-
-        .app-container {
-            width: 100%; max-width: 410px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 35px;
-            padding: 24px;
-            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7);
-            backdrop-filter: blur(20px);
-        }
-
-        .header { text-align: center; margin-bottom: 25px; }
-        .header img { width: 85px; filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.3)); margin-bottom: 10px; }
-        .header h1 { font-size: 18px; font-weight: 800; letter-spacing: 4px; margin: 0; text-transform: uppercase; }
-
-        .search-wrapper { position: relative; margin-bottom: 20px; }
-        .suggestions-list {
-            position: absolute; top: 60px; left: 0; right: 0;
-            background: var(--surface-raised); border: 1px solid var(--accent);
-            border-radius: 18px; z-index: 1000; max-height: 200px; overflow-y: auto; display: none;
-        }
-        .suggestion-item { padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
-
-        .section-label { font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 10px 5px; display: block; }
+        body { background-color: var(--bg-body); color: var(--text-main); -webkit-font-smoothing: antialiased; transition: all 0.3s ease; }
         
-        .input-box {
-            width: 100%; padding: 16px; background: var(--surface-raised); border: 1px solid var(--border);
-            border-radius: 18px; color: white; font-size: 15px; font-weight: 600; outline: none; margin-bottom: 12px; box-sizing: border-box;
+        /* HEADER FIX FOR NOTCH */
+        header { 
+            background-color: var(--bg-header); 
+            padding-top: calc(env(safe-area-inset-top) + 1.2rem) !important;
+            padding-bottom: 1rem;
         }
 
-        .dash-panel { background: #111827; border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; display: none; }
+        .card-gradient { background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--card-shadow); backdrop-filter: blur(10px); }
+        .input-box { background-color: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); border-radius: 18px; width: 100%; padding: 16px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box; }
         
-        .product-preview-frame {
-            width: 100%; height: 220px;
-            background: rgba(255,255,255,0.01);
-            border: 1px solid rgba(255,255,255,0.03);
-            border-radius: 24px;
-            margin-bottom: 20px;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; position: relative;
-        }
-        .product-preview-frame img {
-            max-width: 85%; max-height: 85%;
-            object-fit: contain;
-            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9));
-            transition: 0.6s cubic-bezier(0.16, 1, 0.32, 1);
-            opacity: 0; transform: translateY(10px) scale(0.95);
-        }
-        .product-preview-frame img.loaded { opacity: 1; transform: translateY(0) scale(1); }
-
-        .receipt-card {
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 24px; padding: 24px; margin: 15px 0; backdrop-filter: blur(12px);
-        }
-        .receipt-header { text-align: center; font-weight: 800; letter-spacing: 3px; color: var(--accent); font-size: 11px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; }
-        .receipt-line { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .receipt-item-name { font-size: 15px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px; }
-        .receipt-item-details { font-size: 11px; color: var(--text-dim); display: block; }
-        .receipt-discount-tag { color: var(--emerald); font-weight: 800; font-size: 10px; margin-top: 5px; display: inline-block; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; }
+        .section-label { font-size: 10px; font-weight: 800; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1.5px; margin: 20px 0 10px 5px; display: block; }
         
-        .qty-controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-        .qty-btn { width: 30px; height: 30px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-raised); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; }
-        .qty-val { font-size: 15px; font-weight: 700; min-width: 25px; text-align: center; }
+        .product-preview-frame { width: 100%; height: 200px; background: rgba(0,0,0,0.03); border-radius: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .product-preview-frame img { max-width: 80%; max-height: 80%; object-fit: contain; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.2)); opacity: 0; transition: 0.5s; }
+        .product-preview-frame img.loaded { opacity: 1; }
 
-        .receipt-item-total { font-size: 16px; font-weight: 800; color: var(--text-main); text-align: right; }
-        .receipt-remove { font-size: 9px; font-weight: 800; color: var(--neon-red); cursor: pointer; text-transform: uppercase; margin-top: 8px; letter-spacing: 1.5px; text-align: right; }
+        .receipt-discount-tag { color: var(--mint); font-weight: 800; font-size: 10px; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 6px; }
+        .qty-btn { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-weight: 800; }
 
-        .receipt-total-footer { margin-top: 10px; padding-top: 20px; border-top: 1px solid var(--accent); display: flex; justify-content: space-between; align-items: center; }
-        .grand-total-label { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 2px; }
-        .grand-total-amount { font-size: 34px; font-weight: 800; color: var(--text-main); text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
-
-        .btn-finish { width: 100%; padding: 22px; background: white; color: black; border: none; border-radius: 22px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; margin-top: 15px; }
+        #paymentModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(15px); padding: 20px; }
+        .suggestions-list { position: absolute; top: 65px; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 18px; z-index: 1000; max-height: 250px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         
-        #paymentModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(15px); }
-        .modal-content { background: var(--surface-raised); border: 1px solid var(--accent); padding: 30px; border-radius: 35px; text-align: center; width: 100%; max-width: 330px; }
-        .qr-frame { background: white; padding: 15px; border-radius: 22px; margin: 25px 0; }
-        .qr-frame img { width: 100%; display: block; }
-
-        .global-discount-wrap {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 15px 0;
-        }
-
-        #loadingBar {
-            position: fixed; top: 0; left: 0; height: 3px;
-            background: var(--accent); width: 0;
-            transition: width 0.4s ease; z-index: 9999;
-        }
+        #loadingBar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); width: 0; transition: width 0.4s ease; z-index: 9999; }
     </style>
 </head>
-<body>
+<body class="pb-20">
 
 <div id="loadingBar"></div>
 
-<div class="app-container">
-    <div class="header">
-        <img src="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png">
-        <h1>SPORTS HUB</h1>
+<header class="px-6 flex justify-between items-center sticky top-0 backdrop-blur-md z-40">
+    <div onclick="location.reload()" class="cursor-pointer">
+        <h1 class="text-xl font-900 text-current uppercase leading-none">SPORTS <span class="text-accent">HUB</span></h1>
+        <p class="text-gray-500 text-[10px] font-bold tracking-widest uppercase mt-1">Inventory POS</p>
+    </div>
+    <img src="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" class="h-10 w-10">
+</header>
+
+<div class="px-6 max-w-md mx-auto mt-6">
+    <div class="relative mb-6">
+        <input type="text" id="idSearch" class="input-box border-accent/30" placeholder="Search Code or Name..." oninput="handleSearch()">
+        <div id="suggestions" class="suggestions-list hidden"></div>
+    </div>
+    
+    <span class="section-label">Browse Inventory</span>
+    <div class="space-y-3">
+        <select id="catSelect" class="input-box" onchange="filterBrands()"><option value="">Select Category</option></select>
+        <div id="brandGroup" class="hidden"><select id="brandSelect" class="input-box" onchange="filterModels()"></select></div>
+        <div id="modelGroup" class="hidden"><select id="modelSelect" class="input-box" onchange="filterSizes()"></select></div>
+        <div class="grid grid-cols-2 gap-3">
+            <div id="sizeGroup" class="hidden"><select id="sizeSelect" class="input-box" onchange="filterColors()"></select></div>
+            <div id="colorGroup" class="hidden"><select id="colorSelect" class="input-box" onchange="loadProduct()"></select></div>
+        </div>
     </div>
 
-    <div class="search-wrapper">
-        <input type="text" id="idSearch" class="input-box" placeholder="Quick Search ID or Name..." oninput="handleSearch()">
-        <div id="suggestions" class="suggestions-list"></div>
-    </div>
-    
-    <span class="section-label">Inventory Path</span>
-    <select id="catSelect" class="input-box" onchange="filterBrands()"><option value="">Category</option></select>
-    
-    <div id="brandGroup" style="display:none;"><select id="brandSelect" class="input-box" onchange="filterModels()"></select></div>
-    <div id="modelGroup" style="display:none;"><select id="modelSelect" class="input-box" onchange="filterSizes()"></select></div>
-    
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-        <div id="sizeGroup" style="display:none;"><select id="sizeSelect" class="input-box" onchange="filterColors()"></select></div>
-        <div id="colorGroup" style="display:none;"><select id="colorSelect" class="input-box" onchange="loadProduct()"></select></div>
-    </div>
-
-    <div id="dashPanel" class="dash-panel">
+    <div id="dashPanel" class="hidden card-gradient rounded-[2rem] p-6 mt-6 space-y-4 transition-all">
         <div class="product-preview-frame">
-            <img id="prodImage" src="" alt="" loading="lazy">
+            <img id="prodImage" src="" alt="Product">
         </div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding:0 5px;">
-            <div id="resStockTag" style="font-size:11px; font-weight:800; color:var(--emerald); letter-spacing:1px;"></div>
-            <div id="resDealer" style="font-size: 13px; font-weight: 700; color: var(--accent);"></div>
+        <div class="flex justify-between items-center">
+            <span id="resStockTag" class="text-[10px] font-black text-mint uppercase tracking-widest"></span>
+            <span id="resDealer" class="text-xs font-bold text-accent"></span>
         </div>
-        <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap:12px;">
-            <input type="number" id="salePrice" class="input-box" placeholder="Unit Price" style="margin-bottom:0;">
-            <input type="number" id="qty" class="input-box" value="1" style="margin-bottom:0;">
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="text-[9px] font-black uppercase text-gray-500 ml-2">Sale Price</label>
+                <input type="number" id="salePrice" class="input-box mt-1">
+            </div>
+            <div>
+                <label class="text-[9px] font-black uppercase text-gray-500 ml-2">Qty</label>
+                <input type="number" id="qty" class="input-box mt-1" value="1">
+            </div>
         </div>
-        <button style="width:100%; padding:18px; background:transparent; border:2px solid var(--accent); color:var(--accent); border-radius:20px; font-weight:800; margin-top:15px; cursor:pointer;" onclick="addToCart()">Add to Basket</button>
+        <button onclick="addToCart()" class="w-full py-4 bg-accent text-white font-900 rounded-2xl shadow-lg shadow-accent/20 active:scale-95 transition-all uppercase text-xs tracking-widest">Add to Basket</button>
     </div>
 
-    <div id="receiptSection" style="display:none;">
+    <div id="receiptSection" class="hidden mt-8">
         <span class="section-label">Basket Summary</span>
-        <div class="receipt-card" id="receiptContent"></div>
+        <div class="card-gradient rounded-[2rem] p-6 space-y-4" id="receiptContent"></div>
         
         <span class="section-label">Target Rounding</span>
-        <div class="global-discount-wrap">
-            <input type="number" id="targetTotal" class="input-box" placeholder="Target Bill Total" oninput="applyTargetRounding()" style="margin-bottom:0; border-color:var(--emerald);">
-            <div style="background:var(--surface-raised); border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--emerald);">AUTO-ADJUST</div>
+        <div class="grid grid-cols-2 gap-3">
+            <input type="number" id="targetTotal" class="input-box border-mint/40" placeholder="Target Bill Total" oninput="applyTargetRounding()">
+            <div class="bg-mint/10 rounded-[18px] flex items-center justify-center text-[10px] font-black text-mint uppercase tracking-widest">Auto-Adjust</div>
         </div>
     </div>
 
     <span class="section-label">Transaction Details</span>
-    <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:12px;">
-        <select id="payMode" class="input-box"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
-        <input type="text" id="custName" class="input-box" placeholder="Customer Name">
+    <div class="grid grid-cols-3 gap-3 mb-3">
+        <select id="payMode" class="input-box col-span-1"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
+        <input type="text" id="custName" class="input-box col-span-2" placeholder="Customer Name">
     </div>
-    <input type="text" id="receivedBy" class="input-box" placeholder="Received By Staff Name">
+    <input type="text" id="receivedBy" class="input-box" placeholder="Handled By Staff">
 
-    <button onclick="handleCheckoutFlow()" class="btn-finish" id="finishBtn">Confirm & Checkout</button>
+    <button onclick="handleCheckoutFlow()" id="finishBtn" class="w-full py-5 bg-pitch dark:bg-white text-white dark:text-pitch font-900 rounded-2xl mt-8 mb-10 active:scale-95 transition-all shadow-2xl uppercase tracking-widest text-sm">Confirm & Checkout</button>
 </div>
 
 <div id="paymentModal">
-    <div class="modal-content">
-        <span style="color:var(--accent); font-weight:800; letter-spacing:1.5px; font-size:12px;">TOTAL TO PAY</span>
-        <h2 id="modalTotal" style="font-size:36px; margin:12px 0;">₹0</h2>
-        <div class="qr-frame"><img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" alt="UPI QR"></div>
-        <button onclick="submitSale()" class="btn-finish" style="background:var(--emerald); color:white; margin-top:10px;">Payment Received</button>
-        <button onclick="closeModal()" style="background:none; border:none; color:var(--text-dim); margin-top:20px; cursor:pointer; font-weight:700;">Cancel</button>
+    <div class="card-gradient p-8 rounded-[2.5rem] text-center max-w-xs w-full space-y-6">
+        <span class="text-[10px] font-black text-accent uppercase tracking-widest">Total to Collect</span>
+        <h2 id="modalTotal" class="text-4xl font-900">₹0</h2>
+        <div class="bg-white p-4 rounded-3xl shadow-inner"><img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" class="w-full"></div>
+        <button onclick="submitSale()" class="w-full py-4 bg-mint text-white font-900 rounded-2xl uppercase text-xs">Payment Received</button>
+        <button onclick="closeModal()" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Cancel</button>
     </div>
 </div>
 
@@ -203,55 +158,40 @@
     let rawData = [], cart = [], selectedItem = null, grandTotal = 0;
 
     window.onload = () => {
-        const bar = document.getElementById('loadingBar');
-        bar.style.width = '30%';
-
-        const cachedData = localStorage.getItem('sportsHubCache');
-        if (cachedData) {
-            rawData = JSON.parse(cachedData);
-            populateCategories();
-            bar.style.width = '60%';
-        }
-
-        fetch(scriptURL)
-            .then(r => r.json())
-            .then(data => {
-                rawData = data;
-                localStorage.setItem('sportsHubCache', JSON.stringify(data));
-                populateCategories();
-                bar.style.width = '100%';
-                setTimeout(() => bar.style.width = '0', 500);
-            });
+        const bar = document.getElementById('loadingBar'); bar.style.width = '30%';
+        const cached = localStorage.getItem('sportsHubCache');
+        if (cached) { rawData = JSON.parse(cached); populateCategories(); bar.style.width = '60%'; }
+        fetch(scriptURL).then(r => r.json()).then(data => {
+            rawData = data; localStorage.setItem('sportsHubCache', JSON.stringify(data));
+            populateCategories(); bar.style.width = '100%'; setTimeout(() => bar.style.width = '0', 500);
+        });
     };
 
     function populateCategories() {
         const cats = [...new Set(rawData.map(i => i.name))];
-        const sel = document.getElementById('catSelect');
-        const currentVal = sel.value;
-        sel.innerHTML = '<option value="">Category</option>';
+        const sel = document.getElementById('catSelect'); sel.innerHTML = '<option value="">Select Category</option>';
         cats.forEach(c => {
-            const total = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
-            sel.add(new Option(`${c} (${total})`, c));
+            const stock = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
+            sel.add(new Option(`${c} (${stock})`, c));
         });
-        if(currentVal) sel.value = currentVal;
     }
 
     function handleSearch() {
         const query = document.getElementById('idSearch').value.toUpperCase();
         const suggs = document.getElementById('suggestions');
-        if (query.length < 2) { suggs.style.display = 'none'; return; }
+        if (query.length < 2) { suggs.classList.add('hidden'); return; }
         const matches = rawData.filter(i => i.code.toUpperCase().includes(query) || i.name.toUpperCase().includes(query)).slice(0, 5);
         if (matches.length > 0) {
             suggs.innerHTML = '';
             matches.forEach(i => {
                 const d = document.createElement('div');
-                d.className = 'suggestion-item';
-                d.innerHTML = `<b>${i.code}</b> - ${i.name} (${i.size}/${i.color})`;
-                d.onclick = () => { selectProduct(i); suggs.style.display = 'none'; document.getElementById('idSearch').value = i.code; };
+                d.className = 'p-4 border-b border-black/5 dark:border-white/5 cursor-pointer text-xs font-bold';
+                d.innerHTML = `${i.code} - ${i.name} <span class="text-accent text-[9px] block uppercase opacity-60">${i.brand} • ${i.size}</span>`;
+                d.onclick = () => { selectProduct(i); suggs.classList.add('hidden'); document.getElementById('idSearch').value = i.code; };
                 suggs.appendChild(d);
             });
-            suggs.style.display = 'block';
-        } else { suggs.style.display = 'none'; }
+            suggs.classList.remove('hidden');
+        } else { suggs.classList.add('hidden'); }
     }
 
     function selectProduct(item) {
@@ -260,31 +200,29 @@
     }
 
     function filterBrands(pB, pM, pS, pC) {
-        const c = document.getElementById('catSelect').value;
-        const bs = document.getElementById('brandSelect');
+        const c = document.getElementById('catSelect').value, bs = document.getElementById('brandSelect');
         bs.innerHTML = '<option value="">Brand</option>';
-        if(!c) return document.getElementById('brandGroup').style.display='none';
+        if(!c) return document.getElementById('brandGroup').classList.add('hidden');
         const brands = [...new Set(rawData.filter(i => i.name === c).map(i => i.brand))];
         brands.forEach(b => {
-            const bStock = rawData.filter(i => i.name === c && i.brand === b).reduce((a, b) => a + b.stock, 0);
-            bs.add(new Option(`${b} (${bStock})`, b));
+            const stock = rawData.filter(i => i.name === c && i.brand === b).reduce((a, b) => a + b.stock, 0);
+            bs.add(new Option(`${b} (${stock})`, b));
         });
-        document.getElementById('brandGroup').style.display='block';
+        document.getElementById('brandGroup').classList.remove('hidden');
         if(pB) { bs.value = pB; filterModels(pM, pS, pC); }
     }
 
     function filterModels(pM, pS, pC) {
-        const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value;
-        const ms = document.getElementById('modelSelect');
+        const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, ms = document.getElementById('modelSelect');
         ms.innerHTML = '<option value="">Model</option>';
         const mods = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(x => x);
-        if(mods.length === 0) { document.getElementById('modelGroup').style.display='none'; filterSizes(pS, pC); }
+        if(mods.length === 0) { document.getElementById('modelGroup').classList.add('hidden'); filterSizes(pS, pC); }
         else { 
             mods.forEach(m => {
-                const mStock = rawData.filter(i => i.name === c && i.brand === b && i.model === m).reduce((a, b) => a + b.stock, 0);
-                ms.add(new Option(`${m} (${mStock})`, m));
+                const stock = rawData.filter(i => i.name === c && i.brand === b && i.model === m).reduce((a, b) => a + b.stock, 0);
+                ms.add(new Option(`${m} (${stock})`, m));
             }); 
-            document.getElementById('modelGroup').style.display='block';
+            document.getElementById('modelGroup').classList.remove('hidden');
             if(pM) { ms.value = pM; filterSizes(pS, pC); }
         }
     }
@@ -327,13 +265,11 @@
         const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, m = document.getElementById('modelSelect').value, s = document.getElementById('sizeSelect').value, col = document.getElementById('colorSelect').value;
         selectedItem = rawData.find(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true) && (col ? i.color === col : true));
         if(selectedItem) {
-            document.getElementById('dashPanel').style.display = 'block';
-            document.getElementById('resDealer').innerText = 'Dealer Cost: ₹' + selectedItem.dealerCost.toFixed(2);
+            document.getElementById('dashPanel').classList.remove('hidden');
+            document.getElementById('resDealer').innerText = 'Dealer Cost: ₹' + selectedItem.dealerCost;
             document.getElementById('resStockTag').innerText = selectedItem.stock + ' IN STOCK';
             document.getElementById('salePrice').value = selectedItem.basePrice;
-            
-            const img = document.getElementById('prodImage');
-            img.classList.remove('loaded');
+            const img = document.getElementById('prodImage'); img.classList.remove('loaded');
             img.src = selectedItem.photo || "https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png";
             img.onload = () => img.classList.add('loaded');
         }
@@ -341,117 +277,78 @@
 
     function addToCart() {
         const sp = parseFloat(document.getElementById('salePrice').value), q = parseInt(document.getElementById('qty').value);
-        if(!selectedItem || q < 1 || q > selectedItem.stock) return alert("Check selection/stock");
-        
-        cart.push({ 
-            ...selectedItem, 
-            qty: q, 
-            price: sp, 
-            originalMRP: selectedItem.basePrice 
-        });
-        
+        if(!selectedItem || q < 1 || q > selectedItem.stock) return alert("Error in stock/qty");
+        cart.push({ ...selectedItem, qty: q, price: sp, originalMRP: selectedItem.basePrice });
         document.getElementById('targetTotal').value = '';
         renderReceipt();
-        document.getElementById('dashPanel').style.display = 'none';
+        document.getElementById('dashPanel').classList.add('hidden');
         document.getElementById('idSearch').value = '';
     }
 
-    // THE TARGET TOTAL MAGIC
     function applyTargetRounding() {
         const target = parseFloat(document.getElementById('targetTotal').value);
-        if (!target || target <= 0) {
-            // Revert to MRP if target cleared
-            cart.forEach(item => item.price = item.originalMRP);
-            renderReceipt();
-            return;
-        }
-
-        // 1. Calculate the current sum at full MRP
+        if (!target || target <= 0) { cart.forEach(item => item.price = item.originalMRP); renderReceipt(); return; }
         const currentSumMRP = cart.reduce((sum, item) => sum + (item.originalMRP * item.qty), 0);
-        
-        // 2. Determine the reduction ratio needed
-        // target / currentSumMRP = the multiplier for each item's price
         const multiplier = target / currentSumMRP;
-
-        cart.forEach(item => {
-            // Apply the same ratio to every item
-            item.price = Math.round(item.originalMRP * multiplier);
-        });
-
+        cart.forEach(item => { item.price = Math.round(item.originalMRP * multiplier); });
         renderReceipt();
     }
 
     function renderReceipt() {
-        const receipt = document.getElementById('receiptContent');
-        const section = document.getElementById('receiptSection');
+        const receipt = document.getElementById('receiptContent'), section = document.getElementById('receiptSection');
         grandTotal = 0;
-        receipt.innerHTML = `
-            <div class="receipt-header">TRANSACTION SUMMARY</div>
-            ${cart.map((item, i) => {
-                const lineTotal = item.price * item.qty;
-                const totalMRPPerItem = item.originalMRP * item.qty;
-                
-                // Calculate percentage discount for this specific item
-                const discPercentage = item.originalMRP > 0 
-                    ? Math.round(((item.originalMRP - item.price) / item.originalMRP) * 100) 
-                    : 0;
-                
-                grandTotal += lineTotal;
-                return `
-                    <div class="receipt-line">
-                        <div style="flex:1;">
-                            <span class="receipt-item-name">${item.name}</span>
-                            <span class="receipt-item-details">${item.color} • MRP: ₹${item.originalMRP}</span>
-                            ${discPercentage > 0 ? `<span class="receipt-discount-tag">DISC: ${discPercentage}% OFF</span>` : ''}
-                            <div class="qty-controls">
-                                <div class="qty-btn" onclick="updateQty(${i}, -1)">−</div>
-                                <span class="qty-val">${item.qty}</span>
-                                <div class="qty-btn" onclick="updateQty(${i}, 1)">+</div>
-                            </div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div class="receipt-item-total">₹${lineTotal.toLocaleString()}</div>
-                            <div onclick="removeItem(${i})" class="receipt-remove">REMOVE</div>
+        receipt.innerHTML = `<div class="text-[10px] font-black text-gray-500 uppercase tracking-widest text-center border-b border-black/5 dark:border-white/5 pb-3">Cart Summary</div>`;
+        cart.forEach((item, i) => {
+            const lineTotal = item.price * item.qty;
+            const disc = item.originalMRP > 0 ? Math.round(((item.originalMRP - item.price) / item.originalMRP) * 100) : 0;
+            grandTotal += lineTotal;
+            receipt.innerHTML += `
+                <div class="flex justify-between items-start py-4 border-b border-black/5 dark:border-white/5">
+                    <div>
+                        <p class="font-bold text-sm">${item.name}</p>
+                        <p class="text-[10px] text-gray-500">${item.size} • ₹${item.originalMRP}</p>
+                        ${disc > 0 ? `<span class="receipt-discount-tag mt-2 inline-block">${disc}% OFF</span>` : ''}
+                        <div class="flex items-center gap-3 mt-3">
+                            <div class="qty-btn" onclick="updateQty(${i}, -1)">-</div>
+                            <span class="text-sm font-bold">${item.qty}</span>
+                            <div class="qty-btn" onclick="updateQty(${i}, 1)">+</div>
                         </div>
                     </div>
-                `;
-            }).join('')}
-            <div class="receipt-total-footer">
-                <span class="grand-total-label">GRAND TOTAL</span>
-                <div class="grand-total-amount">₹${grandTotal.toLocaleString()}</div>
-            </div>
-        `;
-        section.style.display = cart.length > 0 ? 'block' : 'none';
+                    <div class="text-right">
+                        <p class="font-900 text-lg">₹${lineTotal.toLocaleString()}</p>
+                        <p onclick="removeItem(${i})" class="text-[9px] font-black text-rose uppercase mt-2">Remove</p>
+                    </div>
+                </div>`;
+        });
+        receipt.innerHTML += `
+            <div class="flex justify-between items-center pt-4">
+                <span class="text-[10px] font-black text-accent uppercase">Payable</span>
+                <span class="text-3xl font-900">₹${grandTotal.toLocaleString()}</span>
+            </div>`;
+        section.classList.toggle('hidden', cart.length === 0);
     }
 
-    function updateQty(index, change) {
-        const item = cart[index];
-        const masterItem = rawData.find(i => i.code === item.code);
-        if (item.qty + change > masterItem.stock) return alert("Stock Limit!");
-        if (item.qty + change > 0) { item.qty += change; renderReceipt(); } else { removeItem(index); }
+    function updateQty(i, change) {
+        const item = cart[i], master = rawData.find(m => m.code === item.code);
+        if (item.qty + change > master.stock) return alert("Stock Limit!");
+        if (item.qty + change > 0) { item.qty += change; renderReceipt(); } else { removeItem(i); }
     }
 
     function removeItem(i) { cart.splice(i, 1); renderReceipt(); }
-    
     function handleCheckoutFlow() {
-        if(cart.length === 0) return alert("Cart empty");
+        if(cart.length === 0) return alert("Empty basket");
         if(document.getElementById('payMode').value === "UPI") {
             document.getElementById('modalTotal').innerText = "₹" + grandTotal.toLocaleString();
             document.getElementById('paymentModal').style.display = "flex";
         } else { submitSale(); }
     }
-    
     function closeModal() { document.getElementById('paymentModal').style.display = "none"; }
 
     async function submitSale() {
-        const btn = document.getElementById('finishBtn');
-        btn.disabled = true; btn.innerText = "Syncing...";
-        closeModal();
+        const btn = document.getElementById('finishBtn'); btn.disabled = true; btn.innerText = "Syncing..."; closeModal();
         const payload = { cart: cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        
-        localStorage.removeItem('sportsHubCache');
-        alert("Transaction Finalized!"); location.reload();
+        localStorage.removeItem('sportsHubCache'); alert("Success!"); location.reload();
     }
 </script>
 </body>
