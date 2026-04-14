@@ -442,8 +442,8 @@
     </div>
 
     <span class="section-label">Browse Inventory</span>
-    <div class="space-y-3 reveal relative z-0">
-        <select id="catSelect" class="input-box" onchange="filterBrands()"><option value="">Select Category</option></select>
+    <div class="space-y-3 reveal relative z-0 pointer-events-auto">
+        <select id="catSelect" class="input-box relative z-0" onchange="filterBrands()"><option value="">Select Category</option></select>
         <div id="brandGroup" class="hidden"><select id="brandSelect" class="input-box" onchange="filterModels()"></select></div>
         <div id="modelGroup" class="hidden"><select id="modelSelect" class="input-box" onchange="filterSizes()"></select></div>
         <div class="grid grid-cols-2 gap-3">
