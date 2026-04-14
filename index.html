@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CFC | Sports Hub POS</title>
-    
+
     <link rel="apple-touch-icon" href="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,80 +18,429 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-                    colors: { pitch: '#050505', espresso: '#0F0A08', bean: '#1A1412', mint: '#10B981', rose: '#F43F5E', accent: '#38bdf8' }
+                    colors: {
+                        pitch: '#050505',
+                        espresso: '#0F0A08',
+                        bean: '#1A1412',
+                        mint: '#10B981',
+                        rose: '#F43F5E',
+                        accent: '#38bdf8',
+                        amberx: '#f59e0b'
+                    }
                 }
             }
         }
     </script>
     <style>
         :root {
-            --bg-body: #F9FAFB;
-            --bg-header: rgba(249, 250, 251, 0.85);
-            --bg-card: #FFFFFF;
+            --bg-body: #F6F8FC;
+            --bg-header: rgba(246, 248, 252, 0.84);
+            --bg-card: rgba(255,255,255,0.82);
+            --bg-card-solid: #FFFFFF;
             --text-main: #111827;
             --text-gray: #6B7280;
-            --border: rgba(0, 0, 0, 0.08);
-            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            --border: rgba(17, 24, 39, 0.08);
+            --card-shadow: 0 20px 50px -24px rgba(17, 24, 39, 0.22);
+            --accent-soft: rgba(56, 189, 248, 0.10);
+            --mint-soft: rgba(16, 185, 129, 0.10);
+            --rose-soft: rgba(244, 63, 94, 0.10);
+            --amber-soft: rgba(245, 158, 11, 0.10);
         }
+
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-body: #050505;
-                --bg-header: rgba(5, 5, 5, 0.6);
-                --bg-card: linear-gradient(165deg, #1A1412 0%, #0F0A08 100%);
+                --bg-header: rgba(5, 5, 5, 0.72);
+                --bg-card: rgba(20, 20, 20, 0.84);
+                --bg-card-solid: #0F0F10;
                 --text-main: #E5E7EB;
                 --text-gray: #9CA3AF;
-                --border: rgba(255, 255, 255, 0.05);
-                --card-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+                --border: rgba(255, 255, 255, 0.06);
+                --card-shadow: 0 24px 60px -22px rgba(0, 0, 0, 0.58);
+                --accent-soft: rgba(56, 189, 248, 0.14);
+                --mint-soft: rgba(16, 185, 129, 0.14);
+                --rose-soft: rgba(244, 63, 94, 0.14);
+                --amber-soft: rgba(245, 158, 11, 0.14);
             }
         }
 
-        body { background-color: var(--bg-body); color: var(--text-main); -webkit-font-smoothing: antialiased; transition: all 0.3s ease; }
-        
-        /* HEADER FIX FOR NOTCH */
-        header { 
-            background-color: var(--bg-header); 
-            padding-top: calc(env(safe-area-inset-top) + 1.2rem) !important;
-            padding-bottom: 1rem;
+        * { box-sizing: border-box; }
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(56,189,248,0.10), transparent 24%),
+                radial-gradient(circle at top right, rgba(16,185,129,0.08), transparent 20%),
+                radial-gradient(circle at bottom center, rgba(17,24,39,0.04), transparent 34%),
+                var(--bg-body);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .card-gradient { background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--card-shadow); backdrop-filter: blur(10px); }
-        .input-box { background-color: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); border-radius: 18px; width: 100%; padding: 16px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box; }
-        
-        .section-label { font-size: 10px; font-weight: 800; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1.5px; margin: 20px 0 10px 5px; display: block; }
-        
-        .product-preview-frame { width: 100%; height: 200px; background: rgba(0,0,0,0.03); border-radius: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .product-preview-frame img { max-width: 80%; max-height: 80%; object-fit: contain; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.2)); opacity: 0; transition: 0.5s; }
-        .product-preview-frame img.loaded { opacity: 1; }
+        header {
+            background-color: var(--bg-header);
+            padding-top: calc(env(safe-area-inset-top) + 1.2rem) !important;
+            padding-bottom: 1rem;
+            backdrop-filter: blur(18px);
+        }
 
-        .receipt-discount-tag { color: var(--mint); font-weight: 800; font-size: 10px; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 6px; }
-        .qty-btn { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        .card-gradient {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(14px);
+        }
 
-        #paymentModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(15px); padding: 20px; }
-        .suggestions-list { position: absolute; top: 65px; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 18px; z-index: 1000; max-height: 250px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        
-        #loadingBar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); width: 0; transition: width 0.4s ease; z-index: 9999; }
+        .input-box {
+            background-color: var(--bg-card-solid);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 18px;
+            width: 100%;
+            padding: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+
+        .input-box:focus {
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.10);
+            transform: translateY(-1px);
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 20px 0 10px 5px;
+            display: block;
+        }
+
+        .product-preview-frame {
+            width: 100%;
+            height: 230px;
+            background:
+                radial-gradient(circle at center, rgba(56,189,248,0.10), transparent 42%),
+                linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .product-preview-frame::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.14) 50%, transparent 75%);
+            transform: translateX(-120%);
+            animation: shimmer 2.6s linear infinite;
+            pointer-events: none;
+        }
+
+        .product-preview-frame img {
+            max-width: 82%;
+            max-height: 82%;
+            object-fit: contain;
+            filter: drop-shadow(0 18px 34px rgba(0,0,0,0.22));
+            opacity: 0;
+            transform: scale(0.94);
+            transition: opacity .45s ease, transform .45s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .product-preview-frame img.loaded {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .receipt-discount-tag {
+            color: #10B981;
+            font-weight: 800;
+            font-size: 10px;
+            background: rgba(16, 185, 129, 0.10);
+            padding: 4px 10px;
+            border-radius: 999px;
+            letter-spacing: .04em;
+        }
+
+        .qty-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.04);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform .16s ease, background-color .18s ease;
+        }
+
+        .qty-btn:active { transform: scale(0.92); }
+
+        #paymentModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(15px);
+            padding: 20px;
+        }
+
+        .suggestions-list {
+            position: absolute;
+            top: 72px;
+            left: 0;
+            right: 0;
+            background: var(--bg-card-solid);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            border-radius: 22px;
+            z-index: 1000;
+            max-height: 320px;
+            overflow-y: auto;
+            box-shadow: 0 18px 40px -18px rgba(0,0,0,0.32);
+            backdrop-filter: blur(16px);
+        }
+
+        .suggestion-title {
+            padding: 12px 16px 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text-gray);
+        }
+
+        .suggestion-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background-color .16s ease;
+        }
+
+        .suggestion-item:last-child { border-bottom: 0; }
+
+        .suggestion-item:hover { background: rgba(56, 189, 248, 0.06); }
+
+        .suggestion-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.04);
+            color: var(--text-gray);
+        }
+
+        .chip-accent {
+            background: var(--accent-soft);
+            color: #0ea5e9;
+            border-color: rgba(56, 189, 248, 0.18);
+        }
+
+        .chip-mint {
+            background: var(--mint-soft);
+            color: #10B981;
+            border-color: rgba(16, 185, 129, 0.18);
+        }
+
+        .chip-amber {
+            background: var(--amber-soft);
+            color: #d97706;
+            border-color: rgba(245, 158, 11, 0.20);
+        }
+
+        .chip-rose {
+            background: var(--rose-soft);
+            color: #F43F5E;
+            border-color: rgba(244, 63, 94, 0.20);
+        }
+
+        .variant-chip-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .cart-swipe-wrap {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+        }
+
+        .swipe-remove-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 96px;
+            border: 0;
+            background: linear-gradient(180deg, rgba(244,63,94,0.92), rgba(225,29,72,0.92));
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .cart-line-card {
+            position: relative;
+            z-index: 1;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 18px;
+            transition: transform .18s ease;
+            will-change: transform;
+        }
+
+        .cart-line-card.open {
+            transform: translateX(-88px);
+        }
+
+        .floating-total {
+            background: linear-gradient(180deg, rgba(16,185,129,0.14), rgba(16,185,129,0.06));
+            border: 1px solid rgba(16,185,129,0.18);
+        }
+
+        .sticky-buy-shell {
+            position: sticky;
+            bottom: 14px;
+            z-index: 10;
+        }
+
+        #loadingBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #38bdf8, #10B981);
+            width: 0;
+            transition: width 0.4s ease;
+            z-index: 9999;
+            box-shadow: 0 0 16px rgba(56,189,248,0.65);
+        }
+
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 28px;
+            transform: translateX(-50%) translateY(20px);
+            min-width: 220px;
+            max-width: calc(100vw - 32px);
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(17,24,39,0.92);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 3000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .22s ease, transform .22s ease;
+            box-shadow: 0 20px 40px -18px rgba(0,0,0,0.45);
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .pulse-ring {
+            animation: pulseRing .55s ease;
+        }
+
+        .reveal {
+            animation: fadeUp .42s ease both;
+        }
+
+        .cart-line {
+            animation: fadeUp .25s ease both;
+        }
+
+        .action-btn {
+            transition: transform .16s ease, box-shadow .18s ease, filter .18s ease;
+        }
+
+        .action-btn:hover { filter: brightness(1.02); }
+        .action-btn:active { transform: scale(0.97); }
+
+        mark.search-hit {
+            background: rgba(56,189,248,0.16);
+            color: inherit;
+            border-radius: 6px;
+            padding: 1px 4px;
+        }
+
+        @keyframes shimmer {
+            100% { transform: translateX(120%); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16,185,129,0.25); }
+            100% { transform: scale(1.01); box-shadow: 0 0 0 16px rgba(16,185,129,0); }
+        }
+
+        @media (max-width: 380px) {
+            .product-preview-frame { height: 200px; }
+            .qty-btn { width: 40px; height: 40px; }
+        }
     </style>
 </head>
 <body class="pb-20">
 
 <div id="loadingBar"></div>
+<div id="toast"></div>
 
 <header class="px-6 flex justify-between items-center sticky top-0 backdrop-blur-md z-40">
     <div onclick="location.reload()" class="cursor-pointer">
-        <h1 class="text-xl font-900 text-current uppercase leading-none">SPORTS <span class="text-accent">HUB</span></h1>
+        <h1 class="text-xl font-black text-current uppercase leading-none">SPORTS <span class="text-accent">HUB</span></h1>
         <p class="text-gray-500 text-[10px] font-bold tracking-widest uppercase mt-1">Inventory POS</p>
     </div>
     <img src="https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png" class="h-10 w-10">
 </header>
 
 <div class="px-6 max-w-md mx-auto mt-6">
-    <div class="relative mb-6">
-        <input type="text" id="idSearch" class="input-box border-accent/30" placeholder="Search Code or Name..." oninput="handleSearch()">
+    <div class="relative mb-6 reveal">
+        <input type="text" id="idSearch" class="input-box border-accent/30" placeholder="Search Code or Name..." inputmode="search" onfocus="handleSearch()" oninput="handleSearch()">
         <div id="suggestions" class="suggestions-list hidden"></div>
     </div>
-    
+
     <span class="section-label">Browse Inventory</span>
-    <div class="space-y-3">
+    <div class="space-y-3 reveal">
         <select id="catSelect" class="input-box" onchange="filterBrands()"><option value="">Select Category</option></select>
         <div id="brandGroup" class="hidden"><select id="brandSelect" class="input-box" onchange="filterModels()"></select></div>
         <div id="modelGroup" class="hidden"><select id="modelSelect" class="input-box" onchange="filterSizes()"></select></div>
@@ -101,54 +450,72 @@
         </div>
     </div>
 
-    <div id="dashPanel" class="hidden card-gradient rounded-[2rem] p-6 mt-6 space-y-4 transition-all">
+    <div id="dashPanel" class="hidden card-gradient rounded-[2rem] p-6 mt-6 space-y-5 transition-all reveal">
         <div class="product-preview-frame">
             <img id="prodImage" src="" alt="Product">
         </div>
-        <div class="flex justify-between items-center">
-            <span id="resStockTag" class="text-[10px] font-black text-mint uppercase tracking-widest"></span>
-            <span id="resDealer" class="text-xs font-bold text-accent"></span>
+
+        <div class="flex justify-between items-center gap-3 flex-wrap">
+            <span id="resStockTag" class="chip chip-mint"></span>
+            <span id="resDealer" class="chip chip-accent"></span>
         </div>
+
+        <div id="variantChips" class="variant-chip-wrap"></div>
+
         <div class="grid grid-cols-2 gap-3">
             <div>
                 <label class="text-[9px] font-black uppercase text-gray-500 ml-2">Sale Price</label>
-                <input type="number" id="salePrice" class="input-box mt-1">
+                <input type="number" inputmode="decimal" id="salePrice" class="input-box mt-1">
             </div>
             <div>
                 <label class="text-[9px] font-black uppercase text-gray-500 ml-2">Qty</label>
-                <input type="number" id="qty" class="input-box mt-1" value="1">
+                <input type="number" inputmode="numeric" id="qty" class="input-box mt-1" value="1">
             </div>
         </div>
-        <button onclick="addToCart()" class="w-full py-4 bg-accent text-white font-900 rounded-2xl shadow-lg shadow-accent/20 active:scale-95 transition-all uppercase text-xs tracking-widest">Add to Basket</button>
+
+        <div class="sticky-buy-shell">
+            <button onclick="addToCart()" class="action-btn w-full py-4 bg-accent text-white font-black rounded-2xl shadow-lg shadow-accent/20 uppercase text-xs tracking-widest">
+                Add to Basket
+            </button>
+        </div>
     </div>
 
     <div id="receiptSection" class="hidden mt-8">
         <span class="section-label">Basket Summary</span>
         <div class="card-gradient rounded-[2rem] p-6 space-y-4" id="receiptContent"></div>
-        
+
         <span class="section-label">Target Rounding</span>
         <div class="grid grid-cols-2 gap-3">
-            <input type="number" id="targetTotal" class="input-box border-mint/40" placeholder="Target Bill Total" oninput="applyTargetRounding()">
-            <div class="bg-mint/10 rounded-[18px] flex items-center justify-center text-[10px] font-black text-mint uppercase tracking-widest">Auto-Adjust</div>
+            <input type="number" inputmode="decimal" id="targetTotal" class="input-box border-mint/40" placeholder="Target Bill Total" oninput="applyTargetRounding()">
+            <div class="floating-total rounded-[18px] flex items-center justify-center text-[10px] font-black text-mint uppercase tracking-widest">
+                Auto-Adjust
+            </div>
         </div>
     </div>
 
     <span class="section-label">Transaction Details</span>
     <div class="grid grid-cols-3 gap-3 mb-3">
-        <select id="payMode" class="input-box col-span-1"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
+        <select id="payMode" class="input-box col-span-1">
+            <option value="UPI">UPI</option>
+            <option value="Cash">Cash</option>
+        </select>
         <input type="text" id="custName" class="input-box col-span-2" placeholder="Customer Name">
     </div>
     <input type="text" id="receivedBy" class="input-box" placeholder="Handled By Staff">
 
-    <button onclick="handleCheckoutFlow()" id="finishBtn" class="w-full py-5 bg-pitch dark:bg-white text-white dark:text-pitch font-900 rounded-2xl mt-8 mb-10 active:scale-95 transition-all shadow-2xl uppercase tracking-widest text-sm">Confirm & Checkout</button>
+    <button onclick="handleCheckoutFlow()" id="finishBtn" class="action-btn w-full py-5 bg-pitch dark:bg-white text-white dark:text-pitch font-black rounded-2xl mt-8 mb-10 shadow-2xl uppercase tracking-widest text-sm">
+        Confirm & Checkout
+    </button>
 </div>
 
 <div id="paymentModal">
-    <div class="card-gradient p-8 rounded-[2.5rem] text-center max-w-xs w-full space-y-6">
+    <div class="card-gradient p-8 rounded-[2.5rem] text-center max-w-xs w-full space-y-6 reveal">
         <span class="text-[10px] font-black text-accent uppercase tracking-widest">Total to Collect</span>
-        <h2 id="modalTotal" class="text-4xl font-900">₹0</h2>
-        <div class="bg-white p-4 rounded-3xl shadow-inner"><img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" class="w-full"></div>
-        <button onclick="submitSale()" class="w-full py-4 bg-mint text-white font-900 rounded-2xl uppercase text-xs">Payment Received</button>
+        <h2 id="modalTotal" class="text-4xl font-black">₹0</h2>
+        <div class="bg-white p-4 rounded-3xl shadow-inner">
+            <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" class="w-full rounded-2xl">
+        </div>
+        <button onclick="submitSale()" class="action-btn w-full py-4 bg-mint text-white font-black rounded-2xl uppercase text-xs">Payment Received</button>
         <button onclick="closeModal()" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Cancel</button>
     </div>
 </div>
@@ -156,45 +523,161 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbz22v-vi--FVqqqU4iQaSXngUZdXIQ9EII5vA68WJWzhMMsrmw4zG6uTaWYqd8riyzF9Q/exec';
     let rawData = [], cart = [], selectedItem = null, grandTotal = 0;
+    const RECENT_KEY = 'sportsHubRecentSearches';
 
     window.onload = () => {
-        const bar = document.getElementById('loadingBar'); bar.style.width = '30%';
+        const bar = document.getElementById('loadingBar');
+        bar.style.width = '30%';
+
         const cached = localStorage.getItem('sportsHubCache');
-        if (cached) { rawData = JSON.parse(cached); populateCategories(); bar.style.width = '60%'; }
+        if (cached) {
+            rawData = JSON.parse(cached);
+            populateCategories();
+            bar.style.width = '60%';
+        }
+
         fetch(scriptURL).then(r => r.json()).then(data => {
-            rawData = data; localStorage.setItem('sportsHubCache', JSON.stringify(data));
-            populateCategories(); bar.style.width = '100%'; setTimeout(() => bar.style.width = '0', 500);
+            rawData = data;
+            localStorage.setItem('sportsHubCache', JSON.stringify(data));
+            populateCategories();
+            bar.style.width = '100%';
+            setTimeout(() => bar.style.width = '0', 500);
+        });
+
+        document.addEventListener('click', (e) => {
+            const search = document.getElementById('idSearch');
+            const suggestions = document.getElementById('suggestions');
+            if (!search.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.classList.add('hidden');
+            }
         });
     };
 
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function escapeRegex(value) {
+        return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function highlightMatch(text, query) {
+        const safeText = escapeHtml(text);
+        if (!query) return safeText;
+        const regex = new RegExp(`(${escapeRegex(query)})`, 'ig');
+        return safeText.replace(regex, '<mark class="search-hit">$1</mark>');
+    }
+
+    function getRecentSearches() {
+        try {
+            return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+        } catch {
+            return [];
+        }
+    }
+
+    function saveRecentSearch(item) {
+        const recent = getRecentSearches().filter(r => r.code !== item.code);
+        recent.unshift({
+            code: item.code,
+            name: item.name,
+            brand: item.brand,
+            size: item.size,
+            photo: item.photo || '',
+            model: item.model || '',
+            color: item.color || ''
+        });
+        localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(0, 6)));
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function getStockMeta(stock) {
+        const n = Number(stock || 0);
+        if (n <= 3) return { label: `${n} CRITICAL`, cls: 'chip chip-rose' };
+        if (n <= 10) return { label: `${n} LOW STOCK`, cls: 'chip chip-amber' };
+        return { label: `${n} IN STOCK`, cls: 'chip chip-mint' };
+    }
+
     function populateCategories() {
         const cats = [...new Set(rawData.map(i => i.name))];
-        const sel = document.getElementById('catSelect'); sel.innerHTML = '<option value="">Select Category</option>';
+        const sel = document.getElementById('catSelect');
+        sel.innerHTML = '<option value="">Select Category</option>';
         cats.forEach(c => {
             const stock = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
             sel.add(new Option(`${c} (${stock})`, c));
         });
     }
 
-    function handleSearch() {
-        const query = document.getElementById('idSearch').value.toUpperCase();
+    function renderSuggestionList(items, query, title) {
         const suggs = document.getElementById('suggestions');
-        if (query.length < 2) { suggs.classList.add('hidden'); return; }
-        const matches = rawData.filter(i => i.code.toUpperCase().includes(query) || i.name.toUpperCase().includes(query)).slice(0, 5);
-        if (matches.length > 0) {
-            suggs.innerHTML = '';
-            matches.forEach(i => {
-                const d = document.createElement('div');
-                d.className = 'p-4 border-b border-black/5 dark:border-white/5 cursor-pointer text-xs font-bold';
-                d.innerHTML = `${i.code} - ${i.name} <span class="text-accent text-[9px] block uppercase opacity-60">${i.brand} • ${i.size}</span>`;
-                d.onclick = () => { selectProduct(i); suggs.classList.add('hidden'); document.getElementById('idSearch').value = i.code; };
-                suggs.appendChild(d);
-            });
-            suggs.classList.remove('hidden');
-        } else { suggs.classList.add('hidden'); }
+        if (!items.length) {
+            suggs.classList.add('hidden');
+            return;
+        }
+
+        suggs.innerHTML = `<div class="suggestion-title">${title}</div>` + items.map(i => `
+            <div class="suggestion-item" data-code="${escapeHtml(i.code)}">
+                <div class="flex items-center gap-3">
+                    <img class="suggestion-thumb" src="${escapeHtml(i.photo || 'https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png')}" alt="">
+                    <div class="min-w-0 flex-1">
+                        <div class="text-xs font-extrabold text-current">${highlightMatch(i.code, query)} - ${highlightMatch(i.name, query)}</div>
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            ${i.brand ? `<span class="chip chip-accent">${escapeHtml(i.brand)}</span>` : ''}
+                            ${i.model ? `<span class="chip">${escapeHtml(i.model)}</span>` : ''}
+                            ${i.size ? `<span class="chip">${escapeHtml(i.size)}</span>` : ''}
+                            ${i.color ? `<span class="chip">${escapeHtml(i.color)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        Array.from(suggs.querySelectorAll('.suggestion-item')).forEach(node => {
+            node.onclick = () => {
+                const item = items.find(x => x.code === node.dataset.code);
+                if (!item) return;
+                selectProduct(item);
+                document.getElementById('idSearch').value = item.code;
+                suggs.classList.add('hidden');
+            };
+        });
+
+        suggs.classList.remove('hidden');
+    }
+
+    function handleSearch() {
+        const query = document.getElementById('idSearch').value.trim();
+        const upper = query.toUpperCase();
+
+        if (query.length < 2) {
+            const recent = getRecentSearches();
+            if (recent.length) renderSuggestionList(recent, '', 'Recently Searched');
+            else document.getElementById('suggestions').classList.add('hidden');
+            return;
+        }
+
+        const matches = rawData.filter(i =>
+            String(i.code || '').toUpperCase().includes(upper) ||
+            String(i.name || '').toUpperCase().includes(upper)
+        ).slice(0, 6);
+
+        renderSuggestionList(matches, query, 'Suggestions');
     }
 
     function selectProduct(item) {
+        saveRecentSearch(item);
         document.getElementById('catSelect').value = item.name;
         filterBrands(item.brand, item.model, item.size, item.color);
     }
@@ -202,28 +685,39 @@
     function filterBrands(pB, pM, pS, pC) {
         const c = document.getElementById('catSelect').value, bs = document.getElementById('brandSelect');
         bs.innerHTML = '<option value="">Brand</option>';
-        if(!c) return document.getElementById('brandGroup').classList.add('hidden');
+        if (!c) return document.getElementById('brandGroup').classList.add('hidden');
+
         const brands = [...new Set(rawData.filter(i => i.name === c).map(i => i.brand))];
         brands.forEach(b => {
             const stock = rawData.filter(i => i.name === c && i.brand === b).reduce((a, b) => a + b.stock, 0);
             bs.add(new Option(`${b} (${stock})`, b));
         });
+
         document.getElementById('brandGroup').classList.remove('hidden');
-        if(pB) { bs.value = pB; filterModels(pM, pS, pC); }
+        if (pB) {
+            bs.value = pB;
+            filterModels(pM, pS, pC);
+        }
     }
 
     function filterModels(pM, pS, pC) {
         const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, ms = document.getElementById('modelSelect');
         ms.innerHTML = '<option value="">Model</option>';
-        const mods = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(x => x);
-        if(mods.length === 0) { document.getElementById('modelGroup').classList.add('hidden'); filterSizes(pS, pC); }
-        else { 
+        const mods = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(Boolean);
+
+        if (mods.length === 0) {
+            document.getElementById('modelGroup').classList.add('hidden');
+            filterSizes(pS, pC);
+        } else {
             mods.forEach(m => {
                 const stock = rawData.filter(i => i.name === c && i.brand === b && i.model === m).reduce((a, b) => a + b.stock, 0);
                 ms.add(new Option(`${m} (${stock})`, m));
-            }); 
+            });
             document.getElementById('modelGroup').classList.remove('hidden');
-            if(pM) { ms.value = pM; filterSizes(pS, pC); }
+            if (pM) {
+                ms.value = pM;
+                filterSizes(pS, pC);
+            }
         }
     }
 
@@ -232,62 +726,151 @@
         const ss = document.getElementById('sizeSelect');
         ss.innerHTML = '<option value="">Size</option>';
         const filtered = rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true));
-        const sizes = [...new Set(filtered.map(i => i.size))].filter(x => x);
-        if(sizes.length === 0) { document.getElementById('sizeGroup').style.display='none'; filterColors(pC); }
-        else { 
+        const sizes = [...new Set(filtered.map(i => i.size))].filter(Boolean);
+
+        if (sizes.length === 0) {
+            document.getElementById('sizeGroup').style.display = 'none';
+            filterColors(pC);
+        } else {
             sizes.forEach(s => {
                 const sStock = filtered.filter(i => i.size === s).reduce((a, b) => a + b.stock, 0);
                 ss.add(new Option(`${s} (${sStock})`, s));
-            }); 
-            document.getElementById('sizeGroup').style.display='block';
-            if(pS) { ss.value = pS; filterColors(pC); }
+            });
+            document.getElementById('sizeGroup').style.display = 'block';
+            if (pS) {
+                ss.value = pS;
+                filterColors(pC);
+            }
         }
     }
 
     function filterColors(pC) {
-        const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, m = document.getElementById('modelSelect').value, s = document.getElementById('sizeSelect').value;
+        const c = document.getElementById('catSelect').value,
+              b = document.getElementById('brandSelect').value,
+              m = document.getElementById('modelSelect').value,
+              s = document.getElementById('sizeSelect').value;
         const cs = document.getElementById('colorSelect');
         cs.innerHTML = '<option value="">Color</option>';
         const filtered = rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true));
-        const cols = [...new Set(filtered.map(i => i.color))].filter(x => x);
-        if(cols.length === 0) { document.getElementById('colorGroup').style.display='none'; loadProduct(); }
-        else { 
+        const cols = [...new Set(filtered.map(i => i.color))].filter(Boolean);
+
+        if (cols.length === 0) {
+            document.getElementById('colorGroup').style.display = 'none';
+            loadProduct();
+        } else {
             cols.forEach(col => {
                 const cStock = filtered.filter(i => i.color === col).reduce((a, b) => a + b.stock, 0);
                 cs.add(new Option(`${col} (${cStock})`, col));
-            }); 
-            document.getElementById('colorGroup').style.display='block';
-            if(pC) { cs.value = pC; loadProduct(); }
+            });
+            document.getElementById('colorGroup').style.display = 'block';
+            if (pC) {
+                cs.value = pC;
+                loadProduct();
+            }
         }
     }
 
     function loadProduct() {
-        const c = document.getElementById('catSelect').value, b = document.getElementById('brandSelect').value, m = document.getElementById('modelSelect').value, s = document.getElementById('sizeSelect').value, col = document.getElementById('colorSelect').value;
-        selectedItem = rawData.find(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true) && (col ? i.color === col : true));
-        if(selectedItem) {
+        const c = document.getElementById('catSelect').value,
+              b = document.getElementById('brandSelect').value,
+              m = document.getElementById('modelSelect').value,
+              s = document.getElementById('sizeSelect').value,
+              col = document.getElementById('colorSelect').value;
+
+        selectedItem = rawData.find(i =>
+            i.name === c &&
+            i.brand === b &&
+            (m ? i.model === m : true) &&
+            (s ? i.size === s : true) &&
+            (col ? i.color === col : true)
+        );
+
+        if (selectedItem) {
             document.getElementById('dashPanel').classList.remove('hidden');
-            document.getElementById('resDealer').innerText = 'Dealer Cost: ₹' + selectedItem.dealerCost;
-            document.getElementById('resStockTag').innerText = selectedItem.stock + ' IN STOCK';
+
+            const stockMeta = getStockMeta(selectedItem.stock);
+            const stockTag = document.getElementById('resStockTag');
+            stockTag.className = stockMeta.cls;
+            stockTag.textContent = stockMeta.label;
+
+            document.getElementById('resDealer').innerText = `Dealer ₹${selectedItem.dealerCost}`;
+            document.getElementById('resDealer').className = 'chip chip-accent';
             document.getElementById('salePrice').value = selectedItem.basePrice;
-            const img = document.getElementById('prodImage'); img.classList.remove('loaded');
+
+            const variantChips = document.getElementById('variantChips');
+            variantChips.innerHTML = `
+                ${selectedItem.brand ? `<span class="chip chip-accent">Brand: ${escapeHtml(selectedItem.brand)}</span>` : ''}
+                ${selectedItem.model ? `<span class="chip">Model: ${escapeHtml(selectedItem.model)}</span>` : ''}
+                ${selectedItem.size ? `<span class="chip">Size: ${escapeHtml(selectedItem.size)}</span>` : ''}
+                ${selectedItem.color ? `<span class="chip">Color: ${escapeHtml(selectedItem.color)}</span>` : ''}
+            `;
+
+            const img = document.getElementById('prodImage');
+            img.classList.remove('loaded');
             img.src = selectedItem.photo || "https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png";
             img.onload = () => img.classList.add('loaded');
         }
     }
 
     function addToCart() {
-        const sp = parseFloat(document.getElementById('salePrice').value), q = parseInt(document.getElementById('qty').value);
-        if(!selectedItem || q < 1 || q > selectedItem.stock) return alert("Error in stock/qty");
-        cart.push({ ...selectedItem, qty: q, price: sp, originalMRP: selectedItem.basePrice });
-        document.getElementById('targetTotal').value = '';
-        renderReceipt();
-        document.getElementById('dashPanel').classList.add('hidden');
-        document.getElementById('idSearch').value = '';
+    const sp = parseFloat(document.getElementById('salePrice').value);
+    const q = parseInt(document.getElementById('qty').value);
+
+    if (!selectedItem || q < 1 || q > selectedItem.stock) {
+        showToast("Invalid quantity or stock");
+        return;
     }
+
+    // ✅ merge same product instead of duplicating
+    const existing = cart.find(i => i.code === selectedItem.code);
+
+    if (existing) {
+        if (existing.qty + q > selectedItem.stock) {
+            showToast("Stock limit reached");
+            return;
+        }
+        existing.qty += q;
+    } else {
+        cart.push({
+            ...selectedItem,
+            qty: q,
+            price: sp,
+            originalMRP: selectedItem.basePrice
+        });
+    }
+
+    document.getElementById('targetTotal').value = '';
+
+    renderReceipt();
+
+    // ✅ FULL RESET (fixes your UI issues)
+    selectedItem = null;
+    document.getElementById('qty').value = 1;
+    document.getElementById('idSearch').value = '';
+    document.getElementById('dashPanel').classList.add('hidden');
+
+    // reset selectors
+    document.getElementById('catSelect').value = '';
+    document.getElementById('brandGroup').classList.add('hidden');
+    document.getElementById('modelGroup').classList.add('hidden');
+    document.getElementById('sizeGroup').style.display = 'none';
+    document.getElementById('colorGroup').style.display = 'none';
+
+    showToast("Added to basket");
+
+    const receiptSection = document.getElementById('receiptSection');
+    receiptSection.classList.add('pulse-ring');
+    setTimeout(() => receiptSection.classList.remove('pulse-ring'), 500);
+}
 
     function applyTargetRounding() {
         const target = parseFloat(document.getElementById('targetTotal').value);
-        if (!target || target <= 0) { cart.forEach(item => item.price = item.originalMRP); renderReceipt(); return; }
+        if (!target || target <= 0) {
+            cart.forEach(item => item.price = item.originalMRP);
+            renderReceipt();
+            return;
+        }
+
         const currentSumMRP = cart.reduce((sum, item) => sum + (item.originalMRP * item.qty), 0);
         const multiplier = target / currentSumMRP;
         cart.forEach(item => { item.price = Math.round(item.originalMRP * multiplier); });
@@ -295,60 +878,145 @@
     }
 
     function renderReceipt() {
-        const receipt = document.getElementById('receiptContent'), section = document.getElementById('receiptSection');
+        const receipt = document.getElementById('receiptContent'),
+              section = document.getElementById('receiptSection');
         grandTotal = 0;
+
         receipt.innerHTML = `<div class="text-[10px] font-black text-gray-500 uppercase tracking-widest text-center border-b border-black/5 dark:border-white/5 pb-3">Cart Summary</div>`;
+
         cart.forEach((item, i) => {
             const lineTotal = item.price * item.qty;
             const disc = item.originalMRP > 0 ? Math.round(((item.originalMRP - item.price) / item.originalMRP) * 100) : 0;
             grandTotal += lineTotal;
+
             receipt.innerHTML += `
-                <div class="flex justify-between items-start py-4 border-b border-black/5 dark:border-white/5">
-                    <div>
-                        <p class="font-bold text-sm">${item.name}</p>
-                        <p class="text-[10px] text-gray-500">${item.size} • ₹${item.originalMRP}</p>
-                        ${disc > 0 ? `<span class="receipt-discount-tag mt-2 inline-block">${disc}% OFF</span>` : ''}
-                        <div class="flex items-center gap-3 mt-3">
-                            <div class="qty-btn" onclick="updateQty(${i}, -1)">-</div>
-                            <span class="text-sm font-bold">${item.qty}</span>
-                            <div class="qty-btn" onclick="updateQty(${i}, 1)">+</div>
+                <div class="cart-swipe-wrap cart-line">
+                    <button class="swipe-remove-btn" onclick="removeItem(${i})">Remove</button>
+                    <div class="cart-line-card" data-index="${i}">
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-3">
+                                    <img src="${escapeHtml(item.photo || 'https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png')}" class="w-14 h-14 rounded-2xl object-cover border border-black/5 dark:border-white/5">
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-sm truncate">${escapeHtml(item.name)}</p>
+
+<p class="text-[10px] text-gray-500">
+    ${escapeHtml(item.brand || '')}
+    ${item.model ? ' • ' + escapeHtml(item.model) : ''}
+    ${item.color ? ' • ' + escapeHtml(item.color) : ''}
+    ${item.size ? ' • ' + escapeHtml(item.size) : ''}
+</p>
+
+<p class="text-[10px] text-gray-500">MRP ₹${item.originalMRP}</p>
+                                        ${disc > 0 ? `<span class="receipt-discount-tag mt-2 inline-block">${disc}% OFF</span>` : ''}
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 mt-4">
+                                    <div class="qty-btn" onclick="updateQty(${i}, -1)">-</div>
+                                    <span class="text-base font-bold min-w-[20px] text-center">${item.qty}</span>
+                                    <div class="qty-btn" onclick="updateQty(${i}, 1)">+</div>
+                                </div>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <p class="font-black text-lg">₹${lineTotal.toLocaleString()}</p>
+                                <p class="text-[9px] font-black text-rose uppercase mt-2">Swipe to remove</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-900 text-lg">₹${lineTotal.toLocaleString()}</p>
-                        <p onclick="removeItem(${i})" class="text-[9px] font-black text-rose uppercase mt-2">Remove</p>
                     </div>
                 </div>`;
         });
+
         receipt.innerHTML += `
             <div class="flex justify-between items-center pt-4">
                 <span class="text-[10px] font-black text-accent uppercase">Payable</span>
-                <span class="text-3xl font-900">₹${grandTotal.toLocaleString()}</span>
+                <span class="text-3xl font-black">₹${grandTotal.toLocaleString()}</span>
             </div>`;
+
         section.classList.toggle('hidden', cart.length === 0);
+        initSwipeRows();
+    }
+
+    function initSwipeRows() {
+        document.querySelectorAll('.cart-line-card').forEach(card => {
+            let startX = 0;
+            let currentX = 0;
+            let dragging = false;
+
+            card.ontouchstart = (e) => {
+                startX = e.touches[0].clientX;
+                currentX = 0;
+                dragging = true;
+            };
+
+            card.ontouchmove = (e) => {
+                if (!dragging) return;
+                currentX = e.touches[0].clientX - startX;
+                if (currentX < 0) {
+                    card.style.transform = `translateX(${Math.max(currentX, -88)}px)`;
+                }
+            };
+
+            card.ontouchend = () => {
+                dragging = false;
+                if (currentX < -50) {
+                    card.classList.add('open');
+                    card.style.transform = '';
+                } else {
+                    card.classList.remove('open');
+                    card.style.transform = '';
+                }
+            };
+        });
     }
 
     function updateQty(i, change) {
         const item = cart[i], master = rawData.find(m => m.code === item.code);
         if (item.qty + change > master.stock) return alert("Stock Limit!");
-        if (item.qty + change > 0) { item.qty += change; renderReceipt(); } else { removeItem(i); }
+        if (item.qty + change > 0) {
+            item.qty += change;
+            renderReceipt();
+        } else {
+            removeItem(i);
+        }
     }
 
-    function removeItem(i) { cart.splice(i, 1); renderReceipt(); }
+    function removeItem(i) {
+        cart.splice(i, 1);
+        renderReceipt();
+        showToast('Item removed');
+    }
+
     function handleCheckoutFlow() {
-        if(cart.length === 0) return alert("Empty basket");
-        if(document.getElementById('payMode').value === "UPI") {
+        if (cart.length === 0) return alert("Empty basket");
+        if (document.getElementById('payMode').value === "UPI") {
             document.getElementById('modalTotal').innerText = "₹" + grandTotal.toLocaleString();
             document.getElementById('paymentModal').style.display = "flex";
-        } else { submitSale(); }
+        } else {
+            submitSale();
+        }
     }
-    function closeModal() { document.getElementById('paymentModal').style.display = "none"; }
+
+    function closeModal() {
+        document.getElementById('paymentModal').style.display = "none";
+    }
 
     async function submitSale() {
-        const btn = document.getElementById('finishBtn'); btn.disabled = true; btn.innerText = "Syncing..."; closeModal();
-        const payload = { cart: cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest", receivedBy: document.getElementById('receivedBy').value || "N/A" };
+        const btn = document.getElementById('finishBtn');
+        btn.disabled = true;
+        btn.innerText = "Syncing...";
+        closeModal();
+
+        const payload = {
+            cart: cart,
+            mode: document.getElementById('payMode').value,
+            customer: document.getElementById('custName').value || "Guest",
+            receivedBy: document.getElementById('receivedBy').value || "N/A"
+        };
+
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        localStorage.removeItem('sportsHubCache'); alert("Success!"); location.reload();
+        localStorage.removeItem('sportsHubCache');
+        alert("Success!");
+        location.reload();
     }
 </script>
 </body>
