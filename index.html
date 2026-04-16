@@ -41,7 +41,14 @@
             color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased;
         }
 
-        /* --- ADAPTIVE LOADING SCREEN --- */
+        /* --- NOTIFICATION BAR FIX --- */
+        header {
+            background-color: var(--bg-header);
+            padding-top: calc(env(safe-area-inset-top) + 1rem) !important;
+            padding-bottom: 1rem;
+            backdrop-filter: blur(18px);
+        }
+
         .main-fader {
             width: 100%; height: 100vh; position: fixed; top: 0; left: 0;
             background-color: var(--loader-bg); z-index: 10000; display: flex;
@@ -49,28 +56,36 @@
             transition: opacity 0.6s ease, visibility 0.6s;
         }
         .main-fader.hidden { opacity: 0; visibility: hidden; }
-        .loader svg { height: 120px; display: block; margin: 0 auto; }
+        .loader svg { height: 100px; display: block; margin: 0 auto; }
         .loader svg path { animation: pulse-svg 1.2s infinite ease-in-out; transform-origin: center; fill: #38bdf8; }
-        .loader-brand-text { color: var(--loader-text); }
         @keyframes pulse-svg { 0%, 100% { opacity: 0.1; transform: scale(0.96); } 50% { opacity: 1; transform: scale(1); } }
         .path-0 { animation-delay: 0s; } .path-1 { animation-delay: 0.1s; } .path-2 { animation-delay: 0.2s; }
         .path-3 { animation-delay: 0.3s; } .path-4 { animation-delay: 0.4s; } .path-5 { animation-delay: 0.5s; }
         .path-6 { animation-delay: 0.6s; } .path-7 { animation-delay: 0.7s; } .path-8 { animation-delay: 0.8s; }
 
-        /* --- FIXED SUGGESTIONS UI --- */
+        /* --- SHOPPING FEED UI --- */
+        .feed-scroll {
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px;
+            padding-bottom: 15px; scrollbar-width: none;
+        }
+        .feed-scroll::-webkit-scrollbar { display: none; }
+        .product-card {
+            flex: 0 0 160px; scroll-snap-align: start; background: var(--bg-card-solid);
+            border-radius: 24px; padding: 12px; border: 1px solid var(--border);
+            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.1);
+        }
+
         .suggestions-list {
             position: absolute; top: 72px; left: 0; right: 0;
             background: var(--bg-card-solid); border: 1px solid rgba(56, 189, 248, 0.4);
-            border-radius: 22px; z-index: 9999 !important; /* Force to top */
+            border-radius: 22px; z-index: 9999 !important;
             max-height: 320px; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             backdrop-filter: blur(16px);
         }
 
         .input-box { background-color: var(--bg-card-solid); border: 1px solid var(--border); color: var(--text-main); border-radius: 18px; width: 100%; padding: 16px; font-weight: 600; outline: none; }
         .card-gradient { background: var(--bg-card-solid); border: 1px solid var(--border); box-shadow: 0 20px 50px -24px rgba(0,0,0,0.22); backdrop-filter: blur(14px); }
-        .chip { padding: 7px 11px; border-radius: 999px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid var(--border); background: rgba(0,0,0,0.04); }
-        .chip-mint { background: rgba(16, 185, 129, 0.1); color: #10B981; }
-        .chip-accent { background: rgba(56, 189, 248, 0.1); color: #0ea5e9; }
+        .chip { padding: 4px 8px; border-radius: 999px; font-size: 8px; font-weight: 800; text-transform: uppercase; border: 1px solid var(--border); background: rgba(0,0,0,0.04); }
         .product-preview-frame { width: 100%; height: 230px; background: rgba(0,0,0,0.02); border-radius: 28px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--border); }
         .product-preview-frame img { max-width: 80%; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); }
         #paymentModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
@@ -91,9 +106,9 @@
         <path class="path-7" d="M66.28,132.51c13.36,3.78,25.62,3.5,38-.9C91.68,129.59,79.36,128,66.28,132.51Z" />
         <path class="path-8" d="M127.2,30.66l-1.27.37a18.58,18.58,0,0,0,1,3.08c3,5.52,6.21,10.89,8.89,16.54,1.34,2.83,3.41,3.82,6.49,4.9a60.38,60.38,0,0,0-15.12-24.9Z" />
     </svg>
-    <div class="mt-6">
-        <h2 class="text-2xl font-black uppercase tracking-tighter loader-brand-text">Coffeeland <span class="text-accent">FC</span></h2>
-        <p class="text-accent font-black text-[8px] tracking-[0.5em] uppercase opacity-70 mt-1">Sports Hub Portal</p>
+    <div class="mt-4">
+        <h2 class="text-xl font-black uppercase tracking-tighter loader-brand-text">Sports <span class="text-accent">Hub</span></h2>
+        <p class="text-accent font-black text-[8px] tracking-[0.5em] uppercase opacity-70">Inventory POS</p>
     </div>
   </div>
 </div>
@@ -125,7 +140,7 @@
 
     <div id="dashPanel" class="hidden card-gradient rounded-[2rem] p-6 mt-6 space-y-5">
         <div class="product-preview-frame"><img id="prodImage" src=""></div>
-        <div class="flex justify-between items-center gap-3"><span id="resStockTag" class="chip chip-mint"></span><span id="resDealer" class="chip chip-accent"></span></div>
+        <div class="flex justify-between items-center gap-3"><span id="resStockTag" class="chip-mint px-3 py-1 rounded-full text-[10px] font-bold"></span><span id="resDealer" class="text-[10px] font-bold text-accent"></span></div>
         <div id="variantChips" class="flex flex-wrap gap-2"></div>
         <div class="grid grid-cols-2 gap-3">
             <div><label class="text-[9px] font-black uppercase text-gray-500 ml-2">Sale Price</label><input type="number" id="salePrice" class="input-box mt-1"></div>
@@ -137,18 +152,23 @@
     <div id="receiptSection" class="hidden mt-8">
         <span class="section-label">Basket Summary</span>
         <div class="card-gradient rounded-[2rem] p-6 space-y-4" id="receiptContent"></div>
-        <div class="grid grid-cols-2 gap-3 mt-4">
-            <input type="number" id="targetTotal" class="input-box" placeholder="Target Total" oninput="applyTargetRounding()">
-            <div class="flex items-center justify-center text-[10px] font-black text-mint uppercase">Auto-Adjust</div>
-        </div>
     </div>
 
-    <span class="section-label mt-6">Transaction</span>
-    <div class="grid grid-cols-3 gap-3 mb-3">
+    <div class="grid grid-cols-3 gap-3 mt-6 mb-3">
         <select id="payMode" class="input-box col-span-1"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
         <input type="text" id="custName" class="input-box col-span-2" placeholder="Customer Name">
     </div>
-    <button onclick="handleCheckoutFlow()" id="finishBtn" class="w-full py-5 bg-pitch dark:bg-white text-white dark:text-pitch font-black rounded-2xl mt-8 mb-10 uppercase tracking-widest text-sm">Confirm & Checkout</button>
+    
+    <button onclick="handleCheckoutFlow()" id="finishBtn" class="w-full py-5 bg-pitch dark:bg-white text-white dark:text-pitch font-black rounded-2xl mb-10 uppercase tracking-widest text-sm">Confirm & Checkout</button>
+
+    <div id="discoverySection" class="mt-2 mb-20 hidden">
+        <div class="flex justify-between items-center px-1 mb-4">
+            <h3 class="text-xs font-black uppercase tracking-widest text-gray-500">Discover Products</h3>
+            <span class="text-[8px] font-bold bg-accent/10 text-accent px-2 py-1 rounded-full">LIVE STOCK</span>
+        </div>
+        <div id="discoveryFeed" class="feed-scroll">
+            </div>
+    </div>
 </div>
 
 <div id="paymentModal">
@@ -168,12 +188,35 @@
 
     window.onload = () => {
         const cached = localStorage.getItem('sportsHubCache');
-        if (cached) { rawData = JSON.parse(cached); populateCategories(); }
+        if (cached) { rawData = JSON.parse(cached); populateCategories(); populateDiscovery(); }
         fetch(scriptURL).then(r => r.json()).then(data => {
             rawData = data; localStorage.setItem('sportsHubCache', JSON.stringify(data));
-            populateCategories(); setTimeout(hideLoader, 800);
+            populateCategories(); populateDiscovery(); setTimeout(hideLoader, 800);
         }).catch(() => hideLoader());
     };
+
+    function populateDiscovery() {
+        const feed = document.getElementById('discoveryFeed');
+        const section = document.getElementById('discoverySection');
+        if(!rawData.length) return;
+        
+        // Randomize and take 8 unique products
+        const items = [...rawData].sort(() => 0.5 - Math.random()).slice(0, 10);
+        
+        feed.innerHTML = items.map(i => `
+            <div class="product-card" onclick="selectProductById('${i.code}')">
+                <div class="h-28 flex items-center justify-center bg-gray-50 dark:bg-zinc-900 rounded-xl mb-3 overflow-hidden">
+                    <img src="${i.photo || 'https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png'}" class="max-h-[85%] object-contain">
+                </div>
+                <h4 class="text-[10px] font-black uppercase truncate text-current leading-tight">${i.name}</h4>
+                <div class="flex justify-between items-center mt-2">
+                    <span class="text-[9px] font-bold text-accent">₹${i.basePrice}</span>
+                    <span class="text-[7px] font-black text-gray-400 uppercase">${i.stock} Left</span>
+                </div>
+            </div>
+        `).join('');
+        section.classList.remove('hidden');
+    }
 
     function populateCategories() {
         const cats = [...new Set(rawData.map(i => i.name))];
@@ -186,15 +229,9 @@
         const query = document.getElementById('idSearch').value.trim().toUpperCase();
         const suggs = document.getElementById('suggestions');
         if (query.length < 2) { suggs.classList.add('hidden'); return; }
-
         const matches = rawData.filter(i => String(i.code).toUpperCase().includes(query) || String(i.name).toUpperCase().includes(query)).slice(0, 6);
         if (!matches.length) { suggs.classList.add('hidden'); return; }
-
-        suggs.innerHTML = matches.map(i => `
-            <div class="p-4 border-b border-black/5 flex items-center gap-3" onclick="selectProductById('${i.code}')">
-                <img src="${i.photo || ''}" class="w-10 h-10 rounded-lg bg-gray-100">
-                <div class="text-xs font-bold">${i.code} - ${i.name}</div>
-            </div>`).join('');
+        suggs.innerHTML = matches.map(i => `<div class="p-4 border-b border-black/5 flex items-center gap-3" onclick="selectProductById('${i.code}')"><img src="${i.photo || ''}" class="w-10 h-10 rounded-lg bg-gray-100"><div class="text-xs font-bold">${i.code} - ${i.name}</div></div>`).join('');
         suggs.classList.remove('hidden');
     }
 
@@ -205,10 +242,10 @@
             document.getElementById('idSearch').value = item.code;
             document.getElementById('suggestions').classList.add('hidden');
             filterBrands(item.brand, item.model, item.size, item.color);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
 
-    // ... keeping your existing filtering logic (filterBrands, filterModels, filterSizes, filterColors, loadProduct)
     function filterBrands(pB, pM, pS, pC) {
         const c = document.getElementById('catSelect').value, bs = document.getElementById('brandSelect');
         bs.innerHTML = '<option value="">Brand</option>';
@@ -270,11 +307,7 @@
     function renderReceipt() {
         const receipt = document.getElementById('receiptContent');
         grandTotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-        receipt.innerHTML = cart.map((item, i) => `
-            <div class="flex justify-between items-center text-sm font-bold">
-                <div>${item.name} x ${item.qty}</div>
-                <div>₹${(item.price * item.qty).toLocaleString()}</div>
-            </div>`).join('');
+        receipt.innerHTML = cart.map((item, i) => `<div class="flex justify-between items-center text-sm font-bold"><div>${item.name} x ${item.qty}</div><div>₹${(item.price * item.qty).toLocaleString()}</div></div>`).join('');
         receipt.innerHTML += `<div class="pt-4 border-t flex justify-between font-black text-xl"><div>Total</div><div>₹${grandTotal.toLocaleString()}</div></div>`;
         document.getElementById('receiptSection').classList.remove('hidden');
     }
