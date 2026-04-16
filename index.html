@@ -41,14 +41,13 @@
             color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased;
         }
 
-        /* --- NOTIFICATION BAR FIX --- */
         header {
             background-color: var(--bg-header);
             padding-top: calc(env(safe-area-inset-top) + 1rem) !important;
-            padding-bottom: 1rem;
-            backdrop-filter: blur(18px);
+            padding-bottom: 1rem; backdrop-filter: blur(18px);
         }
 
+        /* --- LOADER --- */
         .main-fader {
             width: 100%; height: 100vh; position: fixed; top: 0; left: 0;
             background-color: var(--loader-bg); z-index: 10000; display: flex;
@@ -63,32 +62,25 @@
         .path-3 { animation-delay: 0.3s; } .path-4 { animation-delay: 0.4s; } .path-5 { animation-delay: 0.5s; }
         .path-6 { animation-delay: 0.6s; } .path-7 { animation-delay: 0.7s; } .path-8 { animation-delay: 0.8s; }
 
-        /* --- SHOPPING FEED UI --- */
-        .feed-scroll {
-            display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px;
-            padding-bottom: 15px; scrollbar-width: none;
-        }
-        .feed-scroll::-webkit-scrollbar { display: none; }
-        .product-card {
-            flex: 0 0 160px; scroll-snap-align: start; background: var(--bg-card-solid);
-            border-radius: 24px; padding: 12px; border: 1px solid var(--border);
-            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.1);
-        }
+        /* --- BASKET STYLES --- */
+        .cart-swipe-wrap { position: relative; overflow: hidden; border-radius: 24px; margin-bottom: 12px; }
+        .swipe-remove-btn { position: absolute; right: 0; top: 0; bottom: 0; width: 88px; background: #F43F5E; color: white; font-size: 10px; font-weight: 800; text-transform: uppercase; z-index: 0; }
+        .cart-line-card { position: relative; z-index: 1; background: var(--bg-card-solid); border: 1px solid var(--border); border-radius: 24px; padding: 16px; transition: transform 0.2s ease; }
+        .cart-line-card.open { transform: translateX(-88px); }
+        .qty-btn { width: 36px; height: 36px; border-radius: 12px; background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; }
+        .discount-tag { color: #10B981; font-weight: 800; font-size: 9px; background: rgba(16, 185, 129, 0.10); padding: 4px 8px; border-radius: 999px; margin-top: 6px; display: inline-block; }
 
-        .suggestions-list {
-            position: absolute; top: 72px; left: 0; right: 0;
-            background: var(--bg-card-solid); border: 1px solid rgba(56, 189, 248, 0.4);
-            border-radius: 22px; z-index: 9999 !important;
-            max-height: 320px; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            backdrop-filter: blur(16px);
-        }
-
+        /* --- UI COMPONENTS --- */
+        .suggestions-list { position: absolute; top: 72px; left: 0; right: 0; background: var(--bg-card-solid); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 22px; z-index: 9999; max-height: 320px; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); backdrop-filter: blur(16px); }
         .input-box { background-color: var(--bg-card-solid); border: 1px solid var(--border); color: var(--text-main); border-radius: 18px; width: 100%; padding: 16px; font-weight: 600; outline: none; }
-        .card-gradient { background: var(--bg-card-solid); border: 1px solid var(--border); box-shadow: 0 20px 50px -24px rgba(0,0,0,0.22); backdrop-filter: blur(14px); }
-        .chip { padding: 4px 8px; border-radius: 999px; font-size: 8px; font-weight: 800; text-transform: uppercase; border: 1px solid var(--border); background: rgba(0,0,0,0.04); }
+        .input-readonly { background-color: rgba(0,0,0,0.03); border-style: dashed; pointer-events: none; }
+        .field-label { font-size: 9px; font-weight: 800; text-transform: uppercase; color: var(--text-gray); margin-left: 12px; margin-bottom: 4px; display: block; letter-spacing: 0.05em; }
         .product-preview-frame { width: 100%; height: 230px; background: rgba(0,0,0,0.02); border-radius: 28px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--border); }
-        .product-preview-frame img { max-width: 80%; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); }
         #paymentModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
+
+        .feed-scroll { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scrollbar-width: none; }
+        .feed-scroll::-webkit-scrollbar { display: none; }
+        .product-card { flex: 0 0 160px; background: var(--bg-card-solid); border-radius: 24px; padding: 12px; border: 1px solid var(--border); }
     </style>
 </head>
 <body class="pb-20">
@@ -122,61 +114,85 @@
 </header>
 
 <div class="px-6 max-w-md mx-auto mt-6">
-    <div class="relative mb-6 z-[100]">
+    <div class="relative mb-10 z-[100]">
+        <span class="field-label">Search Inventory</span>
         <input type="text" id="idSearch" class="input-box border-accent/30" placeholder="Search Code or Name..." oninput="handleSearch()">
         <div id="suggestions" class="suggestions-list hidden"></div>
     </div>
 
-    <span class="section-label">Browse Inventory</span>
-    <div class="space-y-3 z-0">
-        <select id="catSelect" class="input-box" onchange="filterBrands()"><option value="">Select Category</option></select>
-        <div id="brandGroup" class="hidden"><select id="brandSelect" class="input-box" onchange="filterModels()"></select></div>
-        <div id="modelGroup" class="hidden"><select id="modelSelect" class="input-box" onchange="filterSizes()"></select></div>
+    <div class="flex items-center justify-between border-b border-black/5 dark:border-white/5 pb-2 mb-6">
+        <h2 class="text-sm font-black uppercase tracking-widest text-current">Browse Inventory</h2>
+        <span class="text-[8px] font-bold bg-accent/10 text-accent px-2 py-1 rounded-full uppercase">Stock Explorer</span>
+    </div>
+
+    <div class="space-y-4">
+        <div><span class="field-label">Category</span><select id="catSelect" class="input-box" onchange="filterBrands()"></select></div>
+        <div id="brandGroup" class="hidden"><span class="field-label">Brand</span><select id="brandSelect" class="input-box" onchange="filterModels()"></select></div>
+        <div id="modelGroup" class="hidden"><span class="field-label">Model</span><select id="modelSelect" class="input-box" onchange="filterSizes()"></select></div>
         <div class="grid grid-cols-2 gap-3">
-            <div id="sizeGroup" class="hidden"><select id="sizeSelect" class="input-box" onchange="filterColors()"></select></div>
-            <div id="colorGroup" class="hidden"><select id="colorSelect" class="input-box" onchange="loadProduct()"></select></div>
+            <div id="sizeGroup" class="hidden"><span class="field-label">Size</span><select id="sizeSelect" class="input-box" onchange="filterColors()"></select></div>
+            <div id="colorGroup" class="hidden"><span class="field-label">Color</span><select id="colorSelect" class="input-box" onchange="loadProduct()"></select></div>
         </div>
     </div>
 
-    <div id="dashPanel" class="hidden card-gradient rounded-[2rem] p-6 mt-6 space-y-5">
+    <div id="dashPanel" class="hidden card-gradient rounded-[2rem] p-6 mt-8 space-y-5">
         <div class="product-preview-frame"><img id="prodImage" src=""></div>
-        <div class="flex justify-between items-center gap-3"><span id="resStockTag" class="chip-mint px-3 py-1 rounded-full text-[10px] font-bold"></span><span id="resDealer" class="text-[10px] font-bold text-accent"></span></div>
+        <div class="flex justify-between items-center gap-3">
+            <span id="resStockTag" class="bg-mint/10 text-mint px-3 py-1 rounded-full text-[10px] font-bold uppercase"></span>
+            <span id="resDealer" class="text-[10px] font-bold text-accent"></span> </div>
         <div id="variantChips" class="flex flex-wrap gap-2"></div>
         <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-[9px] font-black uppercase text-gray-500 ml-2">Sale Price</label><input type="number" id="salePrice" class="input-box mt-1"></div>
-            <div><label class="text-[9px] font-black uppercase text-gray-500 ml-2">Qty</label><input type="number" id="qty" class="input-box mt-1" value="1"></div>
+            <div><span class="field-label">Fixed Sale Price</span><input type="number" id="salePrice" class="input-box input-readonly mt-1" readonly></div>
+            <div><span class="field-label">Qty</span><input type="number" id="qty" class="input-box mt-1" value="1"></div>
         </div>
-        <button onclick="addToCart()" class="w-full py-4 bg-accent text-white font-black rounded-2xl uppercase text-xs tracking-widest">Add to Basket</button>
+        <button onclick="addToCart()" class="w-full py-4 bg-accent text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-lg shadow-accent/20">Add to Basket</button>
     </div>
 
-    <div id="receiptSection" class="hidden mt-8">
+    <div id="receiptSection" class="hidden mt-10">
         <span class="section-label">Basket Summary</span>
-        <div class="card-gradient rounded-[2rem] p-6 space-y-4" id="receiptContent"></div>
+        <div class="space-y-4 mt-4" id="receiptContent"></div>
+        
+        <div class="mt-8 border-t border-black/5 dark:border-white/5 pt-6">
+            <span class="field-label text-mint">Final Target Bill Amount</span>
+            <div class="grid grid-cols-2 gap-3">
+                <input type="number" id="targetTotal" class="input-box border-mint/30" placeholder="Enter Total..." oninput="applyTargetRounding()">
+                <div class="flex items-center justify-center bg-mint/5 border border-mint/20 text-mint rounded-2xl px-4 text-[9px] font-black uppercase text-center">
+                    Auto-Adjusts Discounts
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-3 mt-6 mb-3">
-        <select id="payMode" class="input-box col-span-1"><option value="UPI">UPI</option><option value="Cash">Cash</option></select>
-        <input type="text" id="custName" class="input-box col-span-2" placeholder="Customer Name">
+    <div class="grid grid-cols-3 gap-3 mt-8 mb-3">
+        <div class="col-span-1"><span class="field-label">Payment</span><select id="payMode" class="input-box"><option value="UPI">UPI</option><option value="Cash">Cash</option></select></div>
+        <div class="col-span-2"><span class="field-label">Customer</span><input type="text" id="custName" class="input-box" placeholder="Name"></div>
     </div>
     
-    <button onclick="handleCheckoutFlow()" id="finishBtn" class="w-full py-5 bg-pitch dark:bg-white text-white dark:text-pitch font-black rounded-2xl mb-10 uppercase tracking-widest text-sm">Confirm & Checkout</button>
+    <button onclick="handleCheckoutFlow()" id="finishBtn" class="w-full py-5 bg-pitch dark:bg-white text-white dark:text-pitch font-black rounded-2xl mb-10 uppercase tracking-widest text-sm shadow-xl">Confirm & Checkout</button>
 
-    <div id="discoverySection" class="mt-2 mb-20 hidden">
-        <div class="flex justify-between items-center px-1 mb-4">
-            <h3 class="text-xs font-black uppercase tracking-widest text-gray-500">Discover Products</h3>
-            <span class="text-[8px] font-bold bg-accent/10 text-accent px-2 py-1 rounded-full">LIVE STOCK</span>
-        </div>
-        <div id="discoveryFeed" class="feed-scroll">
-            </div>
+    <div id="discoverySection" class="mt-4 mb-20 hidden">
+        <h3 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4 px-1">Product Catalog</h3>
+        <div id="discoveryFeed" class="feed-scroll"></div>
     </div>
 </div>
 
 <div id="paymentModal">
-    <div class="card-gradient p-8 rounded-[2.5rem] text-center max-w-xs w-full space-y-6">
-        <h2 id="modalTotal" class="text-4xl font-black">₹0</h2>
-        <div class="bg-white p-4 rounded-3xl"><img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" class="w-full rounded-2xl"></div>
-        <button onclick="submitSale()" class="w-full py-4 bg-mint text-white font-black rounded-2xl uppercase text-xs">Payment Received</button>
-        <button onclick="closeModal()" class="text-[10px] font-bold text-gray-500 uppercase">Cancel</button>
+    <div class="card-gradient p-8 rounded-[2.5rem] text-center max-w-xs w-full space-y-6 reveal">
+        <div class="space-y-1">
+            <span class="text-[10px] font-black text-accent uppercase tracking-[0.2em]">Final Amount</span>
+            <h2 id="modalTotal" class="text-4xl font-black text-current tracking-tighter">₹0</h2>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl shadow-inner relative overflow-hidden">
+            <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" class="w-full rounded-2xl">
+        </div>
+
+        <button onclick="submitSale()" class="action-btn w-full py-4 bg-mint text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-lg shadow-mint/20">
+            Confirm Payment Received
+        </button>
+        <button onclick="closeModal()" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest opacity-60">
+            Go Back
+        </button>
     </div>
 </div>
 
@@ -195,34 +211,14 @@
         }).catch(() => hideLoader());
     };
 
-    function populateDiscovery() {
-        const feed = document.getElementById('discoveryFeed');
-        const section = document.getElementById('discoverySection');
-        if(!rawData.length) return;
-        
-        // Randomize and take 8 unique products
-        const items = [...rawData].sort(() => 0.5 - Math.random()).slice(0, 10);
-        
-        feed.innerHTML = items.map(i => `
-            <div class="product-card" onclick="selectProductById('${i.code}')">
-                <div class="h-28 flex items-center justify-center bg-gray-50 dark:bg-zinc-900 rounded-xl mb-3 overflow-hidden">
-                    <img src="${i.photo || 'https://i.ibb.co/3nTMhbz/1000287652-0b4cd8d123cf04f03fc322309c337390-11-18-2025-1-04-51-PM.png'}" class="max-h-[85%] object-contain">
-                </div>
-                <h4 class="text-[10px] font-black uppercase truncate text-current leading-tight">${i.name}</h4>
-                <div class="flex justify-between items-center mt-2">
-                    <span class="text-[9px] font-bold text-accent">₹${i.basePrice}</span>
-                    <span class="text-[7px] font-black text-gray-400 uppercase">${i.stock} Left</span>
-                </div>
-            </div>
-        `).join('');
-        section.classList.remove('hidden');
-    }
-
     function populateCategories() {
         const cats = [...new Set(rawData.map(i => i.name))];
         const sel = document.getElementById('catSelect');
         sel.innerHTML = '<option value="">Select Category</option>';
-        cats.forEach(c => sel.add(new Option(c, c)));
+        cats.forEach(c => {
+            const stock = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
+            sel.add(new Option(`${c} (${stock})`, c));
+        });
     }
 
     function handleSearch() {
@@ -246,11 +242,29 @@
         }
     }
 
+    // --- RE-ADDED TARGET ROUNDING LOGIC ---
+    function applyTargetRounding() {
+        const target = parseFloat(document.getElementById('targetTotal').value);
+        if (!target || target <= 0) {
+            cart.forEach(item => item.price = item.basePrice);
+            renderReceipt();
+            return;
+        }
+        const currentSumMRP = cart.reduce((sum, item) => sum + (item.basePrice * item.qty), 0);
+        const multiplier = target / currentSumMRP;
+        cart.forEach(item => { item.price = Math.round(item.basePrice * multiplier); });
+        renderReceipt();
+    }
+
     function filterBrands(pB, pM, pS, pC) {
         const c = document.getElementById('catSelect').value, bs = document.getElementById('brandSelect');
         bs.innerHTML = '<option value="">Brand</option>';
         if (!c) return document.getElementById('brandGroup').classList.add('hidden');
-        [...new Set(rawData.filter(i => i.name === c).map(i => i.brand))].forEach(b => bs.add(new Option(b, b)));
+        const brands = [...new Set(rawData.filter(i => i.name === c).map(i => i.brand))];
+        brands.forEach(b => {
+            const stock = rawData.filter(i => i.name === c && i.brand === b).reduce((a, b) => a + b.stock, 0);
+            bs.add(new Option(`${b} (${stock})`, b));
+        });
         document.getElementById('brandGroup').classList.remove('hidden');
         if (pB) { bs.value = pB; filterModels(pM, pS, pC); }
     }
@@ -260,7 +274,13 @@
         ms.innerHTML = '<option value="">Model</option>';
         const mods = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(Boolean);
         if (!mods.length) { document.getElementById('modelGroup').classList.add('hidden'); filterSizes(pS, pC); }
-        else { mods.forEach(m => ms.add(new Option(m, m))); document.getElementById('modelGroup').classList.remove('hidden'); if (pM) { ms.value = pM; filterSizes(pS, pC); } }
+        else { 
+            mods.forEach(m => {
+                const stock = rawData.filter(i => i.name === c && i.brand === b && i.model === m).reduce((a, b) => a + b.stock, 0);
+                ms.add(new Option(`${m} (${stock})`, m));
+            });
+            document.getElementById('modelGroup').classList.remove('hidden'); if (pM) { ms.value = pM; filterSizes(pS, pC); } 
+        }
     }
 
     function filterSizes(pS, pC) {
@@ -269,7 +289,13 @@
         const filtered = rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true));
         const sizes = [...new Set(filtered.map(i => i.size))].filter(Boolean);
         if (!sizes.length) { document.getElementById('sizeGroup').classList.add('hidden'); filterColors(pC); }
-        else { sizes.forEach(s => ss.add(new Option(s, s))); document.getElementById('sizeGroup').classList.remove('hidden'); if (pS) { ss.value = pS; filterColors(pC); } }
+        else { 
+            sizes.forEach(s => {
+                const sStock = filtered.filter(i => i.size === s).reduce((a, b) => a + b.stock, 0);
+                ss.add(new Option(`${s} (${sStock})`, s));
+            });
+            document.getElementById('sizeGroup').classList.remove('hidden'); if (pS) { ss.value = pS; filterColors(pC); } 
+        }
     }
 
     function filterColors(pC) {
@@ -278,7 +304,13 @@
         const filtered = rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true));
         const cols = [...new Set(filtered.map(i => i.color))].filter(Boolean);
         if (!cols.length) { document.getElementById('colorGroup').classList.add('hidden'); loadProduct(); }
-        else { cols.forEach(col => cs.add(new Option(col, col))); document.getElementById('colorGroup').classList.remove('hidden'); if (pC) { cs.value = pC; loadProduct(); } }
+        else { 
+            cols.forEach(col => {
+                const cStock = filtered.filter(i => i.color === col).reduce((a, b) => a + b.stock, 0);
+                cs.add(new Option(`${col} (${cStock})`, col));
+            });
+            document.getElementById('colorGroup').classList.remove('hidden'); if (pC) { cs.value = pC; loadProduct(); } 
+        }
     }
 
     function loadProduct() {
@@ -287,7 +319,7 @@
         if (selectedItem) {
             document.getElementById('dashPanel').classList.remove('hidden');
             document.getElementById('resStockTag').textContent = `${selectedItem.stock} IN STOCK`;
-            document.getElementById('resDealer').innerText = `MRP ₹${selectedItem.basePrice}`;
+            document.getElementById('resDealer').innerText = `Dealer ₹${selectedItem.dealerCost}`; // RESTORED: Dealer Price
             document.getElementById('salePrice').value = selectedItem.basePrice;
             document.getElementById('prodImage').src = selectedItem.photo || "";
             document.getElementById('variantChips').innerHTML = `<span class="chip">${selectedItem.brand}</span><span class="chip">${selectedItem.size || ''}</span>`;
@@ -295,10 +327,11 @@
     }
 
     function addToCart() {
-        const sp = parseFloat(document.getElementById('salePrice').value);
-        const q = parseInt(document.getElementById('qty').value);
+        const sp = parseFloat(document.getElementById('salePrice').value), q = parseInt(document.getElementById('qty').value);
         if (!selectedItem || q < 1) return;
-        cart.push({ ...selectedItem, qty: q, price: sp });
+        const existing = cart.find(i => i.code === selectedItem.code);
+        if (existing) existing.qty += q;
+        else cart.push({ ...selectedItem, qty: q, price: sp });
         renderReceipt();
         document.getElementById('dashPanel').classList.add('hidden');
         document.getElementById('idSearch').value = "";
@@ -306,28 +339,94 @@
 
     function renderReceipt() {
         const receipt = document.getElementById('receiptContent');
+        
+        // Calculations
+        const totalMRP = cart.reduce((s, i) => s + (i.basePrice * i.qty), 0);
         grandTotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-        receipt.innerHTML = cart.map((item, i) => `<div class="flex justify-between items-center text-sm font-bold"><div>${item.name} x ${item.qty}</div><div>₹${(item.price * item.qty).toLocaleString()}</div></div>`).join('');
-        receipt.innerHTML += `<div class="pt-4 border-t flex justify-between font-black text-xl"><div>Total</div><div>₹${grandTotal.toLocaleString()}</div></div>`;
+        const totalSavings = totalMRP - grandTotal;
+
+        receipt.innerHTML = cart.map((item, i) => {
+            const disc = item.basePrice > 0 ? Math.round(((item.basePrice - item.price) / item.basePrice) * 100) : 0;
+            return `
+            <div class="cart-swipe-wrap">
+                <button class="swipe-remove-btn" onclick="removeItem(${i})">Delete</button>
+                <div class="cart-line-card" onclick="this.classList.toggle('open')">
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="flex gap-3 min-w-0 flex-1">
+                            <img src="${item.photo || ''}" class="w-12 h-12 rounded-xl object-cover bg-gray-50">
+                            <div class="min-w-0">
+                                <p class="font-bold text-xs truncate text-current">${item.name}</p>
+                                <p class="text-[9px] text-gray-500 uppercase mt-0.5">${item.brand} • ${item.size || '-'}</p>
+                                ${disc > 0 ? `<span class="discount-tag">${disc}% OFF</span>` : ''}
+                                <div class="flex items-center gap-3 mt-3">
+                                    <div class="qty-btn" onclick="updateQty(${i}, -1); event.stopPropagation();">-</div>
+                                    <span class="text-xs font-bold text-current">${item.qty}</span>
+                                    <div class="qty-btn" onclick="updateQty(${i}, 1); event.stopPropagation();">+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-gray-400 line-through">₹${(item.basePrice * item.qty).toLocaleString()}</p>
+                            <p class="font-black text-sm text-current">₹${(item.price * item.qty).toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+
+        // --- NEW DETAILED TOTAL SECTION ---
+        receipt.innerHTML += `
+            <div class="mt-6 pt-4 border-t border-black/5 dark:border-white/5 space-y-2">
+                <div class="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                    <span>Total MRP</span>
+                    <span>₹${totalMRP.toLocaleString()}</span>
+                </div>
+                ${totalSavings > 0 ? `
+                <div class="flex justify-between text-[10px] font-black text-rose uppercase tracking-widest">
+                    <span>Discount Applied</span>
+                    <span>- ₹${totalSavings.toLocaleString()}</span>
+                </div>` : ''}
+                <div class="flex justify-between items-center pt-2 border-t border-black/5 dark:border-white/5">
+                    <span class="text-sm font-black uppercase tracking-tighter">Net Payable</span>
+                    <span class="text-3xl font-black text-current tracking-tighter">₹${grandTotal.toLocaleString()}</span>
+                </div>
+            </div>`;
+
         document.getElementById('receiptSection').classList.remove('hidden');
     }
 
-    function handleCheckoutFlow() {
-        if (!cart.length) return alert("Basket empty");
-        document.getElementById('modalTotal').innerText = "₹" + grandTotal.toLocaleString();
-        document.getElementById('paymentModal').style.display = "flex";
+    function updateQty(i, change) { 
+        if(cart[i].qty + change > 0) { cart[i].qty += change; renderReceipt(); }
+        else removeItem(i);
     }
+    
+    function removeItem(i) { cart.splice(i, 1); renderReceipt(); }
 
-    function closeModal() { document.getElementById('paymentModal').style.display = "none"; }
+    function populateDiscovery() {
+        const feed = document.getElementById('discoveryFeed');
+        const items = [...rawData].sort(() => 0.5 - Math.random()).slice(0, 10);
+        feed.innerHTML = items.map(i => `<div class="product-card" onclick="selectProductById('${i.code}')"><div class="h-28 flex items-center justify-center bg-gray-50 dark:bg-zinc-900 rounded-xl mb-3"><img src="${i.photo || ''}" class="max-h-[85%] object-contain"></div><h4 class="text-[10px] font-black uppercase truncate text-current leading-tight">${i.name}</h4><div class="flex justify-between mt-2"><span class="text-[9px] font-bold text-accent">₹${i.basePrice}</span><span class="text-[7px] font-black text-gray-400 uppercase">${i.stock} Left</span></div></div>`).join('');
+        document.getElementById('discoverySection').classList.remove('hidden');
+    }
 
     async function submitSale() {
         const btn = document.getElementById('finishBtn');
         btn.disabled = true; btn.innerText = "Syncing...";
-        closeModal();
         const payload = { cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest" };
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        alert("Success!"); location.reload();
+        location.reload();
     }
+    
+    function handleCheckoutFlow() {
+    if (cart.length === 0) return showToast("Basket is empty");
+    
+    // Update the modal with the calculated grandTotal from renderReceipt
+    document.getElementById('modalTotal').innerText = "₹" + grandTotal.toLocaleString();
+    
+    // Show the modal
+    document.getElementById('paymentModal').style.display = "flex";
+}
+    function closeModal() { document.getElementById('paymentModal').style.display = "none"; }
 </script>
 </body>
 </html>
