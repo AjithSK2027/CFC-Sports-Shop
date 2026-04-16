@@ -27,7 +27,6 @@
             --bg-card-solid: #FFFFFF; --text-main: #111827; --text-gray: #6B7280;
             --border: rgba(17, 24, 39, 0.08); --loader-bg: #F6F8FC; --loader-text: #111827;
         }
-
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-body: #050505; --bg-header: rgba(5, 5, 5, 0.72);
@@ -35,25 +34,9 @@
                 --border: rgba(255, 255, 255, 0.06); --loader-bg: #050505; --loader-text: #ffffff;
             }
         }
-
-        body {
-            background: radial-gradient(circle at top left, rgba(56,189,248,0.10), transparent 24%), var(--bg-body);
-            color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased;
-        }
-
-        header {
-            background-color: var(--bg-header);
-            padding-top: calc(env(safe-area-inset-top) + 1rem) !important;
-            padding-bottom: 1rem; backdrop-filter: blur(18px);
-        }
-
-        /* --- LOADER --- */
-        .main-fader {
-            width: 100%; height: 100vh; position: fixed; top: 0; left: 0;
-            background-color: var(--loader-bg); z-index: 10000; display: flex;
-            align-items: center; justify-content: center;
-            transition: opacity 0.6s ease, visibility 0.6s;
-        }
+        body { background: radial-gradient(circle at top left, rgba(56,189,248,0.10), transparent 24%), var(--bg-body); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        header { background-color: var(--bg-header); padding-top: calc(env(safe-area-inset-top) + 1rem) !important; padding-bottom: 1rem; backdrop-filter: blur(18px); }
+        .main-fader { width: 100%; height: 100vh; position: fixed; top: 0; left: 0; background-color: var(--loader-bg); z-index: 10000; display: flex; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s; }
         .main-fader.hidden { opacity: 0; visibility: hidden; }
         .loader svg { height: 100px; display: block; margin: 0 auto; }
         .loader svg path { animation: pulse-svg 1.2s infinite ease-in-out; transform-origin: center; fill: #38bdf8; }
@@ -61,23 +44,16 @@
         .path-0 { animation-delay: 0s; } .path-1 { animation-delay: 0.1s; } .path-2 { animation-delay: 0.2s; }
         .path-3 { animation-delay: 0.3s; } .path-4 { animation-delay: 0.4s; } .path-5 { animation-delay: 0.5s; }
         .path-6 { animation-delay: 0.6s; } .path-7 { animation-delay: 0.7s; } .path-8 { animation-delay: 0.8s; }
-
-        /* --- BASKET STYLES --- */
-        .cart-swipe-wrap { position: relative; overflow: hidden; border-radius: 24px; margin-bottom: 12px; }
-        .swipe-remove-btn { position: absolute; right: 0; top: 0; bottom: 0; width: 88px; background: #F43F5E; color: white; font-size: 10px; font-weight: 800; text-transform: uppercase; z-index: 0; }
-        .cart-line-card { position: relative; z-index: 1; background: var(--bg-card-solid); border: 1px solid var(--border); border-radius: 24px; padding: 16px; transition: transform 0.2s ease; }
-        .cart-line-card.open { transform: translateX(-88px); }
+        .cart-swipe-wrap { position: relative; border-radius: 24px; margin-bottom: 12px; }
+        .cart-line-card { background: var(--bg-card-solid); border: 1px solid var(--border); border-radius: 24px; padding: 16px; }
         .qty-btn { width: 36px; height: 36px; border-radius: 12px; background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; }
         .discount-tag { color: #10B981; font-weight: 800; font-size: 9px; background: rgba(16, 185, 129, 0.10); padding: 4px 8px; border-radius: 999px; margin-top: 6px; display: inline-block; }
-
-        /* --- UI COMPONENTS --- */
         .suggestions-list { position: absolute; top: 72px; left: 0; right: 0; background: var(--bg-card-solid); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 22px; z-index: 9999; max-height: 320px; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); backdrop-filter: blur(16px); }
         .input-box { background-color: var(--bg-card-solid); border: 1px solid var(--border); color: var(--text-main); border-radius: 18px; width: 100%; padding: 16px; font-weight: 600; outline: none; }
         .input-readonly { background-color: rgba(0,0,0,0.03); border-style: dashed; pointer-events: none; }
         .field-label { font-size: 9px; font-weight: 800; text-transform: uppercase; color: var(--text-gray); margin-left: 12px; margin-bottom: 4px; display: block; letter-spacing: 0.05em; }
         .product-preview-frame { width: 100%; height: 230px; background: rgba(0,0,0,0.02); border-radius: 28px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--border); }
         #paymentModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
-
         .feed-scroll { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scrollbar-width: none; }
         .feed-scroll::-webkit-scrollbar { display: none; }
         .product-card { flex: 0 0 160px; background: var(--bg-card-solid); border-radius: 24px; padding: 12px; border: 1px solid var(--border); }
@@ -98,10 +74,7 @@
         <path class="path-7" d="M66.28,132.51c13.36,3.78,25.62,3.5,38-.9C91.68,129.59,79.36,128,66.28,132.51Z" />
         <path class="path-8" d="M127.2,30.66l-1.27.37a18.58,18.58,0,0,0,1,3.08c3,5.52,6.21,10.89,8.89,16.54,1.34,2.83,3.41,3.82,6.49,4.9a60.38,60.38,0,0,0-15.12-24.9Z" />
     </svg>
-    <div class="mt-4">
-        <h2 class="text-xl font-black uppercase tracking-tighter loader-brand-text">Sports <span class="text-accent">Hub</span></h2>
-        <p class="text-accent font-black text-[8px] tracking-[0.5em] uppercase opacity-70">Inventory POS</p>
-    </div>
+    <div class="mt-4 text-center"><h2 class="text-xl font-black uppercase tracking-tighter loader-brand-text">Sports <span class="text-accent">Hub</span></h2></div>
   </div>
 </div>
 
@@ -122,7 +95,6 @@
 
     <div class="flex items-center justify-between border-b border-black/5 dark:border-white/5 pb-2 mb-6">
         <h2 class="text-sm font-black uppercase tracking-widest text-current">Browse Inventory</h2>
-        <span class="text-[8px] font-bold bg-accent/10 text-accent px-2 py-1 rounded-full uppercase">Stock Explorer</span>
     </div>
 
     <div class="space-y-4">
@@ -139,13 +111,14 @@
         <div class="product-preview-frame"><img id="prodImage" src=""></div>
         <div class="flex justify-between items-center gap-3">
             <span id="resStockTag" class="bg-mint/10 text-mint px-3 py-1 rounded-full text-[10px] font-bold uppercase"></span>
-            <span id="resDealer" class="text-[10px] font-bold text-accent"></span> </div>
+            <span id="resDealer" class="text-[10px] font-bold text-accent"></span>
+        </div>
         <div id="variantChips" class="flex flex-wrap gap-2"></div>
         <div class="grid grid-cols-2 gap-3">
-            <div><span class="field-label">Fixed Sale Price</span><input type="number" id="salePrice" class="input-box input-readonly mt-1" readonly></div>
-            <div><span class="field-label">Qty</span><input type="number" id="qty" class="input-box mt-1" value="1"></div>
+            <div><span class="field-label">Sale Price</span><input type="number" id="salePrice" class="input-box input-readonly mt-1" readonly></div>
+            <div><span class="field-label">Qty</span><input type="number" id="qty" class="input-box mt-1" value="1" oninput="checkStockLive()"></div>
         </div>
-        <button onclick="addToCart()" class="w-full py-4 bg-accent text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-lg shadow-accent/20">Add to Basket</button>
+        <button onclick="addToCart()" class="w-full py-4 bg-accent text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-lg shadow-accent/20 transition-all">Add to Basket</button>
     </div>
 
     <div id="receiptSection" class="hidden mt-10">
@@ -155,10 +128,8 @@
         <div class="mt-8 border-t border-black/5 dark:border-white/5 pt-6">
             <span class="field-label text-mint">Final Target Bill Amount</span>
             <div class="grid grid-cols-2 gap-3">
-                <input type="number" id="targetTotal" class="input-box border-mint/30" placeholder="Enter Total..." oninput="applyTargetRounding()">
-                <div class="flex items-center justify-center bg-mint/5 border border-mint/20 text-mint rounded-2xl px-4 text-[9px] font-black uppercase text-center">
-                    Auto-Adjusts Discounts
-                </div>
+                <input type="number" id="targetTotal" class="input-box border-mint/30" placeholder="Set Bill Final Total..." oninput="applyTargetRounding()">
+                <div class="flex items-center justify-center bg-mint/5 border border-mint/20 text-mint rounded-2xl px-4 text-[9px] font-black uppercase text-center">Auto-Adjusts Discounts</div>
             </div>
         </div>
     </div>
@@ -167,7 +138,6 @@
         <div class="col-span-1"><span class="field-label">Payment</span><select id="payMode" class="input-box"><option value="UPI">UPI</option><option value="Cash">Cash</option></select></div>
         <div class="col-span-2"><span class="field-label">Customer</span><input type="text" id="custName" class="input-box" placeholder="Name"></div>
     </div>
-    
     <button onclick="handleCheckoutFlow()" id="finishBtn" class="w-full py-5 bg-pitch dark:bg-white text-white dark:text-pitch font-black rounded-2xl mb-10 uppercase tracking-widest text-sm shadow-xl">Confirm & Checkout</button>
 
     <div id="discoverySection" class="mt-4 mb-20 hidden">
@@ -177,22 +147,11 @@
 </div>
 
 <div id="paymentModal">
-    <div class="card-gradient p-8 rounded-[2.5rem] text-center max-w-xs w-full space-y-6 reveal">
-        <div class="space-y-1">
-            <span class="text-[10px] font-black text-accent uppercase tracking-[0.2em]">Final Amount</span>
-            <h2 id="modalTotal" class="text-4xl font-black text-current tracking-tighter">₹0</h2>
-        </div>
-
-        <div class="bg-white p-4 rounded-3xl shadow-inner relative overflow-hidden">
-            <img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" class="w-full rounded-2xl">
-        </div>
-
-        <button onclick="submitSale()" class="action-btn w-full py-4 bg-mint text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-lg shadow-mint/20">
-            Confirm Payment Received
-        </button>
-        <button onclick="closeModal()" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest opacity-60">
-            Go Back
-        </button>
+    <div class="card-gradient p-8 rounded-[2.5rem] text-center max-w-xs w-full space-y-6">
+        <div class="space-y-1"><span class="text-[10px] font-black text-accent uppercase">Final Amount</span><h2 id="modalTotal" class="text-4xl font-black text-current">₹0</h2></div>
+        <div class="bg-white p-4 rounded-3xl"><img src="https://i.ibb.co/zV8dWkRg/Whats-App-Image-2026-04-09-at-2-44-08-PM.jpg" class="w-full rounded-2xl"></div>
+        <button onclick="submitSale()" class="w-full py-4 bg-mint text-white font-black rounded-2xl uppercase text-xs shadow-lg">Confirm Payment Received</button>
+        <button onclick="closeModal()" class="text-[10px] font-bold text-gray-500 uppercase">Go Back</button>
     </div>
 </div>
 
@@ -215,10 +174,16 @@
         const cats = [...new Set(rawData.map(i => i.name))];
         const sel = document.getElementById('catSelect');
         sel.innerHTML = '<option value="">Select Category</option>';
-        cats.forEach(c => {
-            const stock = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0);
-            sel.add(new Option(`${c} (${stock})`, c));
-        });
+        cats.forEach(c => { const stock = rawData.filter(i => i.name === c).reduce((a, b) => a + b.stock, 0); sel.add(new Option(`${c} (${stock})`, c)); });
+    }
+
+    function checkStockLive() {
+        const q = parseInt(document.getElementById('qty').value) || 0;
+        const btn = document.querySelector('#dashPanel button');
+        if (!selectedItem) return;
+        if (q > selectedItem.stock) { btn.innerText = `Only ${selectedItem.stock} in Stock`; btn.style.background = "#F43F5E"; }
+        else if (q <= 0) { btn.innerText = "Enter Quantity"; btn.style.background = "#9CA3AF"; }
+        else { btn.innerText = "Add to Basket"; btn.style.background = "#38bdf8"; }
     }
 
     function handleSearch() {
@@ -233,26 +198,15 @@
 
     function selectProductById(code) {
         const item = rawData.find(x => x.code === code);
-        if (item) {
-            document.getElementById('catSelect').value = item.name;
-            document.getElementById('idSearch').value = item.code;
-            document.getElementById('suggestions').classList.add('hidden');
-            filterBrands(item.brand, item.model, item.size, item.color);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        if (item) { document.getElementById('catSelect').value = item.name; document.getElementById('idSearch').value = item.code; document.getElementById('suggestions').classList.add('hidden'); filterBrands(item.brand, item.model, item.size, item.color); window.scrollTo({ top: 0, behavior: 'smooth' }); }
     }
 
-    // --- RE-ADDED TARGET ROUNDING LOGIC ---
     function applyTargetRounding() {
         const target = parseFloat(document.getElementById('targetTotal').value);
-        if (!target || target <= 0) {
-            cart.forEach(item => item.price = item.basePrice);
-            renderReceipt();
-            return;
-        }
-        const currentSumMRP = cart.reduce((sum, item) => sum + (item.basePrice * item.qty), 0);
-        const multiplier = target / currentSumMRP;
-        cart.forEach(item => { item.price = Math.round(item.basePrice * multiplier); });
+        if (!target || target <= 0) { cart.forEach(item => item.price = item.basePrice); renderReceipt(); return; }
+        const sumMRP = cart.reduce((s, i) => s + (i.basePrice * i.qty), 0);
+        const mult = target / sumMRP;
+        cart.forEach(item => { item.price = Math.round(item.basePrice * mult); });
         renderReceipt();
     }
 
@@ -261,10 +215,7 @@
         bs.innerHTML = '<option value="">Brand</option>';
         if (!c) return document.getElementById('brandGroup').classList.add('hidden');
         const brands = [...new Set(rawData.filter(i => i.name === c).map(i => i.brand))];
-        brands.forEach(b => {
-            const stock = rawData.filter(i => i.name === c && i.brand === b).reduce((a, b) => a + b.stock, 0);
-            bs.add(new Option(`${b} (${stock})`, b));
-        });
+        brands.forEach(b => { const stock = rawData.filter(i => i.name === c && i.brand === b).reduce((a, b) => a + b.stock, 0); bs.add(new Option(`${b} (${stock})`, b)); });
         document.getElementById('brandGroup').classList.remove('hidden');
         if (pB) { bs.value = pB; filterModels(pM, pS, pC); }
     }
@@ -274,13 +225,7 @@
         ms.innerHTML = '<option value="">Model</option>';
         const mods = [...new Set(rawData.filter(i => i.name === c && i.brand === b).map(i => i.model))].filter(Boolean);
         if (!mods.length) { document.getElementById('modelGroup').classList.add('hidden'); filterSizes(pS, pC); }
-        else { 
-            mods.forEach(m => {
-                const stock = rawData.filter(i => i.name === c && i.brand === b && i.model === m).reduce((a, b) => a + b.stock, 0);
-                ms.add(new Option(`${m} (${stock})`, m));
-            });
-            document.getElementById('modelGroup').classList.remove('hidden'); if (pM) { ms.value = pM; filterSizes(pS, pC); } 
-        }
+        else { mods.forEach(m => { const stock = rawData.filter(i => i.name === c && i.brand === b && i.model === m).reduce((a, b) => a + b.stock, 0); ms.add(new Option(`${m} (${stock})`, m)); }); document.getElementById('modelGroup').classList.remove('hidden'); if (pM) { ms.value = pM; filterSizes(pS, pC); } }
     }
 
     function filterSizes(pS, pC) {
@@ -289,13 +234,7 @@
         const filtered = rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true));
         const sizes = [...new Set(filtered.map(i => i.size))].filter(Boolean);
         if (!sizes.length) { document.getElementById('sizeGroup').classList.add('hidden'); filterColors(pC); }
-        else { 
-            sizes.forEach(s => {
-                const sStock = filtered.filter(i => i.size === s).reduce((a, b) => a + b.stock, 0);
-                ss.add(new Option(`${s} (${sStock})`, s));
-            });
-            document.getElementById('sizeGroup').classList.remove('hidden'); if (pS) { ss.value = pS; filterColors(pC); } 
-        }
+        else { sizes.forEach(s => { const stock = filtered.filter(i => i.size === s).reduce((a, b) => a + b.stock, 0); ss.add(new Option(`${s} (${stock})`, s)); }); document.getElementById('sizeGroup').classList.remove('hidden'); if (pS) { ss.value = pS; filterColors(pC); } }
     }
 
     function filterColors(pC) {
@@ -304,13 +243,7 @@
         const filtered = rawData.filter(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true));
         const cols = [...new Set(filtered.map(i => i.color))].filter(Boolean);
         if (!cols.length) { document.getElementById('colorGroup').classList.add('hidden'); loadProduct(); }
-        else { 
-            cols.forEach(col => {
-                const cStock = filtered.filter(i => i.color === col).reduce((a, b) => a + b.stock, 0);
-                cs.add(new Option(`${col} (${cStock})`, col));
-            });
-            document.getElementById('colorGroup').classList.remove('hidden'); if (pC) { cs.value = pC; loadProduct(); } 
-        }
+        else { cols.forEach(col => { const stock = filtered.filter(i => i.color === col).reduce((a, b) => a + b.stock, 0); cs.add(new Option(`${col} (${stock})`, col)); }); document.getElementById('colorGroup').classList.remove('hidden'); if (pC) { cs.value = pC; loadProduct(); } }
     }
 
     function loadProduct() {
@@ -318,114 +251,44 @@
         selectedItem = rawData.find(i => i.name === c && i.brand === b && (m ? i.model === m : true) && (s ? i.size === s : true) && (col ? i.color === col : true));
         if (selectedItem) {
             document.getElementById('dashPanel').classList.remove('hidden');
-            document.getElementById('resStockTag').textContent = `${selectedItem.stock} IN STOCK`;
-            document.getElementById('resDealer').innerText = `Dealer ₹${selectedItem.dealerCost}`; // RESTORED: Dealer Price
+            const stockTag = document.getElementById('resStockTag');
+            const dashBtn = document.querySelector('#dashPanel button');
+            if (selectedItem.stock <= 0) { stockTag.textContent = `OUT OF STOCK`; stockTag.className = "bg-rose/10 text-rose px-3 py-1 rounded-full text-[10px] font-bold uppercase"; dashBtn.disabled = true; dashBtn.innerText = "OUT OF STOCK"; dashBtn.style.opacity = "0.5"; }
+            else { stockTag.textContent = `${selectedItem.stock} IN STOCK`; stockTag.className = "bg-mint/10 text-mint px-3 py-1 rounded-full text-[10px] font-bold uppercase"; dashBtn.disabled = false; dashBtn.innerText = "Add to Basket"; dashBtn.style.opacity = "1"; }
+            document.getElementById('resDealer').innerText = `Dealer ₹${selectedItem.dealerCost}`;
             document.getElementById('salePrice').value = selectedItem.basePrice;
             document.getElementById('prodImage').src = selectedItem.photo || "";
-            document.getElementById('variantChips').innerHTML = `<span class="chip">${selectedItem.brand}</span><span class="chip">${selectedItem.size || ''}</span>`;
+            document.getElementById('variantChips').innerHTML = `<span class="chip">${selectedItem.brand}</span> <span class="chip">${selectedItem.size || ''}</span>`;
+            checkStockLive();
         }
     }
 
     function addToCart() {
-        const sp = parseFloat(document.getElementById('salePrice').value), q = parseInt(document.getElementById('qty').value);
-        if (!selectedItem || q < 1) return;
+        const q = parseInt(document.getElementById('qty').value);
+        if (!selectedItem || q <= 0 || q > selectedItem.stock) { alert("Stock Error"); return; }
         const existing = cart.find(i => i.code === selectedItem.code);
-        if (existing) existing.qty += q;
-        else cart.push({ ...selectedItem, qty: q, price: sp });
-        renderReceipt();
-        document.getElementById('dashPanel').classList.add('hidden');
-        document.getElementById('idSearch').value = "";
+        if (existing) { if (existing.qty + q > selectedItem.stock) { alert("Stock Limit!"); return; } existing.qty += q; }
+        else cart.push({ ...selectedItem, qty: q, price: selectedItem.basePrice });
+        renderReceipt(); document.getElementById('dashPanel').classList.add('hidden'); document.getElementById('idSearch').value = "";
     }
 
     function renderReceipt() {
         const receipt = document.getElementById('receiptContent');
-        
-        // Calculations
         const totalMRP = cart.reduce((s, i) => s + (i.basePrice * i.qty), 0);
         grandTotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
         const totalSavings = totalMRP - grandTotal;
-
         receipt.innerHTML = cart.map((item, i) => {
             const disc = item.basePrice > 0 ? Math.round(((item.basePrice - item.price) / item.basePrice) * 100) : 0;
-            return `
-            <div class="cart-swipe-wrap">
-                <button class="swipe-remove-btn" onclick="removeItem(${i})">Delete</button>
-                <div class="cart-line-card" onclick="this.classList.toggle('open')">
-                    <div class="flex justify-between items-start gap-3">
-                        <div class="flex gap-3 min-w-0 flex-1">
-                            <img src="${item.photo || ''}" class="w-12 h-12 rounded-xl object-cover bg-gray-50">
-                            <div class="min-w-0">
-                                <p class="font-bold text-xs truncate text-current">${item.name}</p>
-                                <p class="text-[9px] text-gray-500 uppercase mt-0.5">${item.brand} • ${item.size || '-'}</p>
-                                ${disc > 0 ? `<span class="discount-tag">${disc}% OFF</span>` : ''}
-                                <div class="flex items-center gap-3 mt-3">
-                                    <div class="qty-btn" onclick="updateQty(${i}, -1); event.stopPropagation();">-</div>
-                                    <span class="text-xs font-bold text-current">${item.qty}</span>
-                                    <div class="qty-btn" onclick="updateQty(${i}, 1); event.stopPropagation();">+</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[10px] text-gray-400 line-through">₹${(item.basePrice * item.qty).toLocaleString()}</p>
-                            <p class="font-black text-sm text-current">₹${(item.price * item.qty).toLocaleString()}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+            return `<div class="cart-line-card"><div class="flex justify-between items-start gap-3"><div class="flex gap-3 min-w-0 flex-1"><img src="${item.photo || ''}" class="w-16 h-16 rounded-2xl object-cover bg-gray-50 border border-black/5"><div class="min-w-0"><p class="font-black text-sm truncate text-current uppercase">${item.name}</p><p class="text-[10px] font-bold text-gray-500 uppercase mt-0.5 leading-tight">${item.brand} • ${item.model || ''} • Size: ${item.size || ''}</p>${disc > 0 ? `<span class="discount-tag">${disc}% OFF</span>` : ''}<div class="flex items-center gap-4 mt-3"><div class="qty-btn" onclick="updateQty(${i}, -1)">-</div><span class="text-sm font-black text-current">${item.qty}</span><div class="qty-btn" onclick="updateQty(${i}, 1)">+</div></div></div></div><div class="text-right"><p class="text-[10px] text-gray-400 line-through font-bold">₹${(item.basePrice * item.qty).toLocaleString()}</p><p class="font-black text-base text-current">₹${(item.price * item.qty).toLocaleString()}</p></div></div></div>`;
         }).join('');
-
-        // --- NEW DETAILED TOTAL SECTION ---
-        receipt.innerHTML += `
-            <div class="mt-6 pt-4 border-t border-black/5 dark:border-white/5 space-y-2">
-                <div class="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                    <span>Total MRP</span>
-                    <span>₹${totalMRP.toLocaleString()}</span>
-                </div>
-                ${totalSavings > 0 ? `
-                <div class="flex justify-between text-[10px] font-black text-rose uppercase tracking-widest">
-                    <span>Discount Applied</span>
-                    <span>- ₹${totalSavings.toLocaleString()}</span>
-                </div>` : ''}
-                <div class="flex justify-between items-center pt-2 border-t border-black/5 dark:border-white/5">
-                    <span class="text-sm font-black uppercase tracking-tighter">Net Payable</span>
-                    <span class="text-3xl font-black text-current tracking-tighter">₹${grandTotal.toLocaleString()}</span>
-                </div>
-            </div>`;
-
+        receipt.innerHTML += `<div class="mt-6 pt-4 border-t border-black/5 space-y-2"><div class="flex justify-between text-[10px] font-bold text-gray-500 uppercase uppercase"><span>Total MRP</span><span>₹${totalMRP.toLocaleString()}</span></div>${totalSavings > 0 ? `<div class="flex justify-between text-[10px] font-black text-rose uppercase tracking-widest"><span>Discount Applied</span><span>- ₹${totalSavings.toLocaleString()}</span></div>` : ''}<div class="flex justify-between items-center pt-2 border-t border-black/5"><span class="text-sm font-black uppercase">Net Payable</span><span class="text-3xl font-black text-current">₹${grandTotal.toLocaleString()}</span></div></div>`;
         document.getElementById('receiptSection').classList.remove('hidden');
     }
 
-    function updateQty(i, change) { 
-        if(cart[i].qty + change > 0) { cart[i].qty += change; renderReceipt(); }
-        else removeItem(i);
-    }
-    
-    function removeItem(i) { cart.splice(i, 1); renderReceipt(); }
-
-    function populateDiscovery() {
-        const feed = document.getElementById('discoveryFeed');
-        const items = [...rawData].sort(() => 0.5 - Math.random()).slice(0, 10);
-        feed.innerHTML = items.map(i => `<div class="product-card" onclick="selectProductById('${i.code}')"><div class="h-28 flex items-center justify-center bg-gray-50 dark:bg-zinc-900 rounded-xl mb-3"><img src="${i.photo || ''}" class="max-h-[85%] object-contain"></div><h4 class="text-[10px] font-black uppercase truncate text-current leading-tight">${i.name}</h4><div class="flex justify-between mt-2"><span class="text-[9px] font-bold text-accent">₹${i.basePrice}</span><span class="text-[7px] font-black text-gray-400 uppercase">${i.stock} Left</span></div></div>`).join('');
-        document.getElementById('discoverySection').classList.remove('hidden');
-    }
-
-    async function submitSale() {
-        const btn = document.getElementById('finishBtn');
-        btn.disabled = true; btn.innerText = "Syncing...";
-        const payload = { cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest" };
-        await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-        location.reload();
-    }
-    
-    function handleCheckoutFlow() {
-    if (cart.length === 0) return showToast("Basket is empty");
-    
-    // Update the modal with the calculated grandTotal from renderReceipt
-    document.getElementById('modalTotal').innerText = "₹" + grandTotal.toLocaleString();
-    
-    // Show the modal
-    document.getElementById('paymentModal').style.display = "flex";
-}
+    function updateQty(i, change) { const item = cart[i]; const master = rawData.find(x => x.code === item.code); if (change > 0 && item.qty + change > master.stock) { alert(`Stock limit: ${master.stock}`); return; } if (item.qty + change > 0) { item.qty += change; renderReceipt(); } else if (confirm("Remove item?")) { cart.splice(i, 1); renderReceipt(); } }
+    function populateDiscovery() { const feed = document.getElementById('discoveryFeed'); const items = [...rawData].sort(() => 0.5 - Math.random()).slice(0, 10); feed.innerHTML = items.map(i => `<div class="product-card" onclick="selectProductById('${i.code}')"><div class="h-28 flex items-center justify-center bg-gray-50 dark:bg-zinc-900 rounded-xl mb-3"><img src="${i.photo || ''}" class="max-h-[85%] object-contain"></div><h4 class="text-[10px] font-black uppercase truncate text-current leading-tight">${i.name}</h4><div class="flex justify-between mt-2"><span class="text-[9px] font-bold text-accent">₹${i.basePrice}</span><span class="text-[7px] font-black text-gray-400 uppercase">${i.stock} Left</span></div></div>`).join(''); document.getElementById('discoverySection').classList.remove('hidden'); }
+    async function submitSale() { const btn = document.querySelector('#paymentModal button'); btn.disabled = true; btn.innerText = "Syncing..."; const payload = { cart, mode: document.getElementById('payMode').value, customer: document.getElementById('custName').value || "Guest" }; await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) }); location.reload(); }
+    function handleCheckoutFlow() { if (cart.length === 0) return alert("Basket empty"); document.getElementById('modalTotal').innerText = "₹" + grandTotal.toLocaleString(); document.getElementById('paymentModal').style.display = "flex"; }
     function closeModal() { document.getElementById('paymentModal').style.display = "none"; }
 </script>
 </body>
